@@ -153,18 +153,26 @@
             <textarea id="surhan_dir_text" class="form-control" rows="2" placeholder="اكتب التوجيه أو الملاحظات هنا..." style="border-radius: 8px; resize: vertical;"></textarea>
           </div>
 
-          <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-            <label style="font-weight: 600; font-size: 12px; margin: 0;">لوحة رسم التوقيع / التوجيه الخطي:</label>
+          <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <label style="font-weight: 700; font-size: 13px; margin: 0; color: #1e293b;">🖋️ مساحة الرسم والتوقيع فائقة الدقة (Ultra-HD):</label>
             <div style="display: flex; gap: 6px; align-items: center;">
-              <button type="button" id="btn_canvas_undo" class="btn btn-xs btn-default" style="border-radius: 6px;">تراجع Undo</button>
-              <button type="button" id="btn_canvas_clear" class="btn btn-xs btn-default" style="border-radius: 6px;">مسح Clear</button>
-              <label style="margin: 0 0 0 4px; font-size: 11px; color: #6b7280;">القلم:</label>
-              <input type="range" id="surhan_canvas_pen" min="1" max="8" value="3" style="width: 60px;">
+              <span style="font-size: 11px; color: #64748b; font-weight: 600;">الحبر:</span>
+              <button type="button" class="btn btn-xs surhan-color-btn active" data-color="#0f172a" style="width: 20px; height: 20px; border-radius: 50%; background: #0f172a; border: 2px solid #3b82f6; padding: 0; cursor: pointer;" title="أسود داكن"></button>
+              <button type="button" class="btn btn-xs surhan-color-btn" data-color="#1e40af" style="width: 20px; height: 20px; border-radius: 50%; background: #1e40af; border: 2px solid transparent; padding: 0; cursor: pointer;" title="أزرق ملكي"></button>
+              <button type="button" class="btn btn-xs surhan-color-btn" data-color="#047857" style="width: 20px; height: 20px; border-radius: 50%; background: #047857; border: 2px solid transparent; padding: 0; cursor: pointer;" title="أخضر رسمي"></button>
+              <span style="border-left: 1px solid #cbd5e1; height: 16px; margin: 0 4px;"></span>
+              <button type="button" id="btn_canvas_undo" class="btn btn-xs btn-default" style="border-radius: 6px; font-weight: 600;">↩️ تراجع</button>
+              <button type="button" id="btn_canvas_clear" class="btn btn-xs btn-default" style="border-radius: 6px; font-weight: 600; color: #ef4444;">🗑️ مسح</button>
+              <span style="font-size: 11px; color: #64748b; font-weight: 600;">السماكة:</span>
+              <input type="range" id="surhan_canvas_pen" min="1.5" max="6" step="0.5" value="2.5" style="width: 65px; cursor: pointer;">
             </div>
           </div>
 
-          <div style="border: 1.5px solid #d1d5db; border-radius: 10px; overflow: hidden; background: #ffffff; touch-action: none; margin-bottom: 12px;">
-            <canvas id="surhan_live_canvas" style="width: 100%; height: 200px; display: block; cursor: crosshair;"></canvas>
+          <div style="position: relative; border: 2px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #ffffff; touch-action: none; margin-bottom: 12px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);">
+            <canvas id="surhan_live_canvas" style="width: 100%; height: 320px; display: block; cursor: crosshair;"></canvas>
+            <div style="position: absolute; bottom: 35px; left: 30px; right: 30px; border-bottom: 1.5px dashed #cbd5e1; pointer-events: none; text-align: left;">
+              <span style="font-size: 10px; color: #94a3b8; background: #fff; padding: 0 6px;">✕ خط التوقيع / Signature Baseline</span>
+            </div>
           </div>
 
           ${has_saved_signature ? `
@@ -329,49 +337,64 @@
   }
 
   function init_signature_canvas(canvas, $wrapper) {
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: false, alpha: true });
     let strokes = [];
     let current_stroke = null;
     let is_drawing = false;
+    let current_color = "#0f172a";
+
+    // Color buttons listener
+    $wrapper.find(".surhan-color-btn").on("click", function () {
+      $wrapper.find(".surhan-color-btn").css("border", "2px solid transparent").removeClass("active");
+      $(this).css("border", "2px solid #3b82f6").addClass("active");
+      current_color = $(this).data("color") || "#0f172a";
+      redraw();
+    });
 
     function resize() {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-      canvas.width = Math.floor(rect.width * ratio);
-      canvas.height = Math.floor(rect.height * ratio);
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      // Ultra-HD Super Sampling (at least 3x or 2x devicePixelRatio) for razor-sharp strokes
+      const dpr = Math.max(window.devicePixelRatio || 1, 2);
+      const scale = Math.max(dpr, 3);
+      canvas.width = Math.floor(rect.width * scale);
+      canvas.height = Math.floor(rect.height * scale);
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
       redraw();
     }
 
     function point(e) {
       const rect = canvas.getBoundingClientRect();
+      const p = (e.pressure && e.pressure > 0) ? Math.max(0.4, Math.min(e.pressure, 1.4)) : 0.8;
       return {
         x: +(e.clientX - rect.left).toFixed(2),
-        y: +(e.clientY - rect.top).toFixed(2)
+        y: +(e.clientY - rect.top).toFixed(2),
+        p: p
       };
     }
 
     function redraw() {
       const rect = canvas.getBoundingClientRect();
       ctx.clearRect(0, 0, rect.width, rect.height);
-      const pen_size = Number($wrapper.find("#surhan_canvas_pen").val() || 3);
+      const pen_size = Number($wrapper.find("#surhan_canvas_pen").val() || 2.5);
 
       for (const stroke of strokes) {
-        draw_stroke(stroke, pen_size);
+        draw_stroke(stroke, pen_size, current_color);
       }
       if (current_stroke) {
-        draw_stroke(current_stroke, pen_size);
+        draw_stroke(current_stroke, pen_size, current_color);
       }
     }
 
-    function draw_stroke(stroke, width) {
+    function draw_stroke(stroke, base_width, color) {
       if (!stroke || stroke.length < 2) return;
       ctx.save();
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.strokeStyle = "#1e293b";
-      ctx.lineWidth = width;
+      ctx.strokeStyle = color || current_color;
+      ctx.lineWidth = base_width;
 
       ctx.beginPath();
       ctx.moveTo(stroke[0].x, stroke[0].y);
@@ -390,6 +413,7 @@
 
     canvas.addEventListener("pointerdown", function (e) {
       e.preventDefault();
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
       is_drawing = true;
       current_stroke = [point(e)];
     });
@@ -404,6 +428,7 @@
     function end_stroke(e) {
       if (!is_drawing) return;
       is_drawing = false;
+      try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
       if (current_stroke && current_stroke.length > 1) {
         strokes.push(current_stroke);
       }
@@ -436,9 +461,9 @@
       export_svg: function () {
         if (!strokes.length) return "";
         const rect = canvas.getBoundingClientRect();
-        const width = Math.round(rect.width) || 300;
-        const height = Math.round(rect.height) || 150;
-        const pen_val = Number($wrapper.find("#surhan_canvas_pen").val() || 3);
+        const width = Math.round(rect.width) || 600;
+        const height = Math.round(rect.height) || 320;
+        const pen_val = Number($wrapper.find("#surhan_canvas_pen").val() || 2.5);
 
         const paths = strokes.map(function (s) {
           if (!s || s.length < 2) return "";
@@ -450,7 +475,7 @@
           }
           const last = s[s.length - 1];
           d += " L " + last.x + " " + last.y;
-          return `<path d="${d}" fill="none" stroke="#1e293b" stroke-width="${pen_val}" stroke-linecap="round" stroke-linejoin="round"/>`;
+          return `<path d="${d}" fill="none" stroke="${current_color}" stroke-width="${pen_val}" stroke-linecap="round" stroke-linejoin="round"/>`;
         }).join("");
 
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="none"/>${paths}</svg>`;
