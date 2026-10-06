@@ -269,9 +269,7 @@
           __("جاري تطبيق التوقيع المحفوظ...")
         ).then(function () {
           frappe.show_alert({ message: __("تم التوقيع والاعتماد بنجاح"), indicator: "green" });
-          if (frm.page && frm.page.remove_inner_button) {
-            frm.page.remove_inner_button(__("✍️ توقيع / اعتماد المستند"));
-          }
+          remove_all_signature_buttons(frm);
           d.hide();
           frm.reload_doc();
         });
@@ -313,9 +311,7 @@
           __("جاري حفظ التوجيه والاعتماد...")
         ).then(function () {
           frappe.show_alert({ message: __("تم تثبيت التوجيه والاعتماد بنجاح"), indicator: "green" });
-          if (frm.page && frm.page.remove_inner_button) {
-            frm.page.remove_inner_button(__("✍️ توقيع / اعتماد المستند"));
-          }
+          remove_all_signature_buttons(frm);
           d.hide();
           frm.reload_doc();
         });
@@ -343,9 +339,7 @@
           __("جاري إرجاع الطلب...")
         ).then(function () {
           frappe.show_alert({ message: __("تم رفض / إرجاع الطلب بنجاح"), indicator: "red" });
-          if (frm.page && frm.page.remove_inner_button) {
-            frm.page.remove_inner_button(__("✍️ توقيع / اعتماد المستند"));
-          }
+          remove_all_signature_buttons(frm);
           d.hide();
           frm.reload_doc();
         });
@@ -500,43 +494,59 @@
     };
   }
 
+  function remove_all_signature_buttons(frm) {
+    if (!frm) return;
+    const btn_label = __("✍️ توقيع / اعتماد المستند");
+    const raw_label = "✍️ توقيع / اعتماد المستند";
+    if (frm.remove_custom_button) {
+      try { frm.remove_custom_button(btn_label); } catch (e) {}
+      try { frm.remove_custom_button(raw_label); } catch (e) {}
+    }
+    if (frm.page && frm.page.remove_inner_button) {
+      try { frm.page.remove_inner_button(btn_label); } catch (e) {}
+      try { frm.page.remove_inner_button(raw_label); } catch (e) {}
+    }
+    if (frm.page && frm.page.inner_toolbar) {
+      frm.page.inner_toolbar.find("button, .btn").filter(function () {
+        const txt = ($(this).text() || "").trim();
+        return txt.indexOf("توقيع") !== -1 || txt.indexOf("اعتماد المستند") !== -1;
+      }).remove();
+    }
+    if (frm.page && frm.page.menu) {
+      frm.page.menu.find("a, li, .dropdown-item").filter(function () {
+        const txt = ($(this).text() || "").trim();
+        return txt.indexOf("توقيع") !== -1 || txt.indexOf("اعتماد المستند") !== -1;
+      }).remove();
+    }
+  }
+
   function add_signature_buttons(frm, ctx) {
     if (!frm || !frm.page) return;
 
     const btn_label = __("✍️ توقيع / اعتماد المستند");
 
-    // STRICT REQUIREMENT: If the document is completely signed, show NO buttons or menu options at all!
-    if (ctx.complete) {
-      if (frm.page.remove_inner_button) {
-        frm.page.remove_inner_button(btn_label);
-      }
+    // If document is completely signed or user cannot sign right now: ALWAYS remove button!
+    if (ctx.complete || !ctx.can_sign) {
+      remove_all_signature_buttons(frm);
       return;
     }
 
     // If the user has permission to sign (can_sign is true):
-    if (ctx.can_sign) {
-      if (frm.page.remove_inner_button) {
-        frm.page.remove_inner_button(btn_label);
+    remove_all_signature_buttons(frm);
+    const btn = frm.add_custom_button(
+      btn_label,
+      function () {
+        open_inpage_signature_dialog(frm, ctx);
       }
-      const btn = frm.add_custom_button(
-        btn_label,
-        function () {
-          open_inpage_signature_dialog(frm, ctx);
-        }
-      );
-      if (btn) {
-        btn.addClass("btn-primary").css({
-          "background-color": "#1b73e8",
-          "border-color": "#1b73e8",
-          "color": "#ffffff",
-          "font-weight": "600",
-          "box-shadow": "0 2px 4px rgba(27,115,232,0.3)"
-        });
-      }
-    } else {
-      if (frm.page.remove_inner_button) {
-        frm.page.remove_inner_button(btn_label);
-      }
+    );
+    if (btn) {
+      btn.addClass("btn-primary").css({
+        "background-color": "#1b73e8",
+        "border-color": "#1b73e8",
+        "color": "#ffffff",
+        "font-weight": "600",
+        "box-shadow": "0 2px 4px rgba(27,115,232,0.3)"
+      });
     }
   }
 
