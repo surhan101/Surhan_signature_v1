@@ -1,0 +1,231 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:user",
+ "creation": "2026-06-20 23:31:48.566955",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "employee",
+  "full_name",
+  "designation",
+  "department",
+  "signature_png",
+  "signature_svg_encrypted",
+  "signature_vector_json_encrypted",
+  "signature_hash",
+  "signature_public_id",
+  "active_version",
+  "is_active",
+  "signature_locked",
+  "allow_stored_signature_apply",
+  "allow_direction_drawing",
+  "last_rotated_at",
+  "revoked_on",
+  "revoked_by",
+  "revocation_reason",
+  "created_ip",
+  "user_agent",
+  "security_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Designation"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Department"
+  },
+  {
+   "fieldname": "signature_png",
+   "fieldtype": "Attach Image",
+   "label": "Signature PNG"
+  },
+  {
+   "fieldname": "signature_svg_encrypted",
+   "fieldtype": "Password",
+   "hidden": 1,
+   "label": "Signature SVG Encrypted"
+  },
+  {
+   "fieldname": "signature_vector_json_encrypted",
+   "fieldtype": "Password",
+   "hidden": 1,
+   "label": "Signature Vector JSON Encrypted"
+  },
+  {
+   "fieldname": "signature_hash",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Signature Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_public_id",
+   "fieldtype": "Data",
+   "label": "Signature Public ID",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "active_version",
+   "fieldtype": "Int",
+   "label": "Active Version",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  },
+  {
+   "default": "0",
+   "description": "Safe lock flag for signature profile. Replaces old is_locked field to avoid Frappe Document property conflict.",
+   "fieldname": "signature_locked",
+   "fieldtype": "Check",
+   "label": "Signature Locked"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_stored_signature_apply",
+   "fieldtype": "Check",
+   "label": "Allow Stored Signature Apply"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_direction_drawing",
+   "fieldtype": "Check",
+   "label": "Allow Direction Drawing"
+  },
+  {
+   "fieldname": "last_rotated_at",
+   "fieldtype": "Datetime",
+   "label": "Last Rotated At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "revoked_on",
+   "fieldtype": "Datetime",
+   "label": "Revoked On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "revoked_by",
+   "fieldtype": "Link",
+   "label": "Revoked By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "revocation_reason",
+   "fieldtype": "Small Text",
+   "label": "Revocation Reason"
+  },
+  {
+   "fieldname": "created_ip",
+   "fieldtype": "Data",
+   "label": "Created IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "security_notes",
+   "fieldtype": "Small Text",
+   "label": "Security Notes",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-20 22:06:49.165157",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Employee Signature Profile",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name",
+ "track_changes": 1
+}

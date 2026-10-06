@@ -1,0 +1,268 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:external_request_id",
+ "creation": "2026-06-21 00:24:22.757640",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "external_request_id",
+  "external_system",
+  "external_reference",
+  "reference_doctype",
+  "reference_name",
+  "gateway_status",
+  "signers_json",
+  "document_signature_requests_json",
+  "callback_url",
+  "callback_status",
+  "callback_attempts",
+  "callback_response",
+  "last_callback_at",
+  "request_hash",
+  "verification_code",
+  "verification_url",
+  "signed_pdf",
+  "signed_pdf_sha256",
+  "created_via",
+  "created_ip",
+  "user_agent",
+  "created_at",
+  "updated_at",
+  "metadata_json",
+  "error_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "external_request_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "External Request ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "external_system",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "External System",
+   "options": "Internal Signature External System",
+   "reqd": 1
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "External Reference",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "reqd": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "gateway_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Gateway Status",
+   "options": "Pending\nIn Progress\nCompleted\nRejected\nCancelled\nError"
+  },
+  {
+   "fieldname": "signers_json",
+   "fieldtype": "Code",
+   "label": "Signers JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "document_signature_requests_json",
+   "fieldtype": "Code",
+   "label": "Document Signature Requests JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "callback_url",
+   "fieldtype": "Data",
+   "label": "Callback URL"
+  },
+  {
+   "default": "Not Sent",
+   "fieldname": "callback_status",
+   "fieldtype": "Select",
+   "label": "Callback Status",
+   "options": "Not Sent\nDry Run\nSent\nFailed"
+  },
+  {
+   "default": "0",
+   "fieldname": "callback_attempts",
+   "fieldtype": "Int",
+   "label": "Callback Attempts"
+  },
+  {
+   "fieldname": "callback_response",
+   "fieldtype": "Small Text",
+   "label": "Callback Response"
+  },
+  {
+   "fieldname": "last_callback_at",
+   "fieldtype": "Datetime",
+   "label": "Last Callback At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_hash",
+   "fieldtype": "Data",
+   "label": "Request Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_code",
+   "fieldtype": "Data",
+   "label": "Verification Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_url",
+   "fieldtype": "Data",
+   "label": "Verification URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signed_pdf",
+   "fieldtype": "Attach",
+   "label": "Signed PDF"
+  },
+  {
+   "fieldname": "signed_pdf_sha256",
+   "fieldtype": "Data",
+   "label": "Signed PDF SHA256",
+   "read_only": 1
+  },
+  {
+   "default": "External API",
+   "fieldname": "created_via",
+   "fieldtype": "Select",
+   "label": "Created Via",
+   "options": "External API\nAdmin\nDemo"
+  },
+  {
+   "fieldname": "created_ip",
+   "fieldtype": "Data",
+   "label": "Created IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "created_at",
+   "fieldtype": "Datetime",
+   "label": "Created At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "updated_at",
+   "fieldtype": "Datetime",
+   "label": "Updated At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "metadata_json",
+   "fieldtype": "Code",
+   "label": "Metadata JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-25 21:04:13.663420",
+ "modified_by": "Administrator",
+ "module": "Signing",
+ "name": "Internal Signature External Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature API User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "external_reference",
+ "track_changes": 1
+}

@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:reference_doctype",
+ "creation": "2026-06-20 23:40:06.231689",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "is_active",
+  "ac_footer_fieldname",
+  "workflow_mode",
+  "approval_sequence_mode",
+  "allow_saved_signature",
+  "allow_direction",
+  "allow_direction_drawing",
+  "allow_direction_text",
+  "allow_reject",
+  "require_signature_profile",
+  "allow_external_requests",
+  "allow_on_submitted_docs",
+  "lock_after_complete",
+  "direction_print_position",
+  "signature_print_position",
+  "max_active_requests_per_document",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  },
+  {
+   "default": "ac_footer",
+   "fieldname": "ac_footer_fieldname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Ac Footer Fieldname",
+   "reqd": 1
+  },
+  {
+   "default": "Sequential",
+   "fieldname": "workflow_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Workflow Mode",
+   "options": "Sequential\nParallel"
+  },
+  {
+   "default": "As Listed",
+   "fieldname": "approval_sequence_mode",
+   "fieldtype": "Select",
+   "label": "Approval Sequence Mode",
+   "options": "As Listed\nBy Employee Grade\nBy Designation Rank\nManual Sign Order"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_saved_signature",
+   "fieldtype": "Check",
+   "label": "Allow Saved Signature"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_direction",
+   "fieldtype": "Check",
+   "label": "Allow Direction"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_direction_drawing",
+   "fieldtype": "Check",
+   "label": "Allow Direction Drawing"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_direction_text",
+   "fieldtype": "Check",
+   "label": "Allow Direction Text"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_reject",
+   "fieldtype": "Check",
+   "label": "Allow Reject / Return"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_signature_profile",
+   "fieldtype": "Check",
+   "label": "Require Signature Profile"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_external_requests",
+   "fieldtype": "Check",
+   "label": "Allow External Requests"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_on_submitted_docs",
+   "fieldtype": "Check",
+   "label": "Allow On Submitted Documents"
+  },
+  {
+   "default": "1",
+   "fieldname": "lock_after_complete",
+   "fieldtype": "Check",
+   "label": "Lock After Complete"
+  },
+  {
+   "default": "Top",
+   "fieldname": "direction_print_position",
+   "fieldtype": "Select",
+   "label": "Direction Print Position",
+   "options": "Top\nFooter\nBoth"
+  },
+  {
+   "default": "Footer",
+   "fieldname": "signature_print_position",
+   "fieldtype": "Select",
+   "label": "Signature Print Position",
+   "options": "Footer\nTop\nBoth"
+  },
+  {
+   "default": "20",
+   "fieldname": "max_active_requests_per_document",
+   "fieldtype": "Int",
+   "label": "Max Active Requests Per Document"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 01:57:30.909392",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Internal Signature Policy",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor",
+   "share": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "reference_doctype",
+ "track_changes": 1
+}

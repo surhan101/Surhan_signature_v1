@@ -1,0 +1,321 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "prompt",
+ "creation": "2026-06-20 23:53:41.131265",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "reference_name",
+  "reference_title",
+  "policy",
+  "ac_footer_row_name",
+  "requested_user",
+  "requested_employee",
+  "full_name",
+  "designation",
+  "department",
+  "sequence_order",
+  "workflow_mode",
+  "action_required",
+  "status",
+  "can_use_saved_signature",
+  "can_draw_direction",
+  "can_write_direction_text",
+  "can_reject",
+  "requested_by",
+  "requested_at",
+  "activated_at",
+  "completed_at",
+  "signature_profile",
+  "signature_hash",
+  "signature_png",
+  "direction_text",
+  "direction_svg_encrypted",
+  "signed_ip",
+  "user_agent",
+  "doc_hash_before",
+  "doc_hash_after",
+  "source",
+  "external_system",
+  "external_reference"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_title",
+   "fieldtype": "Data",
+   "label": "Reference Title",
+   "read_only": 1
+  },
+  {
+   "fieldname": "policy",
+   "fieldtype": "Link",
+   "label": "Policy",
+   "options": "Internal Signature Policy"
+  },
+  {
+   "fieldname": "ac_footer_row_name",
+   "fieldtype": "Data",
+   "label": "Ac Footer Row Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "requested_user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Requested User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "requested_employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Requested Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "default": "1",
+   "fieldname": "sequence_order",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sequence Order"
+  },
+  {
+   "default": "Sequential",
+   "fieldname": "workflow_mode",
+   "fieldtype": "Select",
+   "label": "Workflow Mode",
+   "options": "Sequential\nParallel"
+  },
+  {
+   "default": "Saved Signature",
+   "fieldname": "action_required",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Action Required",
+   "options": "Saved Signature\nDirection\nBoth"
+  },
+  {
+   "default": "Waiting",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Waiting\nPending\nSigned\nDirected\nRejected\nCancelled"
+  },
+  {
+   "default": "1",
+   "fieldname": "can_use_saved_signature",
+   "fieldtype": "Check",
+   "label": "Can Use Saved Signature"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_draw_direction",
+   "fieldtype": "Check",
+   "label": "Can Draw Direction"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_write_direction_text",
+   "fieldtype": "Check",
+   "label": "Can Write Direction Text"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_reject",
+   "fieldtype": "Check",
+   "label": "Can Reject"
+  },
+  {
+   "fieldname": "requested_by",
+   "fieldtype": "Link",
+   "label": "Requested By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "requested_at",
+   "fieldtype": "Datetime",
+   "label": "Requested At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "activated_at",
+   "fieldtype": "Datetime",
+   "label": "Activated At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "completed_at",
+   "fieldtype": "Datetime",
+   "label": "Completed At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_profile",
+   "fieldtype": "Link",
+   "label": "Signature Profile",
+   "options": "Employee Signature Profile"
+  },
+  {
+   "fieldname": "signature_hash",
+   "fieldtype": "Data",
+   "label": "Signature Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_png",
+   "fieldtype": "Data",
+   "label": "Signature PNG",
+   "read_only": 1
+  },
+  {
+   "fieldname": "direction_text",
+   "fieldtype": "Small Text",
+   "label": "Direction Text"
+  },
+  {
+   "fieldname": "direction_svg_encrypted",
+   "fieldtype": "Password",
+   "hidden": 1,
+   "label": "Direction SVG Encrypted"
+  },
+  {
+   "fieldname": "signed_ip",
+   "fieldtype": "Data",
+   "label": "Signed IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "doc_hash_before",
+   "fieldtype": "Data",
+   "label": "Document Hash Before",
+   "read_only": 1
+  },
+  {
+   "fieldname": "doc_hash_after",
+   "fieldtype": "Data",
+   "label": "Document Hash After",
+   "read_only": 1
+  },
+  {
+   "default": "Ac Footer",
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Ac Footer\nManual\nExternal API"
+  },
+  {
+   "fieldname": "external_system",
+   "fieldtype": "Data",
+   "label": "External System"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-01 20:04:40.596518",
+ "modified_by": "Administrator",
+ "module": "Signing",
+ "name": "Document Signature Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor",
+   "share": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "reference_name",
+ "track_changes": 1
+}

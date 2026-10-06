@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "prompt",
+ "creation": "2026-06-20 23:31:49.206873",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "profile",
+  "user",
+  "employee",
+  "version",
+  "signature_png",
+  "signature_svg_encrypted",
+  "signature_vector_json_encrypted",
+  "signature_hash",
+  "is_active_version",
+  "created_ip",
+  "user_agent"
+ ],
+ "fields": [
+  {
+   "fieldname": "profile",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Profile",
+   "options": "Employee Signature Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Version",
+   "reqd": 1
+  },
+  {
+   "fieldname": "signature_png",
+   "fieldtype": "Attach Image",
+   "label": "Signature PNG"
+  },
+  {
+   "fieldname": "signature_svg_encrypted",
+   "fieldtype": "Password",
+   "hidden": 1,
+   "label": "Signature SVG Encrypted"
+  },
+  {
+   "fieldname": "signature_vector_json_encrypted",
+   "fieldtype": "Password",
+   "hidden": 1,
+   "label": "Signature Vector JSON Encrypted"
+  },
+  {
+   "fieldname": "signature_hash",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Signature Hash",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active_version",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active Version"
+  },
+  {
+   "fieldname": "created_ip",
+   "fieldtype": "Data",
+   "label": "Created IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-20 20:07:01.853817",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Employee Signature Profile Version",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "profile",
+ "track_changes": 1
+}

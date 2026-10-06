@@ -1,0 +1,146 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-06-20 23:53:43.172351",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "user",
+  "full_name",
+  "designation",
+  "department",
+  "sign_order",
+  "action_required",
+  "can_use_saved_signature",
+  "can_draw_direction",
+  "can_write_direction_text",
+  "can_reject",
+  "status",
+  "signature_request",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.user_id",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "sign_order",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sign Order"
+  },
+  {
+   "default": "Saved Signature",
+   "fetch_from": "signature_request.action_required",
+   "fieldname": "action_required",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Action Required",
+   "options": "Saved Signature\nDirection\nBoth"
+  },
+  {
+   "default": "1",
+   "fetch_from": "signature_request.can_use_saved_signature",
+   "fieldname": "can_use_saved_signature",
+   "fieldtype": "Check",
+   "label": "Can Use Saved Signature"
+  },
+  {
+   "default": "0",
+   "fetch_from": "signature_request.can_draw_direction",
+   "fieldname": "can_draw_direction",
+   "fieldtype": "Check",
+   "label": "Can Draw Direction"
+  },
+  {
+   "default": "0",
+   "fetch_from": "signature_request.can_write_direction_text",
+   "fieldname": "can_write_direction_text",
+   "fieldtype": "Check",
+   "label": "Can Write Direction Text"
+  },
+  {
+   "default": "0",
+   "fetch_from": "signature_request.can_reject",
+   "fieldname": "can_reject",
+   "fieldtype": "Check",
+   "label": "Can Reject"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nWaiting\nPending\nSigned\nDirected\nRejected",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_request",
+   "fieldtype": "Link",
+   "label": "Signature Request",
+   "options": "Document Signature Request",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-05 19:56:00.260508",
+ "modified_by": "Administrator",
+ "module": "Signing",
+ "name": "AC Footer Signer",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name",
+ "track_changes": 1
+}

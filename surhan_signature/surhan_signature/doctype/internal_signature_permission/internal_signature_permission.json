@@ -1,0 +1,211 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:user",
+ "creation": "2026-06-20 23:40:06.816505",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "employee",
+  "full_name",
+  "designation",
+  "department",
+  "is_active",
+  "can_receive_requests",
+  "can_use_saved_signature",
+  "can_draw_direction",
+  "can_write_direction_text",
+  "can_reject",
+  "can_override_sequence",
+  "can_manage_external_requests",
+  "can_view_signature_audit",
+  "max_sequence_level",
+  "allowed_doctypes_json",
+  "granted_by",
+  "granted_at",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  },
+  {
+   "default": "1",
+   "fieldname": "can_receive_requests",
+   "fieldtype": "Check",
+   "label": "Can Receive Requests"
+  },
+  {
+   "default": "1",
+   "fieldname": "can_use_saved_signature",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Can Use Saved Signature"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_draw_direction",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Can Draw Direction"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_write_direction_text",
+   "fieldtype": "Check",
+   "label": "Can Write Direction Text"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_reject",
+   "fieldtype": "Check",
+   "label": "Can Reject / Return"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_override_sequence",
+   "fieldtype": "Check",
+   "label": "Can Override Sequence"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_manage_external_requests",
+   "fieldtype": "Check",
+   "label": "Can Manage External Requests"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_view_signature_audit",
+   "fieldtype": "Check",
+   "label": "Can View Signature Audit"
+  },
+  {
+   "default": "99",
+   "fieldname": "max_sequence_level",
+   "fieldtype": "Int",
+   "label": "Max Sequence Level"
+  },
+  {
+   "fieldname": "allowed_doctypes_json",
+   "fieldtype": "Code",
+   "label": "Allowed DocTypes JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "granted_by",
+   "fieldtype": "Link",
+   "label": "Granted By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "granted_at",
+   "fieldtype": "Datetime",
+   "label": "Granted At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 01:57:30.498340",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Internal Signature Permission",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor",
+   "share": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name",
+ "track_changes": 1
+}
