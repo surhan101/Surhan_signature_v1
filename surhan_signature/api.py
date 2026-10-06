@@ -10454,13 +10454,30 @@ def _phase26d_validate_actor(req, action: str):
     _phase26d_require_login()
 
     current_user = frappe.session.user
-    is_override = _phase26d_is_admin_or_override()
 
-    if req.requested_user != current_user and not is_override:
-        frappe.throw("You are not the requested signer for this document.")
+    is_authorized = (req.requested_user == current_user)
+    if not is_authorized:
+        try:
+            if frappe.db.exists("DocType", "Signature Delegation Rule"):
+                is_authorized = bool(frappe.db.exists(
+                    "Signature Delegation Rule",
+                    {
+                        "delegator_user": req.requested_user,
+                        "delegate_user": current_user,
+                        "is_active": 1,
+                    },
+                ))
+        except Exception:
+            pass
+
+    if not is_authorized:
+        frappe.throw(f"عفواً، لست الموظف المطلوب لتوقيع هذا الاعتماد ({req.full_name or req.requested_user}). لا يمكن التوقيع نيابة عن الآخرين.")
 
     if req.status in {"Signed", "Directed", "Rejected", "Cancelled"}:
-        frappe.throw(f"This signature request has already been finalized ({req.status}).")
+        frappe.throw(f"تم اعتماد هذا الطلب مسبقاً بحالة ({req.status}).")
+
+    if req.status == "Waiting":
+        frappe.throw("لم يحن دورك في التوقيع بعد، يرجى انتظار اعتماد الخطوات السابقة أولاً.")
 
     caps = get_my_internal_signature_capabilities(reference_doctype=req.reference_doctype)
 
@@ -10478,7 +10495,7 @@ def _phase26d_validate_actor(req, action: str):
 
     return {
         "current_user": current_user,
-        "is_override": is_override,
+        "is_override": False,
         "capabilities": caps,
     }
 
@@ -11064,9 +11081,15 @@ def get_document_signature_form_context(reference_doctype: str, reference_name: 
 
     signable_requests = []
     for r in all_requests:
-        if r.status in {"Signed", "Directed", "Rejected"}:
+        # Completed or cancelled requests cannot be signed
+        if r.status in {"Signed", "Directed", "Rejected", "Cancelled"}:
             continue
-        if is_admin or r.requested_user == frappe.session.user:
+        # In sequential workflows, only Pending requests are ready (Waiting must wait their turn)
+        if r.status != "Pending":
+            continue
+
+        # Strictly check if current user is the requested signer or an active delegate
+        if r.requested_user == frappe.session.user:
             signable_requests.append(r)
         else:
             try:
@@ -11087,7 +11110,7 @@ def get_document_signature_form_context(reference_doctype: str, reference_name: 
     for row in signable_requests:
         row["action_url"] = f"/document-sign-action?request={row.name}"
         row["allowed_actions"] = {
-            "saved_signature": bool(profile.get("signature_png") or is_admin),
+            "saved_signature": bool(profile.get("signature_png")),
             "direction": True,
             "reject": True,
         }
@@ -11126,7 +11149,6 @@ def apply_document_signature_unified(
     reason: str = None,
 ):
     _phase26d_require_login()
-    is_admin = _phase26d_is_admin_or_override()
 
     if not request_name:
         candidates = frappe.get_all(
@@ -11134,7 +11156,7 @@ def apply_document_signature_unified(
             filters={
                 "reference_doctype": reference_doctype,
                 "reference_name": reference_name,
-                "status": ["not in", ["Signed", "Directed", "Rejected", "Cancelled"]],
+                "status": "Pending",
             },
             fields=["name", "requested_user", "status"],
             order_by="sequence_order asc, creation asc",
@@ -11143,41 +11165,36 @@ def apply_document_signature_unified(
             if c.requested_user == frappe.session.user:
                 request_name = c.name
                 break
-        if not request_name and is_admin and candidates:
-            request_name = candidates[0].name
+        if not request_name:
+            for c in candidates:
+                try:
+                    if frappe.db.exists("DocType", "Signature Delegation Rule") and frappe.db.exists(
+                        "Signature Delegation Rule",
+                        {
+                            "delegator_user": c.requested_user,
+                            "delegate_user": frappe.session.user,
+                            "is_active": 1,
+                        },
+                    ):
+                        request_name = c.name
+                        break
+                except Exception:
+                    pass
 
     if not request_name:
-        frappe.throw("No pending signature request found for this document.")
+        frappe.throw("لا يوجد أي طلب توقيع معلق بانتظارك على هذا المستند.")
 
     req = frappe.get_doc(PHASE26C_REQUEST_DT, request_name)
-
-    if not is_admin and req.requested_user != frappe.session.user:
-        delegated = False
-        try:
-            if frappe.db.exists("DocType", "Signature Delegation Rule"):
-                delegated = bool(frappe.db.exists(
-                    "Signature Delegation Rule",
-                    {
-                        "delegator_user": req.requested_user,
-                        "delegate_user": frappe.session.user,
-                        "is_active": 1,
-                    },
-                ))
-        except Exception:
-            pass
-        if not delegated:
-            frappe.throw("You are not authorized to sign for this request.")
+    _phase26d_validate_actor(req, signature_type)
 
     if signature_type == "saved":
-        profile_user = req.requested_user if not is_admin else frappe.session.user
+        profile_user = frappe.session.user
         profile_doc = None
         if frappe.db.exists(PHASE26A_PROFILE_DT, profile_user):
             profile_doc = frappe.get_doc(PHASE26A_PROFILE_DT, profile_user)
-        elif frappe.db.exists(PHASE26A_PROFILE_DT, frappe.session.user):
-            profile_doc = frappe.get_doc(PHASE26A_PROFILE_DT, frappe.session.user)
 
         if not profile_doc or not profile_doc.get("signature_png"):
-            frappe.throw("No saved signature found for this user. Please register your signature first.")
+            frappe.throw("لا يوجد توقيع محفوظ لهذا المستخدم. يرجى تسجيل التوقيع أولاً.")
 
         return apply_saved_signature_request(req.name)
 
@@ -11186,7 +11203,7 @@ def apply_document_signature_unified(
         direction_svg = (direction_svg or "").strip()
 
         if not direction_text and not direction_svg:
-            frappe.throw("Please draw a direction or type a guidance note.")
+            frappe.throw("يرجى كتابة نص التوجيه أو رسم التوقيع أولاً.")
 
         direction_hash = _phase26d_sha256({
             "request": req.name,
@@ -11200,13 +11217,9 @@ def apply_document_signature_unified(
         profile_name = None
         # Live direction/signature invokes and attaches the pre-saved profile signature without modifying the profile itself
         if attach_saved_signature is None or str(attach_saved_signature).strip().lower() not in ("0", "false"):
-            profile_user = req.requested_user if not is_admin else frappe.session.user
+            profile_user = frappe.session.user
             if frappe.db.exists(PHASE26A_PROFILE_DT, profile_user):
                 p = frappe.get_doc(PHASE26A_PROFILE_DT, profile_user)
-                signature_png = p.get("signature_png")
-                profile_name = p.name
-            elif frappe.db.exists(PHASE26A_PROFILE_DT, frappe.session.user):
-                p = frappe.get_doc(PHASE26A_PROFILE_DT, frappe.session.user)
                 signature_png = p.get("signature_png")
                 profile_name = p.name
 

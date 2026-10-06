@@ -269,6 +269,9 @@
           __("جاري تطبيق التوقيع المحفوظ...")
         ).then(function () {
           frappe.show_alert({ message: __("تم التوقيع والاعتماد بنجاح"), indicator: "green" });
+          if (frm.page && frm.page.remove_inner_button) {
+            frm.page.remove_inner_button(__("✍️ توقيع / اعتماد المستند"));
+          }
           d.hide();
           frm.reload_doc();
         });
@@ -310,6 +313,9 @@
           __("جاري حفظ التوجيه والاعتماد...")
         ).then(function () {
           frappe.show_alert({ message: __("تم تثبيت التوجيه والاعتماد بنجاح"), indicator: "green" });
+          if (frm.page && frm.page.remove_inner_button) {
+            frm.page.remove_inner_button(__("✍️ توقيع / اعتماد المستند"));
+          }
           d.hide();
           frm.reload_doc();
         });
@@ -337,6 +343,9 @@
           __("جاري إرجاع الطلب...")
         ).then(function () {
           frappe.show_alert({ message: __("تم رفض / إرجاع الطلب بنجاح"), indicator: "red" });
+          if (frm.page && frm.page.remove_inner_button) {
+            frm.page.remove_inner_button(__("✍️ توقيع / اعتماد المستند"));
+          }
           d.hide();
           frm.reload_doc();
         });
