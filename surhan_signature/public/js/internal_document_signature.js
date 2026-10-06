@@ -97,38 +97,41 @@
     const has_saved_signature = Boolean(profile.signature_png);
     const signable = ctx.my_pending_requests || [];
     const first_req = ctx.first_pending || (signable.length ? signable[0] : null);
+    const my_req = signable.find(r => r.requested_user === frappe.session.user) || first_req;
+    const target_request_name = my_req ? my_req.name : null;
 
-    let signer_select_html = "";
-    if (signable.length > 1) {
-      signer_select_html = `
-        <div style="margin-bottom: 14px;">
-          <label style="font-weight: 600; font-size: 13px; display: block; margin-bottom: 4px;">اختر سطر التوقيع المطلوب:</label>
-          <select id="surhan_target_request" class="form-control" style="border-radius: 8px;">
-            ${signable.map(r => `<option value="${r.name}">${frappe.utils.escape_html(r.full_name || r.requested_user)} (${frappe.utils.escape_html(r.designation || r.action_required || "معتمد")})</option>`).join("")}
-          </select>
-        </div>
-      `;
-    }
+    // Check capabilities
+    const caps = (ctx.capabilities && ctx.capabilities.effective_capabilities) || {};
+    const can_use_saved = caps.can_use_saved_signature !== false;
+    const can_draw = (caps.can_draw_direction !== false || caps.can_write_direction_text !== false);
+    const can_reject = caps.can_reject !== false;
+
+    // Active tab logic
+    const active_tab = (can_use_saved && has_saved_signature) ? "saved" : (can_draw ? "direction" : "saved");
 
     const html_content = `
       <div style="direction: rtl; text-align: right; font-family: inherit;">
-        ${signer_select_html}
-
         <!-- Tab Headers -->
         <div style="display: flex; gap: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 16px;">
-          <button type="button" class="btn btn-sm surhan-tab-btn" data-tab="saved" style="font-weight: 600; border-bottom: 2px solid #2563eb; color: #2563eb; background: none; border-top: none; border-left: none; border-right: none; border-radius: 0; padding: 8px 16px;">
-            ✍️ التوقيع المحفوظ
-          </button>
-          <button type="button" class="btn btn-sm surhan-tab-btn" data-tab="direction" style="font-weight: 600; color: #6b7280; background: none; border: none; border-radius: 0; padding: 8px 16px;">
-            🖋️ توجيه ورسم حي
-          </button>
-          <button type="button" class="btn btn-sm surhan-tab-btn" data-tab="reject" style="font-weight: 600; color: #dc2626; background: none; border: none; border-radius: 0; padding: 8px 16px;">
-            ❌ رفض / إرجاع
-          </button>
+          ${can_use_saved ? `
+            <button type="button" class="btn btn-sm surhan-tab-btn" data-tab="saved" style="font-weight: 700; ${active_tab === 'saved' ? 'border-bottom: 2px solid #2563eb; color: #2563eb;' : 'color: #6b7280; border: none;'} background: none; border-radius: 0; padding: 8px 16px;">
+              ✍️ التوقيع المحفوظ
+            </button>
+          ` : ''}
+          ${can_draw ? `
+            <button type="button" class="btn btn-sm surhan-tab-btn" data-tab="direction" style="font-weight: 700; ${active_tab === 'direction' ? 'border-bottom: 2px solid #2563eb; color: #2563eb;' : 'color: #6b7280; border: none;'} background: none; border-radius: 0; padding: 8px 16px;">
+              🖋️ رسم توقيع مباشر / توجيه
+            </button>
+          ` : ''}
+          ${can_reject ? `
+            <button type="button" class="btn btn-sm surhan-tab-btn" data-tab="reject" style="font-weight: 700; color: #dc2626; background: none; border: none; border-radius: 0; padding: 8px 16px;">
+              ❌ رفض / إرجاع
+            </button>
+          ` : ''}
         </div>
 
         <!-- Tab 1: Saved Signature -->
-        <div id="surhan_tab_saved" class="surhan-tab-pane" style="display: block;">
+        <div id="surhan_tab_saved" class="surhan-tab-pane" style="display: ${active_tab === 'saved' ? 'block' : 'none'};">
           ${has_saved_signature ? `
             <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
               <p style="color: #4b5563; font-size: 13px; margin-bottom: 10px;">معاينة التوقيع المعتمد الخاص بك:</p>
@@ -141,13 +144,13 @@
           ` : `
             <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
               <p style="color: #92400e; font-size: 14px; margin-bottom: 6px; font-weight: 600;">لا يوجد توقيع محفوظ مسجل لحسابك</p>
-              <p style="color: #b45309; font-size: 12px; margin: 0;">يمكنك استخدام تبويب "توجيه ورسم حي" لرسم توقيعك مباشرة على الشاشة.</p>
+              <p style="color: #b45309; font-size: 12px; margin: 0;">يمكنك استخدام تبويب "رسم توقيع مباشر / توجيه" لرسم توقيعك مباشرة على الشاشة.</p>
             </div>
           `}
         </div>
 
         <!-- Tab 2: Direction & Live Drawing -->
-        <div id="surhan_tab_direction" class="surhan-tab-pane" style="display: none;">
+        <div id="surhan_tab_direction" class="surhan-tab-pane" style="display: ${active_tab === 'direction' ? 'block' : 'none'};">
           <div style="margin-bottom: 12px;">
             <label style="font-weight: 600; font-size: 12px; display: block; margin-bottom: 4px;">نص التوجيه أو الملاحظات (اختياري):</label>
             <textarea id="surhan_dir_text" class="form-control" rows="2" placeholder="اكتب التوجيه أو الملاحظات هنا..." style="border-radius: 8px; resize: vertical;"></textarea>
@@ -243,11 +246,7 @@
       });
 
       function get_selected_request_name() {
-        const $sel = $wrapper.find("#surhan_target_request");
-        if ($sel.length && $sel.val()) {
-          return $sel.val();
-        }
-        return first_req ? first_req.name : null;
+        return target_request_name || (first_req ? first_req.name : null);
       }
 
       // Action: Apply Saved Signature
@@ -274,6 +273,9 @@
       const canvas_el = $wrapper.find("#surhan_live_canvas")[0];
       if (canvas_el) {
         canvas_setup = init_signature_canvas(canvas_el, $wrapper);
+        if (active_tab === "direction") {
+          setTimeout(function () { canvas_setup.resize(); }, 60);
+        }
       }
 
       // Action: Apply Direction / Live Drawing
