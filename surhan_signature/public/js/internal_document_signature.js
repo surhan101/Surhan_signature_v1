@@ -179,11 +179,17 @@
           </div>
 
           ${has_saved_signature ? `
-            <div style="margin-bottom: 14px; background: #f3f4f6; padding: 10px 14px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-              <input type="checkbox" id="surhan_attach_saved" checked style="width: 16px; height: 16px; cursor: pointer;">
-              <label for="surhan_attach_saved" style="margin: 0; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer;">
-                إرفاق التوقيع الرسمي المحفوظ أيضاً مع هذا التوجيه
-              </label>
+            <div style="margin-bottom: 14px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 14px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 18px;">🛡️</span>
+              <div style="flex: 1;">
+                <div style="font-size: 12.5px; font-weight: 700; color: #166534;">
+                  سيتم استدعاء توقيعك الثابت المعتمد تلقائياً مع هذا التوجيه
+                </div>
+                <div style="font-size: 11px; color: #15803d; margin-top: 2px;">
+                  التوقيع المحفوظ محمي بالكامل في النظام ولا يتغير إلا من لوحة تحكم الإدارة.
+                </div>
+              </div>
+              <input type="hidden" id="surhan_attach_saved" value="1">
             </div>
           ` : ""}
 
@@ -282,8 +288,8 @@
       $wrapper.find("#btn_apply_direction_sig").on("click", function () {
         const req_name = get_selected_request_name();
         const text = ($wrapper.find("#surhan_dir_text").val() || "").trim();
-        const svg = canvas_setup ? canvas_setup.export_svg() : "";
-        const attach_saved = $wrapper.find("#surhan_attach_saved").is(":checked") ? 1 : 0;
+        const $attachEl = $wrapper.find("#surhan_attach_saved");
+        const attach_saved = $attachEl.length ? ($attachEl.is(":checkbox") ? ($attachEl.is(":checked") ? 1 : 0) : 1) : 1;
 
         if (!text && !svg) {
           frappe.msgprint(__("يرجى كتابة نص التوجيه أو رسم التوقيع أولاً."));

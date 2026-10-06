@@ -11198,7 +11198,8 @@ def apply_document_signature_unified(
 
         signature_png = None
         profile_name = None
-        if int(attach_saved_signature or 0):
+        # Live direction/signature invokes and attaches the pre-saved profile signature without modifying the profile itself
+        if attach_saved_signature is None or str(attach_saved_signature).strip().lower() not in ("0", "false"):
             profile_user = req.requested_user if not is_admin else frappe.session.user
             if frappe.db.exists(PHASE26A_PROFILE_DT, profile_user):
                 p = frappe.get_doc(PHASE26A_PROFILE_DT, profile_user)
