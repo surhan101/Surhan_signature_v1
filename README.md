@@ -1,33 +1,87 @@
-### Surhan Signature
+# ✍️ منصة سرحان للتوقيع والاعتماد الإلكتروني الذكي (Surhan Signature)
+### Enterprise Electronic Signature & Internal Document Approval Platform for Farabi / ERPNext (v15 & v16)
 
- Enterprise-grade electronic signature platform for Farabi/Frappe
+منصة متكاملة ومصممة بأعلى معايير الأمان المؤسسي لتنفيذ التوقيع والاعتماد الإلكتروني على كافة مستندات ومعاملات نظام **الفارابي / ERPNext** بنقرة واحدة، مع حفظ البصمات المشفرة والشهادات الرقمية وسجلات التدقيق المتسلسلة.
 
-### Installation
+---
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## 🌟 أبرز المميزات (Key Features)
+
+1. **✍️ اعتماد وتوقيع داخلي في نفس الصفحة (In-Page Dialog):**
+   - فتح نافذة توقيع سلسة وسريعة مباشرة داخل نموذج المستند (Desk Form) دون أي مغادرة للصفحة أو فتح نوافذ خارجية.
+2. **🔐 خيارات اعتماد مرنة:**
+   - **التوقيع المحفوظ الفوري:** للمصادقة بالتوقيع المعتمد للموظف بضغطة زر واحدة.
+   - **التوجيه والرسم الحي (Live Drawing):** لوحة تفاعلية (HTML5 Canvas) لرسم التوجيه والتوقيع الخطي بخطوط ناعمة (Bezier Curves)، مع مسح وتراجع وتحديد سماكة القلم وكتابة نص التوجيه، مع خيار دمج التوقيع المحفوظ.
+   - **الرفض والإرجاع:** إمكانية إرجاع المستند مع توثيق أسباب الرفض.
+3. **⚡ سرعة فائقة وحفظ فوري للمستندات:**
+   - صفر تجميد (Zero Freeze)؛ فحص حالة التوقيع يتم في الخلفية بصمت تام دون تعطيل حفظ المستندات.
+4. **🔒 تشفير وأمان عالي (Cryptographic Integrity):**
+   - توليد بصمة رقمية مشفرة بتقنية **SHA-256** لكل حركة توقيع مربوطة بهوية المستخدم والتوقيت الدقيق.
+   - سلسلة تدقيق مشفرة (Hash-Chained Audit Trail) تسجل جميع الحركات وتمنع التلاعب بأثر رجعي.
+5. **📜 شهادات رقمية ورمز تحقق QR Code:**
+   - إصدار شهادة رقمية موثقة للمستند (`Internal Signature Certificate`) فور اكتمال التوقيع مع رمز تحقق فريد ورابط فحص عام ورمز QR.
+6. **👑 مركز التحكم والقيادة الإداري الموحد (`/signature-admin-center`):**
+   - لوحة تحكم عصرية متطورة مخصصة لمسؤولي النظام لمتابعة العمليات اللحظية، وإدارة توقيعات الموظفين، والتفويضات، وإحصائيات الحزم، والشهادات الرقمية، وسجلات التدقيق.
+7. **🧹 إخفاء تلقائي للأزرار:**
+   - بمجرد اكتمال توقيع جميع الأطراف المعنية، تختفي أزرار التوقيع تلقائياً ويتحول المؤشر إلى "مكتمل التوقيع والاعتماد" ليبقى المستند نظيفاً ومعتمداً.
+
+---
+
+## 💻 متطلبات التوافق (Compatibility)
+
+- **نظام الفارابي (Al-Farabi ERP):** الإصدار 15 والإصدار 16.
+- **Frappe / ERPNext:** Version 15 & Version 16.
+- **Python:** 3.10 / 3.11 / 3.12 / 3.14.
+- **قواعد البيانات:** MariaDB 10.6+ أو PostgreSQL.
+
+---
+
+## 🚀 خطوات التثبيت والتشغيل (Installation)
+
+### 1. تنزيل التطبيق إلى السيرفر (Get App)
+من داخل مجلد الـ bench الخاص بك (مثلاً `frappe-bench`):
 
 ```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch version-16
-bench install-app surhan_signature
+bench get-app https://github.com/surhan101/Surhan_signature_v1.git
 ```
 
-### Contributing
+> **ملاحظة:** يمكنك أيضاً التحديد الصريح لرقم الإصدار إن أردت:
+> - لإصدار الفارابي 15: `bench get-app https://github.com/surhan101/Surhan_signature_v1.git --branch version-15`
+> - لإصدار الفارابي 16: `bench get-app https://github.com/surhan101/Surhan_signature_v1.git --branch version-16`
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+### 2. تثبيت التطبيق على موقعك (Install to Site)
 
 ```bash
-cd apps/surhan_signature
-pre-commit install
+bench --site [اسم_موقعك] install-app surhan_signature
 ```
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+*(استبدل `[اسم_موقعك]` باسم الموقع الفعلي، مثل `frontend` أو `ysmo` أو `site1.local`)*
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+### 3. تحديث قواعد البيانات وتنظيف الكاش
 
-### License
+```bash
+bench --site [اسم_موقعك] migrate
+bench --site [اسم_موقعك] clear-cache
+```
 
-mit
+---
+
+## 📖 دليل الاستخدام السريع (Quick Guide)
+
+1. **تسجيل توقيع الموظف:**
+   - افتح شاشة **Employee Signature Profile** (أو من خلال مركز التحكم الإداري).
+   - قم برفع أو رسم توقيع الموظف وتفعيله.
+2. **توقيع المستندات اليومية (فواتير، سندات، طلبات):**
+   - افتح أي مستند يحتوي على جدول الموقعين (`ac_footer`).
+   - اختر الموظفين في الجدول (يتم جلب بيانات المسمى الوظيفي والمستخدم تلقائياً).
+   - احفظ المستند.
+   - سيظهر للموقع زر أزرق رئيسي بأعلى النموذج: **`✍️ توقيع / اعتماد المستند`**.
+   - بالضغط عليه، تفتح نافذة الديالوج الداخلي للاعتماد الفوري.
+3. **لوحة التحكم المركزية:**
+   - للدخول إلى لوحة الإدارة الشاملة (لمسؤولي النظام فقط):
+     `https://your-domain.com/signature-admin-center`
+
+---
+
+## 📄 الترخيص (License)
+MIT License — تطوير مخصص لبيئات الأعمال والمؤسسات.
