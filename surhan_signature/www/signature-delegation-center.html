@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature Delegation Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1450px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar, .formrow {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:18px 0;
+    }
+
+    button, a.btn, input {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.10);
+      color:#edf5ff;
+      padding:10px 13px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    input {
+      min-width: 190px;
+      font-weight: 600;
+    }
+
+    button {
+      cursor:pointer;
+    }
+
+    button:hover, a.btn:hover {
+      background:rgba(255,255,255,0.16);
+    }
+
+    .cards {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+      margin:18px 0;
+    }
+
+    .card, .panel {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter:blur(18px);
+      overflow:auto;
+      margin-top:16px;
+    }
+
+    .num {
+      font-size:32px;
+      font-weight:900;
+      letter-spacing:-0.04em;
+    }
+
+    .muted {
+      color:#9fb0c6;
+      font-size:13px;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+
+    th, td {
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      vertical-align:top;
+      font-size:12px;
+      text-align:left;
+    }
+
+    th {
+      color:#9fb0c6;
+      font-weight:900;
+    }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:11px;
+      font-weight:900;
+      margin:2px;
+      white-space:nowrap;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .warn { color:#ffd166; border-color:rgba(255,209,102,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:320px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+      margin-top:12px;
+    }
+
+    @media (max-width: 900px) {
+      .cards { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature Delegation Center</h1>
+    <p>Delegate pending signature requests from one user to another without sharing the original user's saved signature.</p>
+
+    <div class="toolbar">
+      <button onclick="loadData()">Refresh</button>
+      <button onclick="applyDelegations()">Apply Active Delegations</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/app/signature-delegation-rule" target="_blank">Delegation Rules</a>
+      <a class="btn" href="/signature-inbox" target="_blank">Signature Inbox</a>
+      <a class="btn" href="/signature-notifications-center" target="_blank">Notifications Center</a>
+      <a class="btn" href="/signature-admin-audit" target="_blank">Admin Audit</a>
+    <a class="btn" href="/signature-access-matrix" target="_blank">Access Matrix</a>
+      <a class="btn" href="/signature-api-security-matrix" target="_blank">API Security Matrix</a>
+      <a class="btn" href="/signature-system-integrity-center" target="_blank">System Integrity</a>
+</div>
+
+    <div id="cards" class="cards"></div>
+
+    <div class="panel">
+      <h3>Create Delegation Rule</h3>
+      <div class="formrow">
+        <input id="delegator_user" placeholder="Delegator User e.g. user@example.com">
+        <input id="delegate_user" placeholder="Delegate User e.g. user2@example.com">
+        <input id="from_date" type="date">
+        <input id="to_date" type="date">
+        <input id="applies_to_doctype" placeholder="DocType optional">
+        <input id="reason" placeholder="Reason optional">
+        <button onclick="createRule()">Create Rule</button>
+      </div>
+      <p class="muted">The delegate signs using their own profile and signature. The original user's saved signature is never copied.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Active / Recent Delegation Rules</h3>
+      <div id="rules">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Pending Requests</h3>
+      <div id="pending">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output" class="raw">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function badge(status, enabled) {
+      if (enabled === 1 || enabled === true) return '<span class="badge ok">Enabled</span>';
+      const s = String(status || "Pending");
+      const cls = ["Pending", "Waiting", "In Progress"].includes(s) ? "warn" : "ok";
+      return `<span class="badge ${cls}">${esc(s)}</span>`;
+    }
+
+    function renderCards(data) {
+      document.getElementById("cards").innerHTML = `
+        <div class="card"><div class="muted">Rules</div><div class="num">${esc(data.rules_count || 0)}</div></div>
+        <div class="card"><div class="muted">Active Rules</div><div class="num ok">${esc(data.active_rules_count || 0)}</div></div>
+        <div class="card"><div class="muted">Pending Requests</div><div class="num warn">${esc(data.pending_requests_count || 0)}</div></div>
+      `;
+    }
+
+    function renderRules(rows) {
+      if (!rows || !rows.length) {
+        document.getElementById("rules").innerHTML = "<p>No delegation rules.</p>";
+        return;
+      }
+
+      document.getElementById("rules").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Status</th>
+              <th>Delegation</th>
+              <th>Validity</th>
+              <th>Scope</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td><a href="/app/signature-delegation-rule/${esc(r.name)}" target="_blank">${esc(r.name)}</a></td>
+                <td>${badge("", r.enabled)}</td>
+                <td>${esc(r.delegator_user || "")}<br>→ ${esc(r.delegate_user || "")}</td>
+                <td>${esc(r.from_date || "")}<br>${esc(r.to_date || "")}</td>
+                <td>${esc(r.applies_to_doctype || "All DocTypes")}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderPending(rows) {
+      if (!rows || !rows.length) {
+        document.getElementById("pending").innerHTML = "<p>No pending requests.</p>";
+        return;
+      }
+
+      document.getElementById("pending").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Request</th>
+              <th>Status</th>
+              <th>Document</th>
+              <th>Current Signer</th>
+              <th>Manual Reassign</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td><a href="/app/document-signature-request/${esc(r.name)}" target="_blank">${esc(r.name)}</a></td>
+                <td>${badge(r.status)}</td>
+                <td>${esc(r.reference_doctype || "")}<br><span class="muted">${esc(r.reference_name || "")}</span></td>
+                <td>${esc(r.signer || r.requested_user || "")}</td>
+                <td>
+                  <input id="delegate_${esc(r.name)}" placeholder="delegate user">
+                  <button onclick="manualReassign('${esc(r.name)}')">Reassign</button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function loadData() {
+      try {
+        const data = await api("surhan_signature.api.phase27i_delegation_center_data");
+        renderCards(data);
+        renderRules(data.rules || []);
+        renderPending(data.pending_requests || []);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function createRule() {
+      try {
+        const data = await api("surhan_signature.api.phase27i_create_delegation_rule", {
+          delegator_user: document.getElementById("delegator_user").value,
+          delegate_user: document.getElementById("delegate_user").value,
+          from_date: document.getElementById("from_date").value,
+          to_date: document.getElementById("to_date").value,
+          applies_to_doctype: document.getElementById("applies_to_doctype").value,
+          reason: document.getElementById("reason").value,
+          enabled: 1
+        });
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function manualReassign(requestName) {
+      const delegateUser = document.getElementById("delegate_" + requestName).value;
+
+      if (!delegateUser) {
+        alert("Enter delegate user.");
+        return;
+      }
+
+      try {
+        const data = await api("surhan_signature.api.phase27i_reassign_signature_request", {
+          request_name: requestName,
+          delegate_user: delegateUser,
+          reason: "Manual reassignment from Delegation Center"
+        });
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function applyDelegations() {
+      try {
+        const data = await api("surhan_signature.api.phase27i_apply_active_delegations", { limit: 1000 });
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27i_export_delegation_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

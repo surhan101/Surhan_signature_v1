@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Verify Certificate | Surhan Signature</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: rgba(255,255,255,0.075);
+      --panel2: rgba(255,255,255,0.11);
+      --border: rgba(255,255,255,0.16);
+      --text: #eef5ff;
+      --muted: #9fb0c6;
+      --green: #35d399;
+      --red: #ff6b6b;
+      --yellow: #ffd166;
+      --blue: #6ba6ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(107,166,255,0.25), transparent 32%),
+        radial-gradient(circle at 80% 20%, rgba(53,211,153,0.18), transparent 28%),
+        linear-gradient(135deg, #07111f 0%, #101827 100%);
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      margin: 4px 6px 4px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #dce8ff;
+    }
+
+    .big {
+      font-size: 36px;
+      font-weight: 850;
+      letter-spacing: -0.05em;
+    }
+
+    .ok { color: var(--green); }
+    .bad { color: var(--red); }
+    .warn { color: var(--yellow); }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      outline: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.08);
+      font-size: 15px;
+    }
+
+    button, a.btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    button:hover, a.btn:hover { background: var(--panel2); }
+
+    .form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .qrbox {
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 18px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .qrbox svg {
+      width: 220px;
+      height: 220px;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+    }
+
+    .kv:last-child { border-bottom: none; }
+
+    .key { color: var(--muted); }
+
+    .value {
+      color: #eaf2ff;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(0,0,0,0.32);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 16px;
+      max-height: 420px;
+      overflow: auto;
+      color: #d8e7ff;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .hero, .grid, .cards, .form { grid-template-columns: 1fr; display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>Verify Certificate</h1>
+        <p>Validate Surhan Signature certificates, audit chain integrity, final document hashes, and QR verification status.</p>
+        <span class="badge">Public Verification</span>
+        <span class="badge">Server-side Validation</span>
+        <span class="badge">QR Enabled</span>
+      </div>
+      <div class="actions">
+        <a class="btn" href="/">Home</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Certificate Number</h3>
+      <div class="form">
+        <input id="certificate-no" value="{{ certificate_no }}" placeholder="ESIGN-CERT-2026-00004">
+        <button onclick="verifyNow()">Verify</button>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Certificate</h3>
+        <div id="cert-status" class="big warn">...</div>
+        <p id="cert-sub">Waiting for verification</p>
+      </div>
+      <div class="card">
+        <h3>Audit Chain</h3>
+        <div id="audit-status" class="big warn">...</div>
+        <p id="audit-sub">Waiting for verification</p>
+      </div>
+      <div class="card">
+        <h3>File Integrity</h3>
+        <div id="file-status" class="big warn">...</div>
+        <p id="file-sub">Waiting for verification</p>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px">
+      <div class="card">
+        <h3>Verification Details</h3>
+        <div id="details">
+          <p>Enter a certificate number and click Verify.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Verification QR</h3>
+        <div id="qr" class="qrbox">
+          <p style="color:#344054">QR will appear after verification.</p>
+        </div>
+        <p id="qr-sub">QR status not checked yet.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Raw Verification Bundle</h3>
+      <pre id="raw">{}</pre>
+    </div>
+  </div>
+
+  <script>
+    const initialCertificate = "{{ certificate_no or '' }}";
+
+    function setStatus(id, value, cls) {
+      const el = document.getElementById(id);
+      el.textContent = value;
+      el.className = "big " + cls;
+    }
+
+    function yesNo(value) {
+      return value ? ["OK", "ok"] : ["FAIL", "bad"];
+    }
+
+    async function apiGet(method, args = {}) {
+      const params = new URLSearchParams();
+      Object.entries(args).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) params.append(k, v);
+      });
+
+      const res = await fetch("/api/method/" + method + "?" + params.toString(), {
+        method: "GET",
+        credentials: "same-origin"
+      });
+
+      const data = await res.json();
+
+      if (data.exc) {
+        throw new Error(data.exc);
+      }
+
+      return data.message || data;
+    }
+
+    function renderDetails(data) {
+      const rows = [
+        ["Status", data.status],
+        ["Certificate No", data.certificate_no],
+        ["Envelope", data.envelope],
+        ["Completed At", data.completed_at],
+        ["Verification URL", data.verification_url],
+        ["Final Hash", data.final_hash],
+        ["Original Hash", data.original_hash],
+        ["Audit Root Hash", data.audit_root_hash],
+        ["Certificate PDF SHA256", data.certificate_pdf_sha256],
+        ["Evidence Package SHA256", data.evidence_package_sha256],
+        ["QR PDF SHA256", data.qr_pdf_sha256],
+        ["Bundle SHA256", data.bundle_sha256],
+      ];
+
+      document.getElementById("details").innerHTML = rows.map(([k, v]) => `
+        <div class="kv">
+          <div class="key">${k}</div>
+          <div class="value">${v || ""}</div>
+        </div>
+      `).join("");
+    }
+
+    async function verifyNow() {
+      const certificate_no = document.getElementById("certificate-no").value.trim();
+
+      if (!certificate_no) {
+        alert("Enter certificate number first.");
+        return;
+      }
+
+      document.getElementById("raw").textContent = "Loading...";
+
+      try {
+        const data = await apiGet("surhan_signature.api.public_verify_certificate_bundle", { certificate_no });
+
+        const cert = yesNo(data.certificate_valid);
+        const audit = yesNo(data.audit_chain_valid);
+        const files = yesNo(data.file_integrity_valid);
+
+        setStatus("cert-status", cert[0], cert[1]);
+        setStatus("audit-status", audit[0], audit[1]);
+        setStatus("file-status", files[0], files[1]);
+
+        document.getElementById("cert-sub").textContent = data.certificate_valid ? "Certificate is valid" : "Certificate failed validation";
+        document.getElementById("audit-sub").textContent = data.audit_chain_valid ? "Audit hash chain is valid" : "Audit chain failed";
+        document.getElementById("file-sub").textContent = data.file_integrity_valid ? "Artifacts match recorded hashes" : "File integrity failed";
+
+        renderDetails(data);
+
+        if (data.verification_qr_svg) {
+          document.getElementById("qr").innerHTML = data.verification_qr_svg;
+          document.getElementById("qr-sub").textContent = data.verification_qr_valid ? "QR artifact is valid." : "QR artifact is missing or invalid.";
+        } else {
+          document.getElementById("qr").innerHTML = "<p style='color:#344054'>No QR SVG found.</p>";
+          document.getElementById("qr-sub").textContent = "QR not generated.";
+        }
+
+        document.getElementById("raw").textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        setStatus("cert-status", "FAIL", "bad");
+        setStatus("audit-status", "FAIL", "bad");
+        setStatus("file-status", "FAIL", "bad");
+        document.getElementById("details").innerHTML = "<p>Verification failed.</p>";
+        document.getElementById("raw").textContent = JSON.stringify({ ok: false, error: String(e) }, null, 2);
+      }
+    }
+
+    if (initialCertificate) {
+      verifyNow();
+    }
+  </script>
+</body>
+</html>

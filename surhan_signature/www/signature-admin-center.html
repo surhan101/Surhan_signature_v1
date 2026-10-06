@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surhan Signature | لوحة التحكم والقيادة الإدارية المركزية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #060913;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(26, 37, 64, 0.9);
+      --bg-sidebar: #040711;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.6);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: rgba(99, 102, 241, 0.15);
+      --success: #10b981;
+      --success-light: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --warning-light: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-light: rgba(239, 68, 68, 0.15);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.25);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 320px;
+      background: var(--bg-sidebar);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow);
+      color: #fff;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .brand-info h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+
+    .brand-info span {
+      font-size: 11px;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 2px;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-category {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-dim);
+      padding: 12px 12px 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+    }
+
+    .nav-item.active {
+      background: var(--primary-light);
+      color: #fff;
+      border-color: rgba(99, 102, 241, 0.35);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 18px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .user-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    /* Main Content Wrapper */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 45%),
+                  radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.06), transparent 45%);
+    }
+
+    .topbar {
+      height: 72px;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(14px);
+      background: rgba(6, 9, 19, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .page-title {
+      font-size: 21px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .badge-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--success-light);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 12px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-warning { background: var(--warning); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* Content Area */
+    .content-area {
+      padding: 36px;
+      flex: 1;
+    }
+
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tab-pane.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(99, 102, 241, 0.35);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .stat-card.success::before { background: var(--success); }
+    .stat-card.warning::before { background: var(--warning); }
+    .stat-card.danger::before { background: var(--danger); }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stat-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .stat-icon {
+      font-size: 22px;
+      opacity: 0.85;
+    }
+
+    .stat-value {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .stat-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* Cards & Tables */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 30px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: rgba(10, 15, 28, 0.4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+    }
+
+    th {
+      background: rgba(13, 20, 36, 0.9);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 15px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .badge-success { background: var(--success-light); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.25); }
+    .badge-warning { background: var(--warning-light); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.25); }
+    .badge-danger { background: var(--danger-light); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.25); }
+    .badge-primary { background: var(--primary-light); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.25); }
+
+    /* Search & Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input {
+      background: rgba(11, 17, 32, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      color: var(--text-main);
+      font-size: 13px;
+      min-width: 260px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(10, 15, 28, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* Signature Canvas Studio */
+    .signature-pad-container {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 2px dashed rgba(99, 102, 241, 0.4);
+      margin: 12px 0;
+      position: relative;
+      height: 220px;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-md);
+      display: block;
+    }
+
+    .canvas-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+    }
+
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-block;
+      border: 2px solid #fff;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show { display: flex; }
+
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      box-shadow: var(--shadow-md);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-title {
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .close-btn:hover { color: #fff; }
+
+    /* Code Snippets & Playground */
+    .code-box {
+      background: #040711;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      font-family: monospace;
+      direction: ltr;
+      text-align: left;
+      font-size: 13px;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin-top: 12px;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 5px 12px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .copy-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 22px;
+      box-shadow: var(--shadow-md);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo">✍️</div>
+      <div class="brand-info">
+        <h2>Surhan Signature</h2>
+        <span id="sidebar-version-badge">v2.5 Enterprise</span>
+      </div>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-category">العمليات والمراقبة الحية</li>
+      <li class="nav-item active" onclick="switchTab('overview')">
+        <span class="nav-icon">📊</span>
+        <span>لوحة القيادة والمراقبة</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('operations')">
+        <span class="nav-icon">🚀</span>
+        <span>مركز العمليات والتنبيهات</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('envelopes')">
+        <span class="nav-icon">✉️</span>
+        <span>المغلفات والاعتمادات (Envelopes)</span>
+      </li>
+
+      <li class="nav-category">التحكم والإدارة الشاملة</li>
+      <li class="nav-item" onclick="switchTab('doctypes')">
+        <span class="nav-icon">🌐</span>
+        <span>مصفوفة جميع دوكتايبات النظام</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('employees')">
+        <span class="nav-icon">👥</span>
+        <span>تواقيع وصلاحيات الموظفين</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('delegations')">
+        <span class="nav-icon">🔀</span>
+        <span>قواعد التفويض والتوقيع بالإنابة</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('settings')">
+        <span class="nav-icon">⚙️</span>
+        <span>إعدادات النظام العامة والـ OTP</span>
+      </li>
+
+      <li class="nav-category">الربط والـ API الخارجي</li>
+      <li class="nav-item" onclick="switchTab('gateway')">
+        <span class="nav-icon">🔌</span>
+        <span>استوديو الـ API وفحص الربط</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('webhooks')">
+        <span class="nav-icon">⚡</span>
+        <span>محرك الـ Webhooks وسجلات الإرسال</span>
+      </li>
+
+      <li class="nav-category">الأمان والتدقيق المشفر</li>
+      <li class="nav-item" onclick="switchTab('audit')">
+        <span class="nav-icon">🛡️</span>
+        <span>سجل التدقيق وسلسلة عدم التلاعب</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('security')">
+        <span class="nav-icon">🔒</span>
+        <span>محرك الأمان وتقييم المخاطر</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('certificates')">
+        <span class="nav-icon">📜</span>
+        <span>الشهادات الرقمية وأكواد الـ QR</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('diagnostics')">
+        <span class="nav-icon">🩺</span>
+        <span>التشخيص الذاتي وإصلاح النظام</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar">👑</div>
+      <div class="user-details">
+        <div class="user-name" id="sidebar-user-name">Administrator</div>
+        <div class="user-role">مسؤول النظام (System Manager)</div>
+      </div>
+      <a href="/app" class="btn btn-secondary btn-sm" title="العودة إلى Desk">Desk</a>
+    </div>
+  </aside>
+
+  <!-- Main Wrapper -->
+  <div class="main-wrapper">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="page-title">
+        <span id="header-icon">📊</span>
+        <span id="header-title">لوحة القيادة والمراقبة الحية</span>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="badge-status">
+          <div class="pulse-dot"></div>
+          <span>النظام نشط وآمن</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="refreshCurrentTab()">
+          <span>🔄</span>
+          <span>تحديث فوري</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content-area">
+
+      <!-- TAB 1: OVERVIEW -->
+      <div id="tab-overview" class="tab-pane active">
+        <div class="stats-grid" id="kpi-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-title">إجمالي طلبات التوقيع</span>
+              <span class="stat-icon">📄</span>
+            </div>
+            <div class="stat-value" id="kpi-total-requests">-</div>
+            <div class="stat-desc">عبر كافة المستندات والأنظمة</div>
+          </div>
+
+          <div class="stat-card success">
+            <div class="stat-header">
+              <span class="stat-title">نسبة الإنجاز المكتملة</span>
+              <span class="stat-icon">✅</span>
+            </div>
+            <div class="stat-value" id="kpi-completion-rate">-%</div>
+            <div class="stat-desc" id="kpi-completed-requests">- مكتمل</div>
+          </div>
+
+          <div class="stat-card warning">
+            <div class="stat-header">
+              <span class="stat-title">الطلبات المعلقة</span>
+              <span class="stat-icon">⏳</span>
+            </div>
+            <div class="stat-value" id="kpi-pending-requests">-</div>
+            <div class="stat-desc">تتطلب توقيع المعتمدين</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-title">الأنظمة الخارجية المرتبطة</span>
+              <span class="stat-icon">🔌</span>
+            </div>
+            <div class="stat-value" id="kpi-ext-systems">-</div>
+            <div class="stat-desc">متصلة عبر الـ API Gateway</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📋</span>
+              <span>أحدث حركات وطلبات التوقيع</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('operations')">عرض الكل في مركز العمليات</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الطلب</th>
+                  <th>نوع المستند</th>
+                  <th>رقم المستند</th>
+                  <th>الموقع / المعتمد</th>
+                  <th>الحالة</th>
+                  <th>تاريخ الإجراء</th>
+                </tr>
+              </thead>
+              <tbody id="recent-requests-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل البيانات...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: OPERATIONS & REMINDERS -->
+      <div id="tab-operations" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🚀</span>
+              <span>مركز العمليات والتنبيهات الفورية للتواقيع المتأخرة</span>
+            </div>
+            <div class="filter-bar">
+              <input type="text" id="op-search" class="search-input" placeholder="بحث برقم المستند أو المعاملة..." oninput="loadOperations()">
+              <select id="op-filter-status" class="form-control" style="width:160px;" onchange="loadOperations()">
+                <option value="All">كافة الحالات</option>
+                <option value="Pending">معلق (Pending)</option>
+                <option value="Completed">مكتمل (Completed)</option>
+                <option value="Rejected">مرفوض (Rejected)</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الطلب</th>
+                  <th>المستند</th>
+                  <th>المعتمد المطلوب</th>
+                  <th>الإجراء</th>
+                  <th>الحالة</th>
+                  <th>تاريخ الإنشاء</th>
+                  <th>إجراءات فورية</th>
+                </tr>
+              </thead>
+              <tbody id="operations-table">
+                <tr><td colspan="7" style="text-align:center;">جاري تحميل العمليات...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: ENVELOPES (MULTI-PARTY) -->
+      <div id="tab-envelopes" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>✉️</span>
+              <span>المغلفات والاعتمادات متعددة الأطراف (E-Sign Envelopes & Routing)</span>
+            </div>
+            <div class="filter-bar">
+              <input type="text" id="env-search" class="search-input" placeholder="بحث بعنوان المغلف..." oninput="loadEnvelopes()">
+              <select id="env-filter-status" class="form-control" style="width:160px;" onchange="loadEnvelopes()">
+                <option value="All">كافة الحالات</option>
+                <option value="Draft">مسودة (Draft)</option>
+                <option value="Sent">مرسل (Sent)</option>
+                <option value="Completed">مكتمل (Completed)</option>
+                <option value="Declined">مرفوض (Declined)</option>
+                <option value="Voided">ملغي (Voided)</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>معرف المغلف</th>
+                  <th>عنوان المغلف</th>
+                  <th>المستند المصدر</th>
+                  <th>نوع المسار</th>
+                  <th>الموقعون والأدوار</th>
+                  <th>الحالة</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="envelopes-table">
+                <tr><td colspan="7" style="text-align:center;">جاري تحميل المغلفات...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: GLOBAL DOCTYPES MATRIX -->
+      <div id="tab-doctypes" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🌐</span>
+              <span>مصفوفة جميع دوكتايبات النظام والتحكم اللحظي (Global DocType Matrix)</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-secondary btn-sm" onclick="openAddDocTypeModal()">+ إضافة DocType مخصص</button>
+              <button class="btn btn-primary btn-sm" onclick="syncAllDoctypes()">🔄 مزامنة واستكشاف كافة المستندات</button>
+            </div>
+          </div>
+          <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
+            تحكم فوري بكافة دوكتايبات ERPNext / HRMS (أكثر من 590 مستند) بنقرة زر واحدة للتفعيل الفوري وتحديد مسار الاعتماد:
+          </p>
+          <div class="filter-bar">
+            <input type="text" id="matrix-search" class="search-input" placeholder="بحث باسم أي مستند في النظام (Invoice, Quotation, Order, Leave...)..." oninput="loadGlobalMatrix()">
+            <select id="matrix-module-filter" class="form-control" style="width:200px;" onchange="loadGlobalMatrix()">
+              <option value="All">كافة الموديولات (All Modules)</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>اسم المستند (DocType)</th>
+                  <th>الموديول</th>
+                  <th>حالة التفعيل السريع</th>
+                  <th>مسار الاعتماد</th>
+                  <th>قفل المستند</th>
+                  <th>إلزام OTP</th>
+                  <th>توليد PDF ممهور</th>
+                  <th>تعديل الضوابط</th>
+                </tr>
+              </thead>
+              <tbody id="matrix-table">
+                <tr><td colspan="8" style="text-align:center;">جاري تحميل مصفوفة المستندات...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: EMPLOYEES & SIGNATURE STUDIO -->
+      <div id="tab-employees" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>👥</span>
+              <span>إدارة وتوثيق تواقيع الموظفين وصلاحيات الاعتماد</span>
+            </div>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="emp-search" class="search-input" placeholder="بحث باسم الموظف أو البريد..." oninput="loadEmployees()">
+            <select id="emp-filter-status" class="form-control" style="width:160px;" onchange="loadEmployees()">
+              <option value="All">كافة حالات التوقيع</option>
+              <option value="Active">نشط (Active)</option>
+              <option value="Pending">غير مسجل (Pending)</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>المستخدم / الموظف</th>
+                  <th>المسمى الوظيفي</th>
+                  <th>حالة التوقيع</th>
+                  <th>حماية القفل</th>
+                  <th>تجزئة SHA-256</th>
+                  <th>تعديل التوقيع والصلاحيات</th>
+                </tr>
+              </thead>
+              <tbody id="employees-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل تواقيع الموظفين...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: DELEGATIONS & PROXY SIGNING -->
+      <div id="tab-delegations" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🔀</span>
+              <span>قواعد التفويض والتوقيع بالإنابة (Signature Delegation & Proxy Rules)</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddDelegationModal()">+ إضافة قاعدة تفويض جديدة</button>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="delegation-search" class="search-input" placeholder="بحث باسم المفوض أو المفوض إليه..." oninput="loadDelegations()">
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>المفوض (الأصيل)</th>
+                  <th>المفوض إليه (النائب)</th>
+                  <th>تاريخ البدء</th>
+                  <th>تاريخ الانتهاء</th>
+                  <th>المستندات المشمولة</th>
+                  <th>السبب</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="delegations-table">
+                <tr><td colspan="8" style="text-align:center;">جاري تحميل قواعد التفويض...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: GLOBAL SETTINGS & OTP -->
+      <div id="tab-settings" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>⚙️</span>
+              <span>إعدادات النظام العامة وقواعد الأمان والـ OTP والسياسات</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="saveGlobalSettings()">💾 حفظ كافة الإعدادات</button>
+          </div>
+          <form id="global-settings-form" onsubmit="event.preventDefault(); saveGlobalSettings();">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+              <div>
+                <h4 style="margin-bottom:14px; color:var(--primary);">🛡️ خيارات النظام والأمان العام</h4>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-system-enabled" checked> تفعيل نظام التوقيع بالكامل في الموقع
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-lock-docs" checked> قفل المستندات تلقائياً بعد اكتمال كافة التواقيع
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-admin-only-sig"> حصر تعديل التواقيع بمدير النظام فقط (منع الموظفين من تغيير تواقيعهم)
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-auto-cert" checked> توليد الشهادات الرقمية وملف PDF الممهور تلقائياً
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-public-verify" checked> إتاحة التحقق العام من الوثيقة عبر الـ QR Code
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <h4 style="margin-bottom:14px; color:var(--warning);">🔑 إعدادات رمز التحقق الثنائي (OTP Settings)</h4>
+                <div class="form-group">
+                  <label class="form-label">مدة صلاحية رمز الـ OTP (بالدقائق):</label>
+                  <input type="number" id="set-otp-expiry" class="form-control" value="15" min="1" max="120">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">أقصى عدد محاولات خاطئة قبل الحظر المؤقت:</label>
+                  <input type="number" id="set-otp-retries" class="form-control" value="5" min="1" max="10">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-expose-dev-otp"> إظهار الـ OTP في بيئة التطوير (Developer Mode)
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <input type="checkbox" id="set-enable-email" checked> إرسال روابط التوقيع وإشعارات الـ OTP عبر البريد
+                  </label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 8: API GATEWAY & LIVE TESTER -->
+      <div id="tab-gateway" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🔌</span>
+              <span>الأنظمة الخارجية المعتمدة للربط والـ API</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddSystemModal()">+ إضافة نظام خارجي جديد</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>اسم النظام</th>
+                  <th>مفتاح الـ API (API Key)</th>
+                  <th>المستندات المصرحة</th>
+                  <th>الحالة</th>
+                  <th>إجمالي الطلبات</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="systems-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل الأنظمة...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Interactive API Live Tester -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🧪</span>
+              <span>استوديو فحص واختبار الاتصال المباشر (Live API Ping & Request Tester)</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="runLiveApiTest()">🚀 تنفيذ الاختبار المباشر (Run Live Test)</button>
+          </div>
+          <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">
+            قم بتجربة إرسال طلب توقيع من نظامك الخارجي مباشرة لمشاهدة الاستجابة، الهيدرز، ومدة المعالجة:
+          </p>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div>
+              <label class="form-label">الـ JSON Payload المراد اختباره:</label>
+              <textarea id="live-api-payload" class="form-control" style="height:150px; font-family:monospace; direction:ltr; text-align:left;">{
+  "external_reference": "EXT-INV-2026-9901",
+  "reference_doctype": "Sales Invoice",
+  "title": "فاتورة اختبارية من نظام خارجي",
+  "signers": [
+    {"user": "Administrator", "action": "Sign", "sequence": 1}
+  ]
+}</textarea>
+            </div>
+            <div>
+              <label class="form-label">نتيجة الاختبار والاستجابة الفورية (Response Output):</label>
+              <div class="code-box" style="margin-top:0; height:150px;" id="live-api-result">
+// اضغط على زر "تنفيذ الاختبار المباشر" لتشغيل الفحص اللحظي
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SDK Code Snippets -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>💻</span>
+              <span>مولد أكواد الـ SDK الجاهزة لكافة لغات البرمجة</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <button class="btn btn-secondary btn-sm" onclick="showSdkSnippet('curl')">cURL</button>
+            <button class="btn btn-secondary btn-sm" onclick="showSdkSnippet('python')">Python</button>
+            <button class="btn btn-secondary btn-sm" onclick="showSdkSnippet('nodejs')">Node.js</button>
+            <button class="btn btn-secondary btn-sm" onclick="showSdkSnippet('csharp')">C# / .NET</button>
+            <button class="btn btn-secondary btn-sm" onclick="showSdkSnippet('php')">PHP</button>
+          </div>
+          <div class="code-box">
+            <button class="copy-btn" onclick="copySnippet()">نسخ الكود</button>
+            <pre id="sdk-code-display">// اختر لغة برمجية لعرض كود الربط الفوري</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 9: WEBHOOKS -->
+      <div id="tab-webhooks" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>⚡</span>
+              <span>سجل تسليم الـ Webhooks للأنظمة الخارجية وإعادة المحاولة</span>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>المعرف</th>
+                  <th>الحدث (Event)</th>
+                  <th>الحالة</th>
+                  <th>كود HTTP</th>
+                  <th>المحاولات</th>
+                  <th>تاريخ الإرسال</th>
+                  <th>إعادة الإرسال</th>
+                </tr>
+              </thead>
+              <tbody id="webhooks-table">
+                <tr><td colspan="7" style="text-align:center;">جاري تحميل سجلات الـ Webhooks...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 10: AUDIT CHAIN -->
+      <div id="tab-audit" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🛡️</span>
+              <span>سجل التدقيق المشفر وسلسلة عدم التلاعب (Immutable Hash Chain)</span>
+            </div>
+            <div class="badge badge-success" style="font-size:12px; padding:6px 14px;">
+              <span>🔒 سلسلة التشفير سليمة وموثقة بنسبة 100%</span>
+            </div>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="audit-search" class="search-input" placeholder="بحث بنوع الإجراء..." oninput="loadAudit()">
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>الإجراء</th>
+                  <th>المستخدم</th>
+                  <th>عنوان IP</th>
+                  <th>تجزئة الحدث (Event Hash)</th>
+                  <th>التجزئة السابقة (Prev Hash)</th>
+                  <th>التاريخ والوقت</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل سجل التدقيق...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 11: SECURITY & RISK -->
+      <div id="tab-security" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🔒</span>
+              <span>أحداث الأمان السيبراني ومحاولات التلاعب (E-Sign Security Events)</span>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>نوع الحدث</th>
+                  <th>مستوى الخطورة</th>
+                  <th>المغلف / المستند</th>
+                  <th>البريد / المستخدم</th>
+                  <th>عنوان IP</th>
+                  <th>الوقت</th>
+                </tr>
+              </thead>
+              <tbody id="security-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل أحداث الأمان...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:24px;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🧠</span>
+              <span>سجل تقييم المخاطر الذكي (E-Sign Risk Assessments)</span>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>المغلف</th>
+                  <th>مستوى الخطر</th>
+                  <th>نقاط الخطر (Score)</th>
+                  <th>حالة التقييم</th>
+                  <th>عدد عوامل الخطر</th>
+                  <th>تاريخ التقييم</th>
+                </tr>
+              </thead>
+              <tbody id="risks-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل تقييمات المخاطر...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 10: CERTIFICATES & QR -->
+      <div id="tab-certificates" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📜</span>
+              <span>الشهادات الرقمية وأكواد التحقق QR</span>
+            </div>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="cert-search" class="search-input" placeholder="بحث برمز التحقق أو المستند..." oninput="loadCertificates()">
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>رمز التحقق</th>
+                  <th>نوع المستند</th>
+                  <th>رقم المستند</th>
+                  <th>تجزئة SHA-256 للوثيقة</th>
+                  <th>ملف الشهادة</th>
+                  <th>تاريخ الإصدار</th>
+                </tr>
+              </thead>
+              <tbody id="certificates-table">
+                <tr><td colspan="6" style="text-align:center;">جاري تحميل الشهادات...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 11: DIAGNOSTICS -->
+      <div id="tab-diagnostics" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🩺</span>
+              <span>التشخيص الذاتي وصحة خادم التوقيع وقواعد البيانات</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="runDiagnostics()">🔍 تشغيل الفحص الذاتي الشامل</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>عنصر الفحص</th>
+                  <th>الحالة</th>
+                  <th>التقرير والتفاصيل</th>
+                </tr>
+              </thead>
+              <tbody id="diagnostics-table">
+                <tr><td colspan="3" style="text-align:center;">اضغط على زر التشغيل لفحص النظام</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal 1: Edit Employee Signature & Permissions Studio -->
+  <div id="employee-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">استوديو توقيع وصلاحيات الموظف</div>
+        <button class="close-btn" onclick="closeModal('employee-modal')">&times;</button>
+      </div>
+      <form id="employee-form" onsubmit="event.preventDefault(); saveEmployeeSignatureStudio();">
+        <input type="hidden" id="modal-emp-user">
+        
+        <div class="form-group">
+          <label class="form-label">الموظف / المستخدم:</label>
+          <input type="text" id="modal-emp-name" class="form-control" readonly style="background:rgba(0,0,0,0.5);">
+        </div>
+
+        <!-- Current Signature Display -->
+        <div class="form-group" style="background:rgba(0,0,0,0.4); padding:16px; border-radius:var(--radius-md); border:1px solid rgba(255,255,255,0.08);">
+          <label class="form-label" style="display:flex; justify-content:space-between;">
+            <span>📋 التوقيع الحالي المعتمد للموظف:</span>
+            <span id="current-sig-badge" class="badge badge-primary">النسخة الرسمية</span>
+          </label>
+          <div id="current-signature-preview" style="min-height:70px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); border:1px dashed var(--border-color); padding:10px;">
+            <span style="color:var(--text-dim); font-size:13px;">جاري التحميل...</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>✍️ لوحة رسم التوقيع عالي الدقة (Smooth Calligraphy Pad):</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:700;">دقة متناهية باللمس والماوس مع منحنيات Bezier الفاخرة</span>
+          </label>
+          <div class="signature-pad-container" id="canvas-container" style="height:230px; background:#ffffff; box-shadow:inset 0 2px 8px rgba(0,0,0,0.1);">
+            <canvas id="signature-canvas"></canvas>
+          </div>
+          
+          <!-- Calligraphy Controls -->
+          <div class="canvas-tools" style="background:rgba(10,15,28,0.8); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:12px; font-weight:700; color:var(--text-muted);">لون الحبر:</span>
+              <span class="color-dot" style="background:#1e3a8a; box-shadow:0 0 0 2px #6366f1;" onclick="setPenColor('#1e3a8a')" title="أزرق ملكي داكن"></span>
+              <span class="color-dot" style="background:#0b0f19;" onclick="setPenColor('#0b0f19')" title="أسود كلاسيكي"></span>
+              <span class="color-dot" style="background:#881337;" onclick="setPenColor('#881337')" title="عنابي فاخر"></span>
+              <span class="color-dot" style="background:#065f46;" onclick="setPenColor('#065f46')" title="أخضر زمردي"></span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:12px; font-weight:700; color:var(--text-muted);">السماكة:</span>
+              <input type="range" id="pen-width-slider" min="1" max="6" step="0.5" value="3" oninput="setPenWidth(this.value)" style="width:90px; cursor:pointer;">
+              <span id="pen-width-val" style="font-size:12px; color:var(--primary); font-weight:700; min-width:28px;">3px</span>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="undoSignatureCanvas()">↩️ تراجع</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="clearSignatureCanvas()">🧹 مسح اللوحة</button>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="margin: 20px 0 12px; color:var(--primary);">🔒 مصفوفة الصلاحيات وقفل التوقيع:</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:13px; background:rgba(0,0,0,0.3); padding:16px; border-radius:var(--radius-md); border:1px solid rgba(255,255,255,0.06);">
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-receive" checked> استلام طلبات التوقيع</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-saved" checked> استخدام التوقيع المحفوظ</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-draw" checked> رسم توجيهات وتذييل</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-text" checked> كتابة توجيه نصي</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-reject" checked> رفض طلبات التوقيع</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-override"> تجاوز تسلسل الاعتماد</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-ext"> إدارة الطلبات الخارجية</label>
+          <label style="cursor:pointer;"><input type="checkbox" id="perm-audit"> الاطلاع على سجلات التدقيق</label>
+          <label style="grid-column: span 2; color:var(--warning); font-weight:bold; cursor:pointer; background:rgba(245,158,11,0.1); padding:8px 12px; border-radius:var(--radius-sm); border:1px solid rgba(245,158,11,0.2);">
+            <input type="checkbox" id="perm-locked"> 🔒 قفل التوقيع (حظر تعديل التوقيع وحصره بمسؤول النظام فقط)
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('employee-modal')">إلغاء</button>
+          <button type="submit" class="btn btn-primary">حفظ واعتماد التوقيع والصلاحيات</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Add Any DocType In System -->
+  <div id="add-doctype-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">إضافة مستند جديد لنظام التوقيع (Add DocType)</div>
+        <button class="close-btn" onclick="closeModal('add-doctype-modal')">&times;</button>
+      </div>
+      <form id="add-doctype-form" onsubmit="event.preventDefault(); saveNewDocType();">
+        <div class="form-group">
+          <label class="form-label">اختر أو ابحث عن نوع المستند (DocType):</label>
+          <input list="available-doctypes-list" id="new-dt-name" class="form-control" required placeholder="اكتب اسم المستند مثل: Sales Order, Employee...">
+          <datalist id="available-doctypes-list"></datalist>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">مسار الاعتماد:</label>
+          <select id="new-dt-mode" class="form-control">
+            <option value="Sequential">متسلسل (Sequential - بالترتيب)</option>
+            <option value="Parallel">متوازي (Parallel - في نفس الوقت)</option>
+          </select>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin:16px 0; font-size:13px;">
+          <label><input type="checkbox" id="new-dt-lock" checked> قفل المستند بعد التوقيع</label>
+          <label><input type="checkbox" id="new-dt-pdf" checked> توليد PDF و QR تلقائياً</label>
+          <label><input type="checkbox" id="new-dt-ext" checked> السماح بالطلبات الخارجية</label>
+          <label><input type="checkbox" id="new-dt-otp"> إلزام رمز الـ OTP للتوقيع</label>
+          <label><input type="checkbox" id="new-dt-pub" checked> إتاحة التحقق العام QR</label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('add-doctype-modal')">إلغاء</button>
+          <button type="submit" class="btn btn-primary">تفعيل المستند وحفظ الضوابط</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Reassign / Delegate Operation Request -->
+  <div id="reassign-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">إعادة توجيه طلب التوقيع إلى معتمد آخر</div>
+        <button class="close-btn" onclick="closeModal('reassign-modal')">&times;</button>
+      </div>
+      <form id="reassign-form" onsubmit="event.preventDefault(); submitReassign();">
+        <input type="hidden" id="reassign-req-name">
+        <div class="form-group">
+          <label class="form-label">اختر المعتمد الجديد المطلوب منه التوقيع:</label>
+          <select id="reassign-user-select" class="form-control" required></select>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('reassign-modal')">إلغاء</button>
+          <button type="submit" class="btn btn-primary">تأكيد إعادة التوجيه</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Add External System Modal -->
+  <div id="system-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">إضافة / تعديل نظام خارجي للـ API</div>
+        <button class="close-btn" onclick="closeModal('system-modal')">&times;</button>
+      </div>
+      <form id="system-form" onsubmit="event.preventDefault(); saveExternalSystem();">
+        <div class="form-group">
+          <label class="form-label">اسم النظام الخارجي (مثال: Bank Gateway, Portal ERP):</label>
+          <input type="text" id="sys-name" class="form-control" required placeholder="مثال: External Portal">
+        </div>
+        <div class="form-group">
+          <label class="form-label">المستندات المصرح بتوقيعها (مفصولة بفاصلة):</label>
+          <input type="text" id="sys-doctypes" class="form-control" placeholder="Quotation, Sales Invoice, Leave Application">
+        </div>
+        <div class="form-group">
+          <label class="form-label">تقييد عناوين IP (IP Whitelist - اختياري):</label>
+          <input type="text" id="sys-ips" class="form-control" placeholder="192.168.1.100, 10.0.0.50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">رابط استلام الـ Webhook الافتراضي (Callback URL):</label>
+          <input type="url" id="sys-callback" class="form-control" placeholder="https://api.your-company.com/webhook/signature">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('system-modal')">إلغاء</button>
+          <button type="submit" class="btn btn-primary">حفظ وتوليد المفاتيح</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Transaction Tracking & Full Inspection Modal -->
+  <div id="transaction-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:800px;">
+      <div class="modal-header">
+        <div class="modal-title" style="display:flex; align-items:center; gap:10px;">
+          <span>🔍</span>
+          <span id="trans-modal-title">تفاصيل وتتبع حركة التوقيع والمعاملة</span>
+        </div>
+        <button class="close-btn" onclick="closeModal('transaction-modal')">&times;</button>
+      </div>
+      <div id="transaction-details-content">
+        <div style="text-align:center; padding:30px;">جاري تحميل تفاصيل المعاملة...</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px; border-top:1px solid var(--border-color); padding-top:16px;">
+        <a id="trans-desk-link" href="#" target="_blank" class="btn btn-primary btn-sm">📄 فتح المستند في النظام (Desk Form)</a>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('transaction-modal')">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Add / Edit Delegation Rule Modal -->
+  <div id="delegation-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:600px;">
+      <div class="modal-header">
+        <div class="modal-title">إضافة وتفعيل قاعدة تفويض / توقيع بالإنابة</div>
+        <button class="close-btn" onclick="closeModal('delegation-modal')">&times;</button>
+      </div>
+      <form id="delegation-form" onsubmit="event.preventDefault(); submitDelegation();">
+        <input type="hidden" id="del-name">
+        <div class="form-group">
+          <label class="form-label">المفوض (المستخدم الأصيل):</label>
+          <select id="del-delegator" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">المفوض إليه (النائب المفوض بالتوقيع):</label>
+          <select id="del-delegatee" class="form-control" required></select>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">تاريخ البدء:</label>
+            <input type="date" id="del-from-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">تاريخ الانتهاء:</label>
+            <input type="date" id="del-to-date" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">المستندات المشمولة (اختياري - اتركه فارغاً لكافة المستندات):</label>
+          <input list="available-doctypes-list" id="del-doctype" class="form-control" placeholder="مثل: Sales Invoice, Leave Application...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">سبب التفويض (إجازة، سفر، تفويض إداري):</label>
+          <input type="text" id="del-reason" class="form-control" placeholder="مثال: إجازة سنوية / تفويض صلاحيات مؤقت">
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <input type="checkbox" id="del-enabled" checked> تفعيل قاعدة التفويض فوراً
+          </label>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('delegation-modal')">إلغاء</button>
+          <button type="submit" class="btn btn-primary">حفظ وتفعيل التفويض</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    let CSRF_TOKEN = "";
+    let currentTab = "overview";
+    let cachedSnippets = {};
+    let activeExternalSystemId = "";
+    let systemUsersList = [];
+
+    // Smooth Calligraphy Signature Canvas Engine
+    let canvas, ctx, isDrawing = false, hasDrawnSignature = false;
+    let penColor = "#1e3a8a";
+    let penWidth = 3;
+    let strokePoints = [];
+    let strokeHistory = [];
+
+    function setPenColor(c) {
+      penColor = c;
+      document.querySelectorAll('.color-dot').forEach(el => el.style.boxShadow = 'none');
+      const active = Array.from(document.querySelectorAll('.color-dot')).find(el => el.getAttribute('onclick')?.includes(c));
+      if (active) active.style.boxShadow = '0 0 0 2px #6366f1';
+    }
+
+    function setPenWidth(w) {
+      penWidth = parseFloat(w);
+      const valEl = document.getElementById('pen-width-val');
+      if (valEl) valEl.innerText = w + 'px';
+    }
+
+    function saveCanvasState() {
+      if (!canvas) return;
+      strokeHistory.push(canvas.toDataURL('image/png'));
+      if (strokeHistory.length > 25) strokeHistory.shift();
+    }
+
+    function undoSignatureCanvas() {
+      if (!canvas || !ctx) return;
+      if (strokeHistory.length === 0) {
+        clearSignatureCanvas();
+        return;
+      }
+      const prevImg = new Image();
+      prevImg.src = strokeHistory.pop();
+      prevImg.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(prevImg, 0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
+      };
+    }
+
+    function initSignaturePad() {
+      canvas = document.getElementById('signature-canvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      
+      const container = document.getElementById('canvas-container');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = container.getBoundingClientRect();
+      const width = rect.width || 600;
+      const height = rect.height || 230;
+
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+
+      ctx.scale(dpr, dpr);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      function getPos(e) {
+        const r = canvas.getBoundingClientRect();
+        if (e.touches && e.touches.length > 0) {
+          return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+        }
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      }
+
+      function startDraw(e) {
+        e.preventDefault();
+        saveCanvasState();
+        isDrawing = true;
+        hasDrawnSignature = true;
+        strokePoints = [getPos(e)];
+      }
+
+      function moveDraw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getPos(e);
+        strokePoints.push(pos);
+
+        if (strokePoints.length < 3) {
+          const b = strokePoints[0];
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, penWidth / 2, 0, Math.PI * 2, true);
+          ctx.fillStyle = penColor;
+          ctx.fill();
+          ctx.closePath();
+          return;
+        }
+
+        ctx.strokeStyle = penColor;
+        ctx.lineWidth = penWidth;
+        ctx.beginPath();
+        ctx.moveTo(strokePoints[0].x, strokePoints[0].y);
+
+        for (let i = 1; i < strokePoints.length - 2; i++) {
+          const c = (strokePoints[i].x + strokePoints[i + 1].x) / 2;
+          const d = (strokePoints[i].y + strokePoints[i + 1].y) / 2;
+          ctx.quadraticCurveTo(strokePoints[i].x, strokePoints[i].y, c, d);
+        }
+
+        ctx.quadraticCurveTo(
+          strokePoints[strokePoints.length - 2].x,
+          strokePoints[strokePoints.length - 2].y,
+          strokePoints[strokePoints.length - 1].x,
+          strokePoints[strokePoints.length - 1].y
+        );
+        ctx.stroke();
+      }
+
+      function endDraw(e) {
+        if (!isDrawing) return;
+        isDrawing = false;
+        strokePoints = [];
+      }
+
+      canvas.onmousedown = startDraw;
+      canvas.onmousemove = moveDraw;
+      window.onmouseup = endDraw;
+
+      canvas.ontouchstart = startDraw;
+      canvas.ontouchmove = moveDraw;
+      canvas.ontouchend = endDraw;
+    }
+
+    function clearSignatureCanvas() {
+      if (!canvas || !ctx) return;
+      const dpr = window.devicePixelRatio || 1;
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      hasDrawnSignature = false;
+      strokeHistory = [];
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN) return CSRF_TOKEN;
+      if (window.frappe && window.frappe.csrf_token) {
+        CSRF_TOKEN = window.frappe.csrf_token;
+        return CSRF_TOKEN;
+      }
+      try {
+        const res = await fetch('/api/method/surhan_signature.api.phase26a_get_csrf_token', {
+          method: 'GET',
+          credentials: 'same-origin',
+          headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) {
+          CSRF_TOKEN = msg.csrf_token;
+        }
+      } catch (e) {}
+      return CSRF_TOKEN;
+    }
+
+    async function apiCall(method, params = {}) {
+      await ensureCSRF();
+      try {
+        const response = await fetch(`/api/method/surhan_signature.admin_api.${method}`, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Frappe-CSRF-Token': CSRF_TOKEN || ''
+          },
+          body: JSON.stringify(params)
+        });
+        const data = await response.json();
+        if (data.exc) {
+          showToast('حدث خطأ أثناء معالجة الطلب', 'error');
+          console.error("API error:", data.exc);
+          return null;
+        }
+        return data.message || data;
+      } catch (err) {
+        showToast('تعذر الاتصال بالخادم', 'error');
+        console.error("Fetch error:", err);
+        return null;
+      }
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      const targetPane = document.getElementById(`tab-${tabId}`);
+      if (targetPane) targetPane.classList.add('active');
+      
+      const navItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick')?.includes(tabId));
+      if (navItem) navItem.classList.add('active');
+
+      const titleMap = {
+        'overview': ['📊', 'لوحة القيادة والمراقبة الحية'],
+        'operations': ['🚀', 'مركز العمليات والتنبيهات الفورية'],
+        'envelopes': ['✉️', 'المغلفات والاعتمادات متعددة الأطراف'],
+        'doctypes': ['🌐', 'مصفوفة جميع دوكتايبات النظام والتحكم اللحظي'],
+        'employees': ['👥', 'تواقيع وصلاحيات الموظفين واستوديو الخط'],
+        'delegations': ['🔀', 'قواعد التفويض والتوقيع بالإنابة'],
+        'settings': ['⚙️', 'إعدادات النظام العامة والـ OTP والسياسات'],
+        'gateway': ['🔌', 'استوديو الـ API وفحص الربط المباشر'],
+        'webhooks': ['⚡', 'محرك الـ Webhooks وسجلات الإرسال'],
+        'audit': ['🛡️', 'سجل التدقيق المشفر وسلسلة عدم التلاعب'],
+        'security': ['🔒', 'محرك الأمان ورصد المخاطر السيبرانية'],
+        'certificates': ['📜', 'الشهادات الرقمية وأكواد الـ QR'],
+        'diagnostics': ['🩺', 'التشخيص الذاتي وفحص صحة النظام']
+      };
+      if (titleMap[tabId]) {
+        document.getElementById('header-icon').innerText = titleMap[tabId][0];
+        document.getElementById('header-title').innerText = titleMap[tabId][1];
+      }
+
+      refreshCurrentTab();
+    }
+
+    function refreshCurrentTab() {
+      if (currentTab === 'overview') loadOverview();
+      else if (currentTab === 'operations') loadOperations();
+      else if (currentTab === 'envelopes') loadEnvelopes();
+      else if (currentTab === 'doctypes') loadGlobalMatrix();
+      else if (currentTab === 'employees') loadEmployees();
+      else if (currentTab === 'delegations') loadDelegations();
+      else if (currentTab === 'settings') loadGlobalSettings();
+      else if (currentTab === 'gateway') loadGateway();
+      else if (currentTab === 'webhooks') loadWebhooks();
+      else if (currentTab === 'audit') loadAudit();
+      else if (currentTab === 'security') loadSecurity();
+      else if (currentTab === 'certificates') loadCertificates();
+      else if (currentTab === 'diagnostics') runDiagnostics();
+    }
+
+    // Load System Users
+    async function loadSystemUsers() {
+      const res = await apiCall('get_system_users_and_employees');
+      if (res && res.users) {
+        systemUsersList = res.users;
+      }
+    }
+
+    // 1. Overview
+    async function loadOverview() {
+      const res = await apiCall('get_overview_data');
+      if (!res || !res.kpis) return;
+
+      if (res.user_full_name) {
+        document.getElementById('sidebar-user-name').innerText = res.user_full_name;
+      }
+
+      document.getElementById('kpi-total-requests').innerText = res.kpis.total_requests || 0;
+      document.getElementById('kpi-completion-rate').innerText = (res.kpis.completion_rate || 0) + '%';
+      document.getElementById('kpi-completed-requests').innerText = `${res.kpis.completed_requests || 0} مكتمل`;
+      document.getElementById('kpi-pending-requests').innerText = res.kpis.pending_requests || 0;
+      document.getElementById('kpi-ext-systems').innerText = res.kpis.active_external_systems || 0;
+
+      const tbody = document.getElementById('recent-requests-table');
+      if (!res.recent_requests || res.recent_requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد طلبات حديثة مسجلة.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.recent_requests.map(r => `
+        <tr>
+          <td><strong style="color:var(--primary);">${r.name}</strong></td>
+          <td>${r.reference_doctype || '-'}</td>
+          <td>${r.reference_name || '-'}</td>
+          <td>${r.employee_name || r.user || '-'}</td>
+          <td><span class="badge ${r.status === 'Completed' ? 'badge-success' : (r.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">${r.status || 'Pending'}</span></td>
+          <td>${r.modified ? r.modified.substring(0, 16) : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 2. Operations & Reminders & Reassignment & Inspection
+    async function loadOperations() {
+      const status = document.getElementById('op-filter-status')?.value || 'All';
+      const query = document.getElementById('op-search')?.value || '';
+      const res = await apiCall('get_operations_data', { status: status, query: query });
+      if (!res || !res.requests) return;
+
+      const tbody = document.getElementById('operations-table');
+      if (res.requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا توجد طلبات توقيع مطابقة للفلتر.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.requests.map(r => `
+        <tr>
+          <td><strong style="color:var(--primary);">${r.name}</strong></td>
+          <td>
+            <a href="${r.doc_url || '#'}" target="_blank" style="color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+              <span>📄</span>
+              <span>${r.reference_doctype} #${r.reference_name}</span>
+            </a>
+          </td>
+          <td>
+            <div><strong>${r.employee_name}</strong></div>
+            <div style="font-size:11px; color:var(--text-dim);">${r.designation || 'معتمد'} ${r.department ? '• ' + r.department : ''}</div>
+          </td>
+          <td><span class="badge badge-primary">${r.action_type || 'Sign'}</span></td>
+          <td><span class="badge ${r.status === 'Completed' ? 'badge-success' : (r.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">${r.status}</span></td>
+          <td>${r.creation ? r.creation.substring(0, 16) : '-'}</td>
+          <td>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="openTransactionModal('${r.name}')" title="فحص وتتبع حركة المعاملة وسجل التدقيق">🔍 تتبع</button>
+              ${r.status === 'Pending' ? `
+                <button class="btn btn-warning btn-sm" onclick="sendReminder('${r.name}')" title="إرسال إشعار ToDo وبريد فوري">⚡ تذكير</button>
+                <button class="btn btn-secondary btn-sm" onclick="openReassignModal('${r.name}')" title="إعادة توجيه الطلب لشخص آخر">🔄 توجيه</button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function openTransactionModal(reqName) {
+      document.getElementById('transaction-modal').classList.add('show');
+      const content = document.getElementById('transaction-details-content');
+      content.innerHTML = '<div style="text-align:center; padding:30px;">جاري تحميل تفاصيل المعاملة...</div>';
+
+      const res = await apiCall('get_transaction_details', { request_name: reqName });
+      if (!res || !res.request) {
+        content.innerHTML = '<div style="color:var(--danger); text-align:center;">تعذر تحميل تفاصيل المعاملة.</div>';
+        return;
+      }
+
+      const r = res.request;
+      const cert = res.certificate || {};
+
+      document.getElementById('trans-modal-title').innerText = `تتبع المعاملة: ${r.reference_doctype} #${r.reference_name} (${r.name})`;
+      document.getElementById('trans-desk-link').href = r.desk_doc_url || '#';
+
+      content.innerHTML = `
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:20px; font-size:13px;">
+          <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+            <h4 style="color:var(--primary); margin-bottom:10px;">📋 بيانات المستند والطلب</h4>
+            <div><strong>نوع المستند:</strong> ${r.reference_doctype}</div>
+            <div><strong>رقم المستند:</strong> ${r.reference_name}</div>
+            <div><strong>رقم الطلب:</strong> <code style="color:#38bdf8;">${r.name}</code></div>
+            <div><strong>الحالة الحالية:</strong> <span class="badge ${r.status === 'Completed' ? 'badge-success' : (r.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">${r.status}</span></div>
+            <div><strong>مسار الاعتماد:</strong> ${r.workflow_mode || 'Sequential'} (المستوى: ${r.sequence_order || 1})</div>
+            <div><strong>تاريخ الإنشاء:</strong> ${r.creation || '-'}</div>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+            <h4 style="color:var(--success); margin-bottom:10px;">👤 بيانات الموقع والمعتمد</h4>
+            <div><strong>المستخدم:</strong> ${r.requested_user || '-'}</div>
+            <div><strong>الاسم الكامل:</strong> ${r.full_name || '-'}</div>
+            <div><strong>المسمى الوظيفي:</strong> ${r.designation || '-'}</div>
+            <div><strong>القسم:</strong> ${r.department || '-'}</div>
+            <div><strong>عنوان الـ IP عند التوقيع:</strong> <code>${r.signed_ip || 'لم يتم بعد'}</code></div>
+            <div><strong>تاريخ الإنجاز:</strong> ${r.completed_at || '-'}</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border-color); font-size:12px; margin-bottom:16px;">
+          <h4 style="color:var(--warning); margin-bottom:10px;">🛡️ سلسلة التشفير وعدم التلاعب (SHA-256 Fingerprint)</h4>
+          <div style="margin-bottom:6px;"><strong>بصمة الوثيقة قبل التوقيع:</strong> <code style="color:#94a3b8;">${r.doc_hash_before || 'N/A'}</code></div>
+          <div style="margin-bottom:6px;"><strong>بصمة الوثيقة بعد التوقيع:</strong> <code style="color:var(--success);">${r.doc_hash_after || 'N/A'}</code></div>
+          ${cert.verification_code ? `
+            <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+              <div><strong>رمز الشهادة الرقمية:</strong> <strong style="color:#38bdf8;">${cert.verification_code}</strong></div>
+              ${cert.signed_pdf ? `<a href="${cert.signed_pdf}" target="_blank" class="btn btn-secondary btn-sm">📄 تحميل النسخة الممهورة</a>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    async function sendReminder(reqName) {
+      const res = await apiCall('send_signature_reminder', { request_name: reqName });
+      if (res && res.success) {
+        showToast(res.message);
+      }
+    }
+
+    function openReassignModal(reqName) {
+      document.getElementById('reassign-req-name').value = reqName;
+      const select = document.getElementById('reassign-user-select');
+      select.innerHTML = systemUsersList.map(u => `<option value="${u.name}">${u.full_name || u.name} (${u.name})</option>`).join('');
+      document.getElementById('reassign-modal').classList.add('show');
+    }
+
+    async function submitReassign() {
+      const reqName = document.getElementById('reassign-req-name').value;
+      const newUser = document.getElementById('reassign-user-select').value;
+      const res = await apiCall('reassign_signature_request', { request_name: reqName, new_user: newUser });
+      if (res && res.success) {
+        showToast(res.message);
+        closeModal('reassign-modal');
+        loadOperations();
+      }
+    }
+
+    // 3. Envelopes (Multi-Party)
+    async function loadEnvelopes() {
+      const status = document.getElementById('env-filter-status')?.value || 'All';
+      const query = document.getElementById('env-search')?.value || '';
+      const res = await apiCall('get_envelopes_data', { status: status, query: query });
+      if (!res || !res.envelopes) return;
+
+      const tbody = document.getElementById('envelopes-table');
+      if (res.envelopes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا توجد مغلفات توقيع مسجلة.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.envelopes.map(env => `
+        <tr>
+          <td><strong style="color:var(--primary);">${env.name}</strong></td>
+          <td><strong>${env.title || '-'}</strong></td>
+          <td>
+            ${env.source_doctype ? `
+              <a href="${env.doc_url || '#'}" target="_blank" style="color:#38bdf8; text-decoration:none;">
+                📄 ${env.source_doctype} #${env.source_name || ''}
+              </a>
+            ` : '-'}
+          </td>
+          <td><span class="badge badge-primary">${env.workflow_type || 'Sequential'}</span></td>
+          <td>
+            <div style="display:flex; flex-wrap:wrap; gap:4px;">
+              ${env.recipients && env.recipients.length > 0 ? env.recipients.map(r => `
+                <span class="badge ${r.status === 'Completed' ? 'badge-success' : 'badge-warning'}" style="font-size:11px;">
+                  👤 ${r.recipient_name || r.recipient_email} (${r.status || 'Pending'})
+                </span>
+              `).join('') : '<span style="color:var(--text-dim);">لا يوجد معتمدين</span>'}
+            </div>
+          </td>
+          <td><span class="badge ${env.status === 'Completed' ? 'badge-success' : (env.status === 'Voided' ? 'badge-danger' : 'badge-warning')}">${env.status || 'Sent'}</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              ${env.final_signed_pdf ? `<a href="${env.final_signed_pdf}" target="_blank" class="btn btn-secondary btn-sm">📄 PDF</a>` : ''}
+              ${env.status !== 'Voided' && env.status !== 'Completed' ? `
+                <button class="btn btn-danger btn-sm" onclick="voidEnvelopeAction('${env.name}')">🚫 إبطال</button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function voidEnvelopeAction(envId) {
+      if (!confirm(`هل أنت متأكد من إبطال وإلغاء المغلف '${envId}'؟`)) return;
+      const res = await apiCall('void_envelope', { envelope_id: envId });
+      if (res && res.success) {
+        showToast(res.message);
+        loadEnvelopes();
+      }
+    }
+
+    // 4. Global DocTypes Matrix
+    async function loadGlobalMatrix() {
+      const moduleFilter = document.getElementById('matrix-module-filter')?.value || 'All';
+      const query = document.getElementById('matrix-search')?.value || '';
+      const res = await apiCall('get_global_doctype_matrix', { module_filter: moduleFilter, query: query });
+      if (!res || !res.matrix) return;
+
+      // Populate module dropdown if needed
+      const moduleSelect = document.getElementById('matrix-module-filter');
+      if (moduleSelect.options.length <= 1 && res.modules) {
+        res.modules.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.innerText = m;
+          moduleSelect.appendChild(opt);
+        });
+      }
+
+      const tbody = document.getElementById('matrix-table');
+      if (res.matrix.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">لا توجد مستندات مطابقة للبحث.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.matrix.map(m => `
+        <tr>
+          <td><strong style="color:var(--primary); font-size:14px;">${m.doctype_name}</strong></td>
+          <td><span class="badge" style="background:rgba(255,255,255,0.06);">${m.module}</span></td>
+          <td>
+            <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer;">
+              <input type="checkbox" ${m.is_enabled ? 'checked' : ''} onchange="toggleDoctypeQuick('${m.doctype_name}', this.checked)">
+              <span class="badge ${m.is_enabled ? 'badge-success' : 'badge-danger'}">${m.is_enabled ? '✅ مفعل' : '❌ معطل'}</span>
+            </label>
+          </td>
+          <td><span class="badge badge-primary">${m.workflow_mode}</span></td>
+          <td>${m.lock_after_sign ? '🔒 مقفل' : '🔓 مفتوح'}</td>
+          <td>${m.require_otp ? '🔑 نعم' : 'لا'}</td>
+          <td>${m.auto_generate_signed_pdf ? '📄 نعم' : 'لا'}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="openEditDocTypeModalPrefilled('${m.doctype_name}', '${m.workflow_mode}', ${m.lock_after_sign ? 1 : 0}, ${m.require_otp ? 1 : 0}, ${m.auto_generate_signed_pdf ? 1 : 0})">⚙️ تفاصيل</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function toggleDoctypeQuick(dtName, isEnabled) {
+      const res = await apiCall('toggle_doctype_control_quick', {
+        reference_doctype: dtName,
+        is_enabled: isEnabled ? 1 : 0
+      });
+      if (res && res.success) {
+        showToast(res.message);
+        loadGlobalMatrix();
+      }
+    }
+
+    function openEditDocTypeModalPrefilled(dt, mode, lock, otp, pdf) {
+      document.getElementById('new-dt-name').value = dt;
+      document.getElementById('new-dt-mode').value = mode || 'Sequential';
+      document.getElementById('new-dt-lock').checked = !!lock;
+      document.getElementById('new-dt-otp').checked = !!otp;
+      document.getElementById('new-dt-pdf').checked = !!pdf;
+      document.getElementById('add-doctype-modal').classList.add('show');
+    }
+
+    // 5. Delegations & Proxy Rules
+    async function loadDelegations() {
+      const query = document.getElementById('delegation-search')?.value || '';
+      const res = await apiCall('get_delegations_data', { query: query });
+      if (!res || !res.delegations) return;
+
+      const tbody = document.getElementById('delegations-table');
+      if (res.delegations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">لا توجد قواعد تفويض مسجلة. انقر على "+ إضافة قاعدة تفويض جديدة".</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.delegations.map(d => `
+        <tr>
+          <td><strong>👤 ${d.delegator_user}</strong></td>
+          <td><strong style="color:var(--primary);">👉 ${d.delegate_user}</strong></td>
+          <td>${d.from_date || '-'}</td>
+          <td>${d.to_date || '-'}</td>
+          <td>${d.applies_to_doctype || '<span style="color:var(--text-dim);">كافة المستندات</span>'}</td>
+          <td>${d.reason || '-'}</td>
+          <td><span class="badge ${d.enabled ? 'badge-success' : 'badge-danger'}">${d.enabled ? 'نشط' : 'معطل'}</span></td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="deleteDelegationRule('${d.name}')">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openAddDelegationModal() {
+      const d1 = document.getElementById('del-delegator');
+      const d2 = document.getElementById('del-delegatee');
+      d1.innerHTML = systemUsersList.map(u => `<option value="${u.name}">${u.full_name || u.name} (${u.name})</option>`).join('');
+      d2.innerHTML = systemUsersList.map(u => `<option value="${u.name}">${u.full_name || u.name} (${u.name})</option>`).join('');
+      document.getElementById('delegation-modal').classList.add('show');
+    }
+
+    async function submitDelegation() {
+      const delegator = document.getElementById('del-delegator').value;
+      const delegatee = document.getElementById('del-delegatee').value;
+      const fromDate = document.getElementById('del-from-date').value;
+      const toDate = document.getElementById('del-to-date').value;
+      const doctype = document.getElementById('del-doctype').value;
+      const reason = document.getElementById('del-reason').value;
+      const enabled = document.getElementById('del-enabled').checked ? 1 : 0;
+
+      const res = await apiCall('save_delegation_rule', {
+        delegator_user: delegator,
+        delegate_user: delegatee,
+        from_date: fromDate,
+        to_date: toDate,
+        applies_to_doctype: doctype,
+        reason: reason,
+        enabled: enabled
+      });
+
+      if (res && res.success) {
+        showToast(res.message);
+        closeModal('delegation-modal');
+        loadDelegations();
+      }
+    }
+
+    async function deleteDelegationRule(name) {
+      if (!confirm(`هل أنت متأكد من حذف قاعدة التفويض '${name}'؟`)) return;
+      const res = await apiCall('delete_delegation_rule', { name: name });
+      if (res && res.success) {
+        showToast(res.message);
+        loadDelegations();
+      }
+    }
+
+    // 6. Employees & Signature Studio
+    async function loadEmployees() {
+      const query = document.getElementById('emp-search')?.value || '';
+      const status = document.getElementById('emp-filter-status')?.value || 'All';
+      const res = await apiCall('get_employee_signatures_data', { query: query, status_filter: status });
+      if (!res || !res.employees) return;
+
+      const tbody = document.getElementById('employees-table');
+      if (res.employees.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد سجلات تواقيع موظفين مطابقة.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.employees.map(e => `
+        <tr>
+          <td><strong>${e.employee_name || e.employee_user}</strong></td>
+          <td>${e.designation || '-'}</td>
+          <td><span class="badge ${e.signature_status === 'Active' ? 'badge-success' : 'badge-warning'}">${e.signature_status || 'Active'}</span></td>
+          <td><span class="badge ${e.is_locked ? 'badge-danger' : 'badge-success'}">${e.is_locked ? '🔒 مقفل' : '🔓 مسموح'}</span></td>
+          <td><code style="color:#94a3b8; font-size:11px;">${e.signature_hash ? e.signature_hash.substring(0, 16) + '...' : '-'}</code></td>
+          <td>
+            <button class="btn btn-primary btn-sm" onclick="openEmployeeSignatureModal('${e.employee_user || e.name}')">✏️ تعديل التوقيع والصلاحيات</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function openEmployeeSignatureModal(user) {
+      const res = await apiCall('get_employee_signature_details', { employee_user: user });
+      if (!res || !res.control) return;
+
+      const c = res.control;
+      document.getElementById('modal-emp-user').value = c.employee_user || user;
+      document.getElementById('modal-emp-name').value = `${c.full_name || user} (${c.designation || 'موظف'})`;
+
+      const prev = document.getElementById('current-signature-preview');
+      const badge = document.getElementById('current-sig-badge');
+      if (res.profile && res.profile.signature_png) {
+        prev.innerHTML = `
+          <div style="display:flex; align-items:center; gap:16px; width:100%; justify-content:space-around;">
+            <img src="${res.profile.signature_png}" style="max-height:80px; max-width:260px; object-fit:contain; background:#ffffff; padding:6px 14px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+            <div style="text-align:right; font-size:12px;">
+              <div><strong>الإصدار:</strong> v${res.profile.active_version || 1}</div>
+              <div><strong>المعرف:</strong> <code>${res.profile.signature_public_id || '-'}</code></div>
+              <div><strong>البصمة:</strong> <code style="color:var(--success);">${res.profile.signature_hash ? res.profile.signature_hash.substring(0, 16) + '...' : '-'}</code></div>
+            </div>
+          </div>
+        `;
+        if (badge) badge.innerText = `النسخة المعتمدة v${res.profile.active_version || 1}`;
+      } else {
+        prev.innerHTML = `<span class="badge badge-warning" style="padding:8px 16px; font-size:12px;">⚠️ لم يتم تسجيل توقيع رسمي لهذا الموظف بعد</span>`;
+        if (badge) badge.innerText = 'غير مسجل';
+      }
+
+      document.getElementById('perm-receive').checked = !!c.can_receive_requests;
+      document.getElementById('perm-saved').checked = !!c.can_use_saved_signature;
+      document.getElementById('perm-draw').checked = !!c.can_draw_direction;
+      document.getElementById('perm-text').checked = !!c.can_write_direction_text;
+      document.getElementById('perm-reject').checked = !!c.can_reject;
+      document.getElementById('perm-override').checked = !!c.can_override_sequence;
+      document.getElementById('perm-ext').checked = !!c.can_manage_external_requests;
+      document.getElementById('perm-audit').checked = !!c.can_view_signature_audit;
+      document.getElementById('perm-locked').checked = !!c.admin_only_signature_registration;
+
+      document.getElementById('employee-modal').classList.add('show');
+      setTimeout(() => {
+        initSignaturePad();
+        clearSignatureCanvas();
+      }, 100);
+    }
+
+    async function saveEmployeeSignatureStudio() {
+      const user = document.getElementById('modal-emp-user').value;
+      let signatureData = null;
+      if (hasDrawnSignature && canvas) {
+        signatureData = canvas.toDataURL('image/png');
+      }
+
+      const res = await apiCall('save_employee_signature_and_permissions', {
+        employee_user: user,
+        signature_data_url: signatureData,
+        is_locked: document.getElementById('perm-locked').checked ? 1 : 0,
+        can_receive_requests: document.getElementById('perm-receive').checked ? 1 : 0,
+        can_use_saved_signature: document.getElementById('perm-saved').checked ? 1 : 0,
+        can_draw_direction: document.getElementById('perm-draw').checked ? 1 : 0,
+        can_write_direction_text: document.getElementById('perm-text').checked ? 1 : 0,
+        can_reject: document.getElementById('perm-reject').checked ? 1 : 0,
+        can_override_sequence: document.getElementById('perm-override').checked ? 1 : 0,
+        can_manage_external_requests: document.getElementById('perm-ext').checked ? 1 : 0,
+        can_view_signature_audit: document.getElementById('perm-audit').checked ? 1 : 0
+      });
+
+      if (res && res.success) {
+        showToast(res.message);
+        closeModal('employee-modal');
+        loadEmployees();
+      }
+    }
+
+    // 7. Global Settings & OTP
+    async function loadGlobalSettings() {
+      const res = await apiCall('get_system_settings_data');
+      if (!res) return;
+
+      const s = res.system_settings || {};
+      const es = res.esign_settings || {};
+
+      document.getElementById('set-system-enabled').checked = s.system_enabled !== 0;
+      document.getElementById('set-lock-docs').checked = s.lock_signed_documents !== 0;
+      document.getElementById('set-admin-only-sig').checked = !!s.admin_only_employee_signatures;
+      document.getElementById('set-auto-cert').checked = s.auto_generate_certificate !== 0;
+      document.getElementById('set-public-verify').checked = s.public_verification_enabled !== 0;
+
+      document.getElementById('set-otp-expiry').value = es.otp_expiry_minutes || 15;
+      document.getElementById('set-otp-retries').value = es.max_otp_attempts || 5;
+      document.getElementById('set-expose-dev-otp').checked = !!es.expose_dev_otp;
+      document.getElementById('set-enable-email').checked = es.enable_email !== 0;
+    }
+
+    async function saveGlobalSettings() {
+      const res = await apiCall('save_system_settings', {
+        system_enabled: document.getElementById('set-system-enabled').checked ? 1 : 0,
+        lock_signed_documents: document.getElementById('set-lock-docs').checked ? 1 : 0,
+        admin_only_employee_signatures: document.getElementById('set-admin-only-sig').checked ? 1 : 0,
+        auto_generate_certificate: document.getElementById('set-auto-cert').checked ? 1 : 0,
+        public_verification_enabled: document.getElementById('set-public-verify').checked ? 1 : 0,
+        otp_expiry_minutes: document.getElementById('set-otp-expiry').value,
+        max_otp_attempts: document.getElementById('set-otp-retries').value,
+        expose_dev_otp: document.getElementById('set-expose-dev-otp').checked ? 1 : 0,
+        enable_email: document.getElementById('set-enable-email').checked ? 1 : 0
+      });
+
+      if (res && res.success) {
+        showToast(res.message);
+      }
+    }
+
+    // 8. Gateway & Interactive Test Studio
+    async function loadGateway() {
+      const res = await apiCall('get_external_systems_data');
+      if (!res || !res.systems) return;
+
+      const tbody = document.getElementById('systems-table');
+      if (res.systems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد أنظمة خارجية. انقر على "+ إضافة نظام خارجي" للبدء.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.systems.map(s => `
+        <tr>
+          <td><strong>${s.system_name}</strong></td>
+          <td><code style="color:#38bdf8; background:rgba(0,0,0,0.5); padding:4px 8px; border-radius:4px;">${s.api_key || '-'}</code></td>
+          <td>${s.allowed_doctypes || '<span style="color:var(--text-dim);">كافة المستندات</span>'}</td>
+          <td><span class="badge ${s.enabled ? 'badge-success' : 'badge-danger'}">${s.enabled ? 'نشط' : 'معطل'}</span></td>
+          <td><strong>${s.request_count || 0}</strong></td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="fetchSnippetsForSystem('${s.name}')">الـ SDK</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSystem('${s.name}')">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+
+      if (res.systems.length > 0) {
+        activeExternalSystemId = res.systems[0].name;
+        fetchSnippetsForSystem(res.systems[0].name);
+      }
+    }
+
+    async function runLiveApiTest() {
+      if (!activeExternalSystemId) {
+        showToast('يرجى إضافة نظام خارجي أولاً لإجراء الاختبار عليه', 'error');
+        return;
+      }
+      const payload = document.getElementById('live-api-payload').value;
+      const resDisplay = document.getElementById('live-api-result');
+      resDisplay.innerText = "جاري تنفيذ فحص الاتصال والتوقيع المباشر...";
+
+      const res = await apiCall('test_external_api_live', {
+        system_name: activeExternalSystemId,
+        payload_json: payload
+      });
+
+      if (res && res.success) {
+        resDisplay.innerHTML = `<span style="color:var(--success); font-weight:bold;">HTTP ${res.http_status} OK</span> (Latency: ${res.latency_ms}ms)\n\n` + JSON.stringify(res.response_body, null, 2);
+        showToast(`اكتمل فحص الـ API بنجاح في ${res.latency_ms}ms`);
+      } else {
+        resDisplay.innerText = "فشل تنفيذ الاختبار.";
+      }
+    }
+
+    async function fetchSnippetsForSystem(systemName) {
+      activeExternalSystemId = systemName;
+      const res = await apiCall('get_sdk_snippets', { system_name: systemName });
+      if (res && res.snippets) {
+        cachedSnippets = res.snippets;
+        showSdkSnippet('python');
+      }
+    }
+
+    function showSdkSnippet(lang) {
+      const display = document.getElementById('sdk-code-display');
+      if (cachedSnippets[lang]) {
+        display.innerText = cachedSnippets[lang];
+      }
+    }
+
+    function copySnippet() {
+      const text = document.getElementById('sdk-code-display').innerText;
+      navigator.clipboard.writeText(text);
+      showToast('تم نسخ الكود إلى الحافظة بنجاح');
+    }
+
+    function openAddSystemModal() {
+      document.getElementById('system-modal').classList.add('show');
+    }
+
+    async function saveExternalSystem() {
+      const name = document.getElementById('sys-name').value;
+      const doctypes = document.getElementById('sys-doctypes').value;
+      const ips = document.getElementById('sys-ips').value;
+      const callback = document.getElementById('sys-callback').value;
+
+      const res = await apiCall('upsert_external_system', {
+        system_name: name,
+        allowed_doctypes: doctypes,
+        ip_whitelist: ips,
+        callback_url: callback
+      });
+
+      if (res && res.success) {
+        showToast(res.message);
+        closeModal('system-modal');
+        loadGateway();
+      }
+    }
+
+    async function deleteSystem(name) {
+      if (!confirm(`هل أنت متأكد من حذف النظام ${name}؟`)) return;
+      const res = await apiCall('delete_external_system', { system_name: name });
+      if (res && res.success) {
+        showToast(res.message);
+        loadGateway();
+      }
+    }
+
+    // 9. Webhooks
+    async function loadWebhooks() {
+      const res = await apiCall('get_webhooks_data');
+      if (!res) return;
+
+      const tbody = document.getElementById('webhooks-table');
+      if (!res.deliveries || res.deliveries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا توجد سجلات تسليم للـ Webhooks حاليًا.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.deliveries.map(d => `
+        <tr>
+          <td><strong>${d.name}</strong></td>
+          <td><span class="badge badge-primary">${d.event_type || 'signature.completed'}</span></td>
+          <td><span class="badge ${d.status === 'Delivered' ? 'badge-success' : 'badge-danger'}">${d.status}</span></td>
+          <td>${d.http_status || '-'}</td>
+          <td>${d.attempt_count || 1}</td>
+          <td>${d.creation ? d.creation.substring(0, 16) : '-'}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="retryWebhook('${d.name}')">🔄 إعادة المحاولة</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function retryWebhook(name) {
+      const res = await apiCall('retry_webhook_delivery', { delivery_name: name });
+      if (res && res.success) {
+        showToast('تمت إعادة إرسال الـ Webhook');
+        loadWebhooks();
+      }
+    }
+
+    // 10. Audit Chain
+    async function loadAudit() {
+      const query = document.getElementById('audit-search')?.value || '';
+      const res = await apiCall('get_audit_trail_data', { query: query });
+      if (!res || !res.logs) return;
+
+      const tbody = document.getElementById('audit-table');
+      if (res.logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد سجلات تدقيق مسجلة.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.logs.map(l => `
+        <tr>
+          <td><strong>${l.action || '-'}</strong></td>
+          <td>${l.user || '-'}</td>
+          <td>${l.ip_address || '-'}</td>
+          <td><code style="color:#10b981; font-size:11px;">${l.event_hash ? l.event_hash.substring(0, 18) + '...' : '-'}</code></td>
+          <td><code style="color:#64748b; font-size:11px;">${l.prev_hash ? l.prev_hash.substring(0, 18) + '...' : '-'}</code></td>
+          <td>${l.creation ? l.creation.substring(0, 16) : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 11. Security & Risk Engine
+    async function loadSecurity() {
+      const res = await apiCall('get_security_events_and_risks_data');
+      if (!res) return;
+
+      const secTbody = document.getElementById('security-table');
+      if (!res.events || res.events.length === 0) {
+        secTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد أحداث أمنية مسجلة. النظام آمن بنسبة 100%.</td></tr>';
+      } else {
+        secTbody.innerHTML = res.events.map(s => `
+          <tr>
+            <td><strong>${s.event_type}</strong></td>
+            <td><span class="badge ${s.severity === 'Critical' || s.severity === 'HIGH' ? 'badge-danger' : 'badge-warning'}">${s.severity || 'INFO'}</span></td>
+            <td>${s.envelope || '-'}</td>
+            <td>${s.recipient_email || '-'}</td>
+            <td><code>${s.ip_address || '-'}</code></td>
+            <td>${s.timestamp_utc ? s.timestamp_utc.substring(0, 16) : '-'}</td>
+          </tr>
+        `).join('');
+      }
+
+      const riskTbody = document.getElementById('risks-table');
+      if (!res.risks || res.risks.length === 0) {
+        riskTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد تقييمات مخاطر مسجلة.</td></tr>';
+      } else {
+        riskTbody.innerHTML = res.risks.map(r => `
+          <tr>
+            <td><strong>${r.envelope || '-'}</strong></td>
+            <td><span class="badge ${r.risk_level === 'High' ? 'badge-danger' : (r.risk_level === 'Medium' ? 'badge-warning' : 'badge-success')}">${r.risk_level || 'Low'}</span></td>
+            <td><strong>${r.risk_score || 0} / 100</strong></td>
+            <td><span class="badge badge-primary">${r.assessment_status || 'Evaluated'}</span></td>
+            <td>${r.risk_factors_count || 0}</td>
+            <td>${r.assessed_at ? r.assessed_at.substring(0, 16) : '-'}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // 12. Certificates
+    async function loadCertificates() {
+      const query = document.getElementById('cert-search')?.value || '';
+      const res = await apiCall('get_certificates_data', { query: query });
+      if (!res || !res.certificates) return;
+
+      const tbody = document.getElementById('certificates-table');
+      if (res.certificates.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد شهادات رقمية صادرة حتى الآن.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.certificates.map(c => `
+        <tr>
+          <td><strong style="color:#38bdf8;">${c.verification_code || c.name}</strong></td>
+          <td>${c.reference_doctype || '-'}</td>
+          <td>${c.reference_name || '-'}</td>
+          <td><code style="color:#94a3b8; font-size:11px;">${c.sha256_hash ? c.sha256_hash.substring(0, 20) + '...' : '-'}</code></td>
+          <td>
+            ${c.certificate_pdf ? `<a href="${c.certificate_pdf}" target="_blank" class="btn btn-secondary btn-sm">📄 تحميل PDF</a>` : '-'}
+          </td>
+          <td>${c.creation ? c.creation.substring(0, 16) : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 13. Diagnostics
+    async function runDiagnostics() {
+      const tbody = document.getElementById('diagnostics-table');
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">جاري تشغيل الفحص الذاتي...</td></tr>';
+
+      const res = await apiCall('run_system_diagnostics');
+      if (!res || !res.checks) return;
+
+      tbody.innerHTML = res.checks.map(chk => `
+        <tr>
+          <td><strong>${chk.check}</strong></td>
+          <td><span class="badge ${chk.status === 'PASS' ? 'badge-success' : 'badge-warning'}">${chk.status}</span></td>
+          <td>${chk.message}</td>
+        </tr>
+      `).join('');
+      showToast('تم اكتمال الفحص التشخيصي للنظام بنجاح');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // Initial Execution
+    window.addEventListener('DOMContentLoaded', () => {
+      loadOverview();
+      loadSystemUsers();
+    });
+    setTimeout(() => {
+      loadOverview();
+      loadSystemUsers();
+    }, 200);
+  </script>
+</body>
+</html>

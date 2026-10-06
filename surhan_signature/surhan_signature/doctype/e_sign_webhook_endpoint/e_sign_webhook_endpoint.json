@@ -1,0 +1,155 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-20 21:19:56.942284",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "dry_run",
+  "title",
+  "target_url",
+  "secret",
+  "events",
+  "timeout_seconds",
+  "max_attempts",
+  "last_status",
+  "last_delivery_at"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "default": "0",
+   "fieldname": "dry_run",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Dry Run"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_url",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target URL",
+   "reqd": 1
+  },
+  {
+   "fieldname": "secret",
+   "fieldtype": "Password",
+   "label": "Secret"
+  },
+  {
+   "description": "JSON array. Use [\"*\"] for all events.",
+   "fieldname": "events",
+   "fieldtype": "Code",
+   "label": "Events",
+   "options": "JSON"
+  },
+  {
+   "default": "10",
+   "fieldname": "timeout_seconds",
+   "fieldtype": "Int",
+   "label": "Timeout Seconds"
+  },
+  {
+   "default": "3",
+   "fieldname": "max_attempts",
+   "fieldtype": "Int",
+   "label": "Max Attempts"
+  },
+  {
+   "fieldname": "last_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Last Status",
+   "options": "\nPending\nDelivered\nFailed\nSkipped",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_delivery_at",
+   "fieldtype": "Datetime",
+   "label": "Last Delivery At",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-20 21:19:56.942284",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Webhook Endpoint",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Administrator",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Manager",
+   "select": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Auditor",
+   "select": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Signature Viewer",
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

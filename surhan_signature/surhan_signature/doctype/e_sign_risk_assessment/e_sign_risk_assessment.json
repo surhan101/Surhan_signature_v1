@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-20 22:08:04.267872",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "envelope",
+  "certificate_no",
+  "envelope_status",
+  "risk_score",
+  "risk_level",
+  "assessment_status",
+  "assessed_at",
+  "engine_version",
+  "risk_factors_count",
+  "risk_factors_json",
+  "recommended_actions_json",
+  "details_json",
+  "result_sha256"
+ ],
+ "fields": [
+  {
+   "fieldname": "envelope",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Envelope",
+   "options": "E-Sign Envelope"
+  },
+  {
+   "fieldname": "certificate_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Certificate No",
+   "options": "E-Sign Certificate"
+  },
+  {
+   "fieldname": "envelope_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Envelope Status"
+  },
+  {
+   "fieldname": "risk_score",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Risk Score"
+  },
+  {
+   "fieldname": "risk_level",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Risk Level",
+   "options": "Low\nMedium\nHigh\nCritical"
+  },
+  {
+   "fieldname": "assessment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Assessment Status",
+   "options": "Passed\nWarning\nFailed"
+  },
+  {
+   "fieldname": "assessed_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Assessed At"
+  },
+  {
+   "default": "22.0-rule-based",
+   "fieldname": "engine_version",
+   "fieldtype": "Data",
+   "label": "Engine Version"
+  },
+  {
+   "fieldname": "risk_factors_count",
+   "fieldtype": "Int",
+   "label": "Risk Factors Count"
+  },
+  {
+   "fieldname": "risk_factors_json",
+   "fieldtype": "Code",
+   "label": "Risk Factors JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "recommended_actions_json",
+   "fieldtype": "Code",
+   "label": "Recommended Actions JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "details_json",
+   "fieldtype": "Code",
+   "label": "Details JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "result_sha256",
+   "fieldtype": "Data",
+   "label": "Result SHA256",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-20 22:08:04.267872",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Risk Assessment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Administrator",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Manager",
+   "select": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Auditor",
+   "select": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Signature Viewer",
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

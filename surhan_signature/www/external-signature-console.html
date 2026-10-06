@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>External Signature Console | Surhan Signature</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.20), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.16), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      color: #9fb0c6;
+      line-height: 1.65;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button, a.btn {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: #edf5ff;
+      padding: 10px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover, a.btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .card {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      min-width: 0;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      color: #dce8ff;
+      font-size: 15px;
+    }
+
+    .num {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .muted {
+      color: #9fb0c6;
+      font-size: 13px;
+    }
+
+    .panel {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      margin: 16px 0;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1050px;
+    }
+
+    th, td {
+      padding: 10px 9px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      color: #9fb0c6;
+      font-weight: 800;
+    }
+
+    td {
+      color: #edf5ff;
+    }
+
+    .badge {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 9px;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 12px;
+      font-weight: 850;
+      margin: 2px;
+      white-space: nowrap;
+    }
+
+    .Completed, .Valid, .Sent {
+      color: #35d399;
+      border-color: rgba(53,211,153,0.45);
+    }
+
+    .InProgress, .Pending, .DryRun {
+      color: #ffd166;
+      border-color: rgba(255,209,102,0.45);
+    }
+
+    .Rejected, .Failed, .Error, .Invalid {
+      color: #ff6b6b;
+      border-color: rgba(255,107,107,0.45);
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .actions button, .actions a {
+      font-size: 12px;
+      padding: 7px 9px;
+      border-radius: 10px;
+    }
+
+    .raw {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow: auto;
+      max-height: 420px;
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #d8e7ff;
+    }
+
+    @media (max-width: 1000px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>External Signature Console</h1>
+    <p>Operational control center for external signature systems, requests, callbacks, certificates, signed PDFs, and verification status.</p>
+
+    <div class="toolbar">
+      <button onclick="loadSummary()">Refresh Summary</button>
+      <button onclick="loadRequests()">Load Requests</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/external-signature-gateway" target="_blank">Gateway Docs</a>
+      <a class="btn" href="/app/internal-signature-external-system" target="_blank">External Systems</a>
+      <a class="btn" href="/app/internal-signature-external-request" target="_blank">External Requests</a>
+      <a class="btn" href="/signature-dashboard" target="_blank">Signature Dashboard</a>
+    </div>
+
+    <div id="cards" class="grid"></div>
+
+    <div class="panel">
+      <h3>External Requests</h3>
+      <div id="requests">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output" class="raw">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function safeClass(value) {
+      return String(value || "")
+        .replace(/\s+/g, "")
+        .replace(/[^a-zA-Z0-9_-]/g, "");
+    }
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+          }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args = {}) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args)
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function renderCards(summary) {
+      const counts = summary.counts || {};
+      const gateway = summary.gateway_status_counts || {};
+      const callback = summary.callback_status_counts || {};
+
+      const cards = [
+        ["External Systems", counts.total_systems || 0, "Active: " + (counts.active_systems || 0)],
+        ["External Requests", counts.total_requests || 0, "All gateway requests"],
+        ["Completed", gateway.Completed || 0, "Completed gateway workflows"],
+        ["In Progress", gateway["In Progress"] || 0, "Pending external workflows"],
+        ["Callback Dry Run", callback["Dry Run"] || 0, "Dry-run callbacks"],
+        ["Callback Failed", callback.Failed || 0, "Failed callbacks"],
+        ["Certificates", counts.total_certificates || 0, "Generated certificates"],
+        ["Ready", summary.ready ? "YES" : "NO", summary.blockers && summary.blockers.length ? summary.blockers.join(", ") : "No blockers"]
+      ];
+
+      document.getElementById("cards").innerHTML = cards.map(c => `
+        <div class="card">
+          <h3>${esc(c[0])}</h3>
+          <div class="num">${esc(c[1])}</div>
+          <div class="muted">${esc(c[2])}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderRequests(data) {
+      const rows = data.items || [];
+
+      if (!rows.length) {
+        document.getElementById("requests").innerHTML = "<p class='muted'>No external gateway requests found.</p>";
+        return;
+      }
+
+      document.getElementById("requests").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Gateway Request</th>
+              <th>External Ref</th>
+              <th>Document</th>
+              <th>Status</th>
+              <th>Callback</th>
+              <th>Certificate / PDF</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>
+                  <strong>${esc(r.name)}</strong><br>
+                  <span class="muted">${esc(r.external_system || "")}</span>
+                </td>
+                <td>${esc(r.external_reference || "")}</td>
+                <td>
+                  ${esc(r.reference_doctype || "")}<br>
+                  <span class="muted">${esc(r.reference_name || "")}</span>
+                </td>
+                <td>
+                  <span class="badge ${safeClass(r.gateway_status)}">${esc(r.gateway_status || "")}</span>
+                </td>
+                <td>
+                  <span class="badge ${safeClass(r.callback_status)}">${esc(r.callback_status || "")}</span><br>
+                  <span class="muted">Attempts: ${esc(r.callback_attempts || 0)}</span>
+                </td>
+                <td>
+                  ${r.verification_code ? `<span class="badge Valid">Certificate</span>` : `<span class="badge Pending">No Cert</span>`}<br>
+                  ${r.signed_pdf_sha256 ? `<span class="muted">${esc(r.signed_pdf_sha256).slice(0, 18)}...</span>` : ""}
+                </td>
+                <td>
+                  <div class="actions">
+                    <button onclick="detail('${esc(r.name)}')">Detail</button>
+                    ${r.first_pending_action_url ? `<a class="btn" href="${esc(r.first_pending_action_url)}" target="_blank">Sign</a>` : ""}
+                    ${r.document_url ? `<a class="btn" href="${esc(r.document_url)}" target="_blank">Doc</a>` : ""}
+                    ${r.internal_verify_url ? `<a class="btn" href="${esc(r.internal_verify_url)}" target="_blank">Verify</a>` : ""}
+                    ${r.signed_pdf ? `<a class="btn" href="${esc(r.signed_pdf)}" target="_blank">PDF</a>` : ""}
+                    <button onclick="retryCallback('${esc(r.name)}')">Retry Callback</button>
+                    <button onclick="verifyCert('${esc(r.name)}')">Check Cert</button>
+                    <button onclick="generateCert('${esc(r.name)}')">Generate Cert</button>
+                  </div>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function loadSummary() {
+      try {
+        const data = await api("surhan_signature.api.phase26j_external_gateway_summary");
+        renderCards(data);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function loadRequests() {
+      try {
+        const data = await api("surhan_signature.api.phase26j_external_gateway_requests", { limit: 50 });
+        renderRequests(data);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function detail(name) {
+      try {
+        const data = await api("surhan_signature.api.phase26j_external_gateway_request_detail", { gateway_request: name });
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function retryCallback(name) {
+      try {
+        const data = await api("surhan_signature.api.phase26j_retry_external_callback", { gateway_request: name });
+        log(data);
+        await loadRequests();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function verifyCert(name) {
+      try {
+        const data = await api("surhan_signature.api.phase26j_verify_gateway_certificate", { gateway_request: name });
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function generateCert(name) {
+      try {
+        const data = await api("surhan_signature.api.phase26j_generate_missing_certificate", { gateway_request: name });
+        log(data);
+        await loadRequests();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase26j_export_external_console_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function boot() {
+      await loadSummary();
+      await loadRequests();
+    }
+
+    boot();
+  </script>
+</body>
+</html>

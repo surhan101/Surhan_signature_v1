@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature Production Readiness</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, rgba(16,185,129,0.18), transparent 30%),
+                  linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button, a.btn {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: #edf5ff;
+      padding: 10px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .card, .panel {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      min-width: 0;
+    }
+
+    .panel { margin: 16px 0; }
+
+    .card h3 {
+      margin: 0 0 8px;
+      color: #dce8ff;
+      font-size: 15px;
+    }
+
+    .num {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .muted { color: #9fb0c6; font-size: 13px; }
+
+    .ok { color: #35d399; }
+    .warn { color: #ffd166; }
+    .bad { color: #ff6b6b; }
+
+    .raw {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow: auto;
+      max-height: 520px;
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #d8e7ff;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature Production Readiness</h1>
+    <p>Final hardening dashboard for internal signatures, external gateway security, certificates, and production blockers.</p>
+
+    <div class="toolbar">
+      <button onclick="loadReport(false)">Refresh Report</button>
+      <button onclick="loadReport(true)">Run Cleanup + Report</button>
+      <button onclick="exportReport()">Export Report</button>
+      <a class="btn" href="/signature-dashboard" target="_blank">Dashboard</a>
+      <a class="btn" href="/internal-signature-rollout" target="_blank">Rollout</a>
+      <a class="btn" href="/external-signature-console" target="_blank">External Console</a>
+    </div>
+
+    <div id="cards" class="grid"></div>
+
+    <div class="panel">
+      <h3>Report</h3>
+      <div id="output" class="raw">Loading...</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function render(report) {
+      const readiness = report.readiness || {};
+      const counts = report.counts || {};
+      const external = report.external_gateway_security || {};
+      const cert = report.recent_certificate_verification || {};
+
+      const cards = [
+        ["Staging Ready", readiness.staging_ready ? "YES" : "NO", readiness.staging_ready ? "ok" : "bad"],
+        ["Production Ready", readiness.production_ready ? "YES" : "NO", readiness.production_ready ? "ok" : "warn"],
+        ["Blockers", readiness.blocker_count || 0, (readiness.blocker_count || 0) ? "bad" : "ok"],
+        ["Warnings", readiness.warning_count || 0, (readiness.warning_count || 0) ? "warn" : "ok"],
+        ["Profiles", counts.active_signature_profiles || 0, "ok"],
+        ["Policies", counts.active_policies || 0, "ok"],
+        ["External Active", external.active_count || 0, "warn"],
+        ["Recent Certs Valid", (cert.valid_count || 0) + "/" + (cert.count || 0), cert.invalid_count ? "bad" : "ok"]
+      ];
+
+      document.getElementById("cards").innerHTML = cards.map(c => (
+        '<div class="card"><h3>' + esc(c[0]) + '</h3><div class="num ' + c[2] + '">' + esc(c[1]) + '</div></div>'
+      )).join("");
+
+      document.getElementById("output").textContent = JSON.stringify(report, null, 2);
+    }
+
+    async function loadReport(cleanup) {
+      try {
+        document.getElementById("output").textContent = "Loading...";
+        const data = await api("surhan_signature.api.phase26o_production_readiness_report", {
+          run_cleanup: cleanup ? 1 : 0
+        });
+        render(data);
+      } catch (e) {
+        document.getElementById("output").textContent = String(e);
+      }
+    }
+
+    async function exportReport() {
+      try {
+        const data = await api("surhan_signature.api.phase26o_export_production_readiness_report", {
+          run_cleanup: 0
+        });
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById("output").textContent = String(e);
+      }
+    }
+
+    loadReport(false);
+  </script>
+</body>
+</html>

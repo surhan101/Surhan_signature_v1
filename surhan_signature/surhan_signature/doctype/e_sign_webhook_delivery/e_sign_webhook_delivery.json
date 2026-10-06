@@ -1,0 +1,178 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-20 21:19:58.412993",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "endpoint",
+  "event_type",
+  "status",
+  "envelope",
+  "certificate_no",
+  "target_url",
+  "attempt_count",
+  "http_status",
+  "request_sha256",
+  "payload_json",
+  "headers_json",
+  "response_text",
+  "error",
+  "delivered_at",
+  "next_retry_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "endpoint",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Endpoint",
+   "options": "E-Sign Webhook Endpoint"
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Event Type"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nDelivered\nFailed\nSkipped"
+  },
+  {
+   "fieldname": "envelope",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Envelope",
+   "options": "E-Sign Envelope"
+  },
+  {
+   "fieldname": "certificate_no",
+   "fieldtype": "Link",
+   "label": "Certificate No",
+   "options": "E-Sign Certificate"
+  },
+  {
+   "fieldname": "target_url",
+   "fieldtype": "Data",
+   "label": "Target URL"
+  },
+  {
+   "default": "0",
+   "fieldname": "attempt_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Attempt Count"
+  },
+  {
+   "fieldname": "http_status",
+   "fieldtype": "Int",
+   "label": "HTTP Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_sha256",
+   "fieldtype": "Data",
+   "label": "Request SHA256",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payload_json",
+   "fieldtype": "Code",
+   "label": "Payload JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "headers_json",
+   "fieldtype": "Code",
+   "label": "Headers JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "response_text",
+   "fieldtype": "Small Text",
+   "label": "Response Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Small Text",
+   "label": "Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivered_at",
+   "fieldtype": "Datetime",
+   "label": "Delivered At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "next_retry_at",
+   "fieldtype": "Datetime",
+   "label": "Next Retry At",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-20 21:19:58.412993",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Webhook Delivery",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Administrator",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Manager",
+   "select": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Auditor",
+   "select": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Signature Viewer",
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

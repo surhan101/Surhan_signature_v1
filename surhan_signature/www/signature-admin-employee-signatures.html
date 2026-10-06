@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Admin Employee Signatures</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1450px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button, a.btn, input, select, textarea {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: #edf5ff;
+      padding: 10px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    button { cursor: pointer; }
+    button:hover, a.btn:hover { background: rgba(255,255,255,0.16); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      overflow: auto;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:760px;
+    }
+
+    th, td {
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      vertical-align:top;
+      font-size:12px;
+      text-align:left;
+    }
+
+    th { color:#9fb0c6; font-weight:900; }
+    td { color:#edf5ff; }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:11px;
+      font-weight:900;
+      margin:2px;
+      white-space:nowrap;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .warn { color:#ffd166; border-color:rgba(255,209,102,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .form-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .field {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .field label {
+      color:#9fb0c6;
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .field.full { grid-column:1 / -1; }
+
+    .checks {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+      margin: 12px 0;
+    }
+
+    .check {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      color:#edf5ff;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:12px;
+      padding:8px;
+      background:rgba(255,255,255,0.06);
+    }
+
+    .check input { width:auto; padding:0; }
+
+    canvas {
+      width:100%;
+      height:280px;
+      display:block;
+      background:#ffffff;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.22);
+      touch-action:none;
+      cursor:crosshair;
+    }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:320px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+      margin-top:16px;
+    }
+
+    @media (max-width: 1000px) {
+      .grid { grid-template-columns:1fr; }
+      .checks { grid-template-columns:1fr; }
+      .form-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Admin Employee Signatures</h1>
+    <p>Admin-only signature capture and authority control for all employees. Employees do not register signatures here; the signature administrator does.</p>
+
+    <div class="toolbar">
+      <button onclick="loadData()">Refresh</button>
+      <button onclick="seedEmployees()">Seed From Employees</button>
+      <button onclick="restrictPermissions()">Enforce Admin-Only Profiles</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/signature-admin-control" target="_blank">Admin Control</a>
+      <a class="btn" href="/app/signature-employee-control" target="_blank">Employee Control List</a>
+      <a class="btn" href="/app/employee-signature-profile" target="_blank">Profile List</a>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Employees</h3>
+        <div class="toolbar">
+          <input id="search" placeholder="Search user / employee / name..." style="min-width:260px" oninput="filterTable()">
+        </div>
+        <div id="employees">Loading...</div>
+      </div>
+
+      <div class="panel">
+        <h3>Register / Replace Signature</h3>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>User</label>
+            <input id="employee_user" placeholder="user@example.com">
+          </div>
+
+          <div class="field">
+            <label>Employee</label>
+            <input id="employee" placeholder="HR-EMP-00001">
+          </div>
+
+          <div class="field">
+            <label>Full Name</label>
+            <input id="full_name">
+          </div>
+
+          <div class="field">
+            <label>Designation</label>
+            <input id="designation">
+          </div>
+
+          <div class="field">
+            <label>Department</label>
+            <input id="department">
+          </div>
+
+          <div class="field">
+            <label>Max Sequence Level</label>
+            <input id="max_sequence_level" type="number" min="1" value="1">
+          </div>
+        </div>
+
+        <div class="checks">
+          <label class="check"><input id="is_active" type="checkbox" checked> Active</label>
+          <label class="check"><input id="can_receive_requests" type="checkbox" checked> Receive Requests</label>
+          <label class="check"><input id="can_use_saved_signature" type="checkbox" checked> Saved Signature</label>
+          <label class="check"><input id="can_draw_direction" type="checkbox"> Draw Direction</label>
+          <label class="check"><input id="can_write_direction_text" type="checkbox"> Text Direction</label>
+          <label class="check"><input id="can_reject" type="checkbox"> Reject / Return</label>
+          <label class="check"><input id="can_override_sequence" type="checkbox"> Override Sequence</label>
+          <label class="check"><input id="can_manage_external_requests" type="checkbox"> Manage External</label>
+          <label class="check"><input id="can_view_signature_audit" type="checkbox"> View Audit</label>
+          <label class="check"><input id="signature_locked" type="checkbox"> Lock Signature</label>
+        </div>
+
+        <div class="field full">
+          <label>Admin Notes</label>
+          <textarea id="admin_notes" rows="2"></textarea>
+        </div>
+
+        <h4>Signature Canvas</h4>
+        <div class="toolbar">
+          <button onclick="undoStroke()">Undo</button>
+          <button onclick="clearCanvas()">Clear</button>
+          <label style="display:flex;align-items:center;gap:8px;color:#9fb0c6;font-weight:900">
+            Pen
+            <input id="pen" type="range" min="1" max="8" value="3">
+          </label>
+        </div>
+
+        <canvas id="signature_canvas"></canvas>
+
+        <div class="toolbar">
+          <button onclick="saveSignature()">Save Signature + Apply Permissions</button>
+          <button onclick="applyPermissionsOnly()">Apply Permissions Only</button>
+        </div>
+
+        <div id="output" class="raw">Ready.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+    let EMPLOYEES = [];
+    let strokes = [];
+    let current = null;
+    let drawing = false;
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function renderEmployees(rows) {
+      if (!rows.length) {
+        document.getElementById("employees").innerHTML = "<p>No employee controls found.</p>";
+        return;
+      }
+
+      document.getElementById("employees").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Name</th>
+              <th>Signature</th>
+              <th>Permissions</th>
+              <th>Select</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((r, i) => `
+              <tr>
+                <td>${esc(r.employee_user)}<br><span style="color:#9fb0c6">${esc(r.employee || "")}</span></td>
+                <td><strong>${esc(r.full_name || "")}</strong><br><span style="color:#9fb0c6">${esc(r.designation || "")} ${r.department ? " / " + esc(r.department) : ""}</span></td>
+                <td>
+                  <span class="badge ${r.signature_status === "Registered" ? "ok" : "warn"}">${esc(r.signature_status || "")}</span><br>
+                  <span style="color:#9fb0c6">${esc(r.signature_hash_prefix || "")}</span>
+                </td>
+                <td>
+                  <span class="badge ${r.can_receive_requests ? "ok" : "bad"}">Receive</span>
+                  <span class="badge ${r.can_use_saved_signature ? "ok" : "warn"}">Saved</span>
+                  <span class="badge ${r.can_draw_direction ? "ok" : "warn"}">Draw</span>
+                  <span class="badge ${r.can_write_direction_text ? "ok" : "warn"}">Text</span>
+                  <span class="badge ${r.can_reject ? "ok" : "warn"}">Reject</span>
+                </td>
+                <td><button onclick="selectEmployee(${i})">Select</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function filterTable() {
+      const q = document.getElementById("search").value.toLowerCase().trim();
+
+      if (!q) {
+        renderEmployees(EMPLOYEES);
+        return;
+      }
+
+      renderEmployees(EMPLOYEES.filter(r =>
+        String(r.employee_user || "").toLowerCase().includes(q)
+        || String(r.employee || "").toLowerCase().includes(q)
+        || String(r.full_name || "").toLowerCase().includes(q)
+        || String(r.department || "").toLowerCase().includes(q)
+      ));
+    }
+
+    function setChecked(id, value) {
+      document.getElementById(id).checked = !!Number(value || 0);
+    }
+
+    function selectEmployee(index) {
+      const r = EMPLOYEES[index];
+      if (!r) return;
+
+      document.getElementById("employee_user").value = r.employee_user || "";
+      document.getElementById("employee").value = r.employee || "";
+      document.getElementById("full_name").value = r.full_name || "";
+      document.getElementById("designation").value = r.designation || "";
+      document.getElementById("department").value = r.department || "";
+      document.getElementById("max_sequence_level").value = r.max_sequence_level || 1;
+
+      setChecked("is_active", r.is_active);
+      setChecked("can_receive_requests", r.can_receive_requests);
+      setChecked("can_use_saved_signature", r.can_use_saved_signature);
+      setChecked("can_draw_direction", r.can_draw_direction);
+      setChecked("can_write_direction_text", r.can_write_direction_text);
+      setChecked("can_reject", r.can_reject);
+      setChecked("can_override_sequence", r.can_override_sequence);
+      setChecked("can_manage_external_requests", r.can_manage_external_requests);
+      setChecked("can_view_signature_audit", r.can_view_signature_audit);
+
+      log(r);
+    }
+
+    async function loadData() {
+      try {
+        const data = await api("surhan_signature.api.phase27b_employee_signature_admin_data", { limit: 500 });
+        EMPLOYEES = data.items || [];
+        renderEmployees(EMPLOYEES);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function seedEmployees() {
+      try {
+        const data = await api("surhan_signature.api.phase27b_seed_employee_controls_from_employees", { limit: 500 });
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function restrictPermissions() {
+      try {
+        const data = await api("surhan_signature.api.phase27b_restrict_employee_signature_profile_permissions");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    function getValues() {
+      return {
+        employee_user: document.getElementById("employee_user").value,
+        employee: document.getElementById("employee").value,
+        full_name: document.getElementById("full_name").value,
+        designation: document.getElementById("designation").value,
+        department: document.getElementById("department").value,
+        is_active: document.getElementById("is_active").checked ? 1 : 0,
+        can_receive_requests: document.getElementById("can_receive_requests").checked ? 1 : 0,
+        can_use_saved_signature: document.getElementById("can_use_saved_signature").checked ? 1 : 0,
+        can_draw_direction: document.getElementById("can_draw_direction").checked ? 1 : 0,
+        can_write_direction_text: document.getElementById("can_write_direction_text").checked ? 1 : 0,
+        can_reject: document.getElementById("can_reject").checked ? 1 : 0,
+        can_override_sequence: document.getElementById("can_override_sequence").checked ? 1 : 0,
+        can_manage_external_requests: document.getElementById("can_manage_external_requests").checked ? 1 : 0,
+        can_view_signature_audit: document.getElementById("can_view_signature_audit").checked ? 1 : 0,
+        signature_locked: document.getElementById("signature_locked").checked ? 1 : 0,
+        max_sequence_level: Number(document.getElementById("max_sequence_level").value || 1),
+        admin_notes: document.getElementById("admin_notes").value || ""
+      };
+    }
+
+    async function saveSignature() {
+      try {
+        if (!strokes.length) {
+          alert("Draw the employee signature first.");
+          return;
+        }
+
+        const values = getValues();
+        values.signature_data_url = canvas.toDataURL("image/png");
+
+        const data = await api("surhan_signature.api.phase27b_admin_register_employee_signature", values);
+        log(data);
+        clearCanvas();
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function applyPermissionsOnly() {
+      try {
+        const values = getValues();
+
+        if (!values.employee_user) {
+          alert("Select or enter employee user first.");
+          return;
+        }
+
+        const data = await api("surhan_signature.api.phase27b_apply_employee_control_permissions", {
+          employee_user: values.employee_user
+        });
+
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27b_export_admin_employee_signature_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    const canvas = document.getElementById("signature_canvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      redraw();
+    }
+
+    function point(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: +(e.clientX - rect.left).toFixed(2),
+        y: +(e.clientY - rect.top).toFixed(2)
+      };
+    }
+
+    function drawStroke(stroke) {
+      if (!stroke || stroke.length < 2) return;
+
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = Number(document.getElementById("pen").value || 3);
+
+      ctx.beginPath();
+      ctx.moveTo(stroke[0].x, stroke[0].y);
+
+      for (let i = 1; i < stroke.length - 1; i++) {
+        const p0 = stroke[i];
+        const p1 = stroke[i + 1];
+        const mx = (p0.x + p1.x) / 2;
+        const my = (p0.y + p1.y) / 2;
+        ctx.quadraticCurveTo(p0.x, p0.y, mx, my);
+      }
+
+      const last = stroke[stroke.length - 1];
+      ctx.lineTo(last.x, last.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function redraw() {
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      for (const s of strokes) drawStroke(s);
+      if (current) drawStroke(current);
+    }
+
+    function start(e) {
+      e.preventDefault();
+      drawing = true;
+      current = [point(e)];
+    }
+
+    function move(e) {
+      if (!drawing || !current) return;
+      e.preventDefault();
+
+      const p = point(e);
+      const last = current[current.length - 1];
+      const dx = p.x - last.x;
+      const dy = p.y - last.y;
+
+      if (Math.sqrt(dx * dx + dy * dy) < 1.3) return;
+
+      current.push(p);
+      redraw();
+    }
+
+    function end(e) {
+      if (!drawing || !current) return;
+      e.preventDefault();
+
+      drawing = false;
+
+      if (current.length > 1) strokes.push(current);
+
+      current = null;
+      redraw();
+    }
+
+    function undoStroke() {
+      strokes.pop();
+      redraw();
+    }
+
+    function clearCanvas() {
+      strokes = [];
+      current = null;
+      redraw();
+    }
+
+    canvas.addEventListener("pointerdown", start);
+    canvas.addEventListener("pointermove", move);
+    canvas.addEventListener("pointerup", end);
+    canvas.addEventListener("pointercancel", end);
+    canvas.addEventListener("pointerleave", function(e) {
+      if (drawing) end(e);
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    loadData();
+  </script>
+</body>
+</html>

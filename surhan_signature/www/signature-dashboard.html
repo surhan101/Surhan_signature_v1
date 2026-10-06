@@ -1,0 +1,964 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Surhan Signature Dashboard{% endblock %}
+
+{% block page_content %}
+<div class="sigdash">
+  <div class="sigdash-shell">
+    <div class="sigdash-header">
+      <div>
+        <div class="sigdash-kicker">Surhan Signature</div>
+        <h1>Signature Dashboard</h1>
+        <p>Monitor envelopes, verify certificates, manage production readiness, and control integrations.</p>
+      </div>
+      <button class="sigdash-btn" id="refresh-dashboard">Refresh</button>
+    </div>
+
+    <div class="sigdash-grid two">
+      <div id="readiness-card" class="sigdash-card"></div>
+      <div id="email-status" class="sigdash-card"></div>
+    </div>
+
+    <div class="sigdash-card">
+      <h3>Production Controls</h3>
+      <div class="sigdash-actions">
+        <button class="sigdash-btn" id="btn-readiness">Run Readiness Report</button>
+        <button class="sigdash-btn secondary" id="btn-disable-dev">Disable Dev Outputs</button>
+        <button class="sigdash-btn warning" id="btn-enable-dev">Enable Dev Outputs</button>
+      </div>
+
+      <div class="sigdash-inline-form">
+        <input id="test-email" type="email" placeholder="recipient@example.com">
+        <button class="sigdash-btn" id="btn-test-email">Send Test Email</button>
+      </div>
+
+      <div class="sigdash-inline-form">
+        <input id="verify-cert" type="text" placeholder="ESIGN-CERT-2026-00004">
+        <button class="sigdash-btn" id="btn-verify-cert">Verify Certificate</button>
+      </div>
+    </div>
+
+    <div class="sigdash-card">
+      <h3>Webhook Control Center</h3>
+      <p class="muted">Create dry-run endpoints, send test events, and inspect delivery logs.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="webhook-title" type="text" placeholder="Dry Run Integration Webhook">
+        <input id="webhook-url" type="text" placeholder="https://example.com/surhan-webhook">
+      </div>
+
+      <div class="sigdash-inline-form">
+        <input id="webhook-events" type="text" value="test.ping,recipient.signed,envelope.completed">
+        <label class="checkline">
+          <input id="webhook-dry-run" type="checkbox" checked>
+          Dry Run
+        </label>
+        <button class="sigdash-btn" id="btn-create-webhook">Create Endpoint</button>
+        <button class="sigdash-btn secondary" id="btn-list-webhooks">List Endpoints</button>
+      </div>
+
+      <div class="sigdash-inline-form">
+        <input id="webhook-envelope" type="text" value="ESIGN-ENV-2026-00008" placeholder="ESIGN-ENV-2026-00008">
+        <button class="sigdash-btn" id="btn-test-webhook">Send Test Webhook</button>
+        <button class="sigdash-btn secondary" id="btn-webhook-summary">Delivery Summary</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Compliance Center</h3>
+      <p class="muted">Generate legal/technical compliance reports and export JSON evidence summaries.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="compliance-envelope" type="text" value="ESIGN-ENV-2026-00008" placeholder="ESIGN-ENV-2026-00008">
+        <button class="sigdash-btn" id="btn-compliance-report">Compliance Report</button>
+        <button class="sigdash-btn secondary" id="btn-export-compliance">Export Compliance JSON</button>
+        <button class="sigdash-btn warning" id="btn-system-health">System Health</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Production Release Gate</h3>
+      <p class="muted">Run strict release checks before go-live. This does not change production settings.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="release-base-url" type="text" placeholder="https://sign.your-domain.com">
+        <button class="sigdash-btn" id="btn-set-base-url">Set Base URL</button>
+      </div>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-release-gate">Run Release Gate</button>
+        <button class="sigdash-btn secondary" id="btn-export-release-gate">Export Release Gate JSON</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Backup / Restore / Monitoring Center</h3>
+      <p class="muted">Review backup status, system monitoring signals, and export restore runbook.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-monitoring-status">Monitoring Snapshot</button>
+        <button class="sigdash-btn secondary" id="btn-backup-runbook">Backup / Restore Runbook</button>
+        <button class="sigdash-btn warning" id="btn-export-backup-runbook">Export Runbook JSON</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Automated Test Center</h3>
+      <p class="muted">Run non-destructive Unit / API / Security / Compliance smoke tests and export reports.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-run-safe-tests">Run Safe Test Suite</button>
+        <button class="sigdash-btn secondary" id="btn-run-full-tests">Run Full Test Suite</button>
+        <button class="sigdash-btn secondary" id="btn-latest-tests">Latest Test Runs</button>
+        <button class="sigdash-btn warning" id="btn-export-test-report">Export Latest Test Report</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>AI Risk Center</h3>
+      <p class="muted">Rule-based risk scoring for envelopes, security events, certificate integrity, webhooks, and pending status.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="risk-envelope" type="text" value="ESIGN-ENV-2026-00008" placeholder="ESIGN-ENV-2026-00008">
+        <button class="sigdash-btn" id="btn-calc-risk">Calculate Risk</button>
+        <button class="sigdash-btn secondary" id="btn-export-risk">Export Risk JSON</button>
+      </div>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn secondary" id="btn-risk-summary">Risk Dashboard Summary</button>
+        <button class="sigdash-btn secondary" id="btn-current-risk-snapshot">Current Risk Snapshot</button>
+        <button class="sigdash-btn warning" id="btn-risk-release-gate">Risk Release Gate</button>
+        <button class="sigdash-btn secondary" id="btn-test-suite-risk">Test Suite + Risk</button>
+        <button class="sigdash-btn warning" id="btn-assess-all-risks">Assess All Envelopes</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Professional UI Console</h3>
+      <p class="muted">Open the unified professional console and frontend integration API contract.</p>
+      <div class="sigdash-actions" style="margin-top:12px">
+        <a class="sigdash-btn" href="/signature-console" target="_blank">Open Signature Console</a>
+        <button class="sigdash-btn secondary" id="btn-ui-manifest">UI Manifest</button>
+        <button class="sigdash-btn secondary" id="btn-ui-contract">Frontend API Contract</button>
+        <button class="sigdash-btn warning" id="btn-export-ui-manifest">Export UI Manifest JSON</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>QR Verification Center</h3>
+      <p class="muted">Generate and verify QR artifacts for certificate verification.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="qr-certificate-no" type="text" value="ESIGN-CERT-2026-00004" placeholder="ESIGN-CERT-2026-00004">
+        <button class="sigdash-btn" id="btn-generate-cert-qr">Generate QR</button>
+        <button class="sigdash-btn secondary" id="btn-verify-cert-qr">Verify QR</button>
+        <button class="sigdash-btn secondary" id="btn-public-verify-bundle">Public Verify Bundle</button>
+        <button class="sigdash-btn secondary" id="btn-admin-verify-bundle">Admin Verify Bundle</button>
+      </div>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn secondary" id="btn-generate-all-cert-qr">Generate All Certificate QR</button>
+        <button class="sigdash-btn secondary" id="btn-cert-qr-status">QR Status</button>
+        <button class="sigdash-btn warning" id="btn-export-cert-qr-manifest">Export QR Manifest</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Production Finalization Center</h3>
+      <p class="muted">Final go-live checklist, smoke checks, non-production envelope review, and manifest export.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-final-smoke-check">Final Smoke Check</button>
+        <button class="sigdash-btn secondary" id="btn-go-live-checklist">Go-Live Checklist</button>
+        <button class="sigdash-btn secondary" id="btn-final-snapshot">Final Snapshot</button>
+        <button class="sigdash-btn secondary" id="btn-non-prod-envelopes">Review Test/Pending Envelopes</button>
+        <button class="sigdash-btn warning" id="btn-export-go-live-manifest">Export Go-Live Manifest</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Production Environment Control</h3>
+      <p class="muted">Dry-run go-live controls for HTTPS domain, email readiness, developer mode, and final environment blockers.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="prod-public-base-url" type="text" placeholder="https://sign.example.com">
+        <button class="sigdash-btn" id="btn-prod-env-matrix">Environment Matrix</button>
+      </div>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn secondary" id="btn-dry-run-go-live">Dry-run Go-Live</button>
+        <button class="sigdash-btn secondary" id="btn-go-live-commands">Generate Go-Live Commands</button>
+        <button class="sigdash-btn warning" id="btn-export-prod-env-manifest">Export Environment Manifest</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>LAN / Staging Mode</h3>
+      <p class="muted">Use this mode when no public domain is available. It prepares the system for internal network testing only.</p>
+
+      <div class="sigdash-inline-form">
+        <input id="staging-base-url" type="text" value="http://192.168.71.128" placeholder="http://192.168.71.128">
+        <button class="sigdash-btn" id="btn-set-staging-base-url">Set LAN Base URL</button>
+      </div>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn secondary" id="btn-staging-release-gate">Staging Release Gate</button>
+        <button class="sigdash-btn warning" id="btn-export-staging-manifest">Export Staging Manifest</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Employee Signature Profile</h3>
+      <p class="muted">Professional employee signature drawing studio with encrypted SVG, private PNG, vector audit, and versioned signature profile.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-my-signature-profile">Open My Signature Profile</button>
+        <button class="sigdash-btn secondary" id="btn-signature-profile-health">Signature Profile Health</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Internal Signature Permission Matrix</h3>
+      <p class="muted">Control who can use saved signatures, draw directions, reject, override sequence, and receive Ac Footer signature requests.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase26b-health">Permission Matrix Health</button>
+        <button class="sigdash-btn secondary" id="btn-my-signature-capabilities">My Signature Capabilities</button>
+        <button class="sigdash-btn secondary" id="btn-discover-ac-footer">Discover Ac Footer DocTypes</button>
+        <button class="sigdash-btn warning" id="btn-auto-create-ac-footer-policies">Auto-create Ac Footer Policies</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Ac Footer Document Signature Requests</h3>
+      <p class="muted">Create internal signature requests from Ac Footer signers, with sequential administrative flow and pending request notifications.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase26c-health">Document Signature Health</button>
+        <button class="sigdash-btn secondary" id="btn-my-pending-doc-signatures">My Pending Requests</button>
+        <button class="sigdash-btn secondary" id="btn-create-signature-demo-doc">Create Demo Document</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Document Signature Actions</h3>
+      <p class="muted">Approve using saved signature, save direction drawing/text, or reject/return a document signature request.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase26d-health">Action Health</button>
+        <button class="sigdash-btn secondary" id="btn-open-first-pending-action">Open First Pending Action</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>External Gateway Operations Console</h3>
+      <p class="muted">Monitor external systems, requests, callbacks, certificates, signed PDFs, and verification status.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase26j-console" onclick="window.open('/external-signature-console', '_blank')">Open External Gateway Console</button>
+        <button class="sigdash-btn secondary" onclick="window.open('/external-signature-gateway', '_blank')">Gateway Docs</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Real DocType Rollout</h3>
+      <p class="muted">Enable Ac Footer internal signatures on ERPNext/HRMS DocTypes with policies and form buttons.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase26k-rollout" onclick="window.open('/internal-signature-rollout', '_blank')">Open Rollout Console</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Production Readiness</h3>
+      <p class="muted">Final hardening report for internal signatures, external gateway security, certificates, and production blockers.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase26o-readiness" onclick="window.open('/signature-production-readiness', '_blank')">Open Production Readiness</button>
+      </div>
+    </div>
+
+    
+    <div class="sigdash-card">
+      <h3>Signature Admin Control Center</h3>
+      <p class="muted">One workspace and one admin screen for settings, DocTypes, employee signature authority, requests, certificates, gateway, and readiness.</p>
+
+      <div class="sigdash-actions" style="margin-top:12px">
+        <button class="sigdash-btn" id="btn-phase27a-admin-control" onclick="window.open('/signature-admin-control', '_blank')">Open Admin Control Center</button>
+      </div>
+    </div>
+
+    <div id="status-counts" class="sigdash-grid"></div>
+    <div id="envelopes" class="sigdash-list"></div>
+
+    <h3 class="sigdash-output-title">Output</h3>
+    <pre id="details" class="sigdash-details"></pre>
+  </div>
+</div>
+
+<style>
+.sigdash {
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding: 28px 0;
+}
+.sigdash-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+.sigdash-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: #fff;
+  padding: 26px;
+  border-radius: 22px;
+  margin-bottom: 18px;
+}
+.sigdash-header h1 {
+  color: #fff;
+  margin: 4px 0 6px;
+}
+.sigdash-header p {
+  margin: 0;
+  opacity: .85;
+}
+.sigdash-kicker {
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 12px;
+  opacity: .75;
+}
+.sigdash-card, .sigdash-envelope, .sigdash-details {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 30px rgba(15,23,42,.06);
+}
+.sigdash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.sigdash-grid.two {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+.sigdash-count {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+}
+.sigdash-count b {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.sigdash-count span {
+  font-size: 24px;
+  font-weight: 700;
+}
+.sigdash-envelope h3 {
+  margin: 0 0 8px;
+}
+.sigdash-meta {
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.sigdash-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sigdash-btn {
+  background: #111827;
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.sigdash-btn.secondary {
+  background: #334155;
+}
+.sigdash-btn.warning {
+  background: #92400e;
+}
+.sigdash-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.sigdash-details {
+  white-space: pre-wrap;
+  overflow: auto;
+  font-size: 12px;
+  max-height: 560px;
+}
+.sigdash-output-title {
+  margin: 14px 0 8px;
+}
+.sigdash-inline-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.sigdash-inline-form input[type="text"],
+.sigdash-inline-form input[type="email"] {
+  min-width: 280px;
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.checkline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.email-ok, .ready-ok {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+.email-warn, .ready-warn {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #e5e7eb;
+}
+.badge.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+.muted {
+  color: #64748b;
+  margin-top: -4px;
+}
+</style>
+
+<script>
+(function () {
+  function call(method, args) {
+    return frappe.call({ method, args: args || {} }).then(r => r.message);
+  }
+
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  function showDetails(obj) {
+    document.getElementById("details").textContent = JSON.stringify(obj, null, 2);
+  }
+
+  function renderReadiness(report) {
+    const card = document.getElementById("readiness-card");
+    card.className = "sigdash-card " + (report.production_ready ? "ready-ok" : "ready-warn");
+
+    const warnings = (report.warnings || []).map(w => `<li>${esc(w)}</li>`).join("");
+
+    card.innerHTML = `
+      <h3>Production Readiness</h3>
+      <p>
+        <span class="badge ${report.production_ready ? "ok" : "warn"}">
+          ${report.production_ready ? "Ready" : "Not Ready"}
+        </span>
+      </p>
+      <p><b>Developer Mode:</b> ${report.settings.developer_mode ? "Enabled" : "Disabled"}</p>
+      <p><b>Dev Links:</b> ${report.settings.expose_dev_signing_links ? "Visible" : "Hidden"}</p>
+      <p><b>Dev OTP:</b> ${report.settings.expose_dev_otp ? "Visible" : "Hidden"}</p>
+      <p><b>Base URL:</b> ${esc(report.settings.signing_base_url)}</p>
+      ${warnings ? `<ul>${warnings}</ul>` : `<p>No warnings.</p>`}
+    `;
+
+    const emailCard = document.getElementById("email-status");
+    emailCard.className = "sigdash-card " + (report.email.ready ? "email-ok" : "email-warn");
+    emailCard.innerHTML = `
+      <h3>Email Readiness</h3>
+      <p>
+        <span class="badge ${report.email.ready ? "ok" : "warn"}">
+          ${report.email.ready ? "Ready" : "Not Ready"}
+        </span>
+      </p>
+      <p>${esc(report.email.message)}</p>
+      <p><b>Outgoing:</b> ${esc(report.email.outgoing_count)}</p>
+      <p><b>Default Outgoing:</b> ${esc(report.email.default_outgoing_count)}</p>
+    `;
+  }
+
+  function renderSummary(data) {
+    const counts = document.getElementById("status-counts");
+    counts.innerHTML = data.status_counts.map(c => `
+      <div class="sigdash-count">
+        <b>${esc(c.status || "Unknown")}</b>
+        <span>${esc(c.count)}</span>
+      </div>
+    `).join("");
+
+    const list = document.getElementById("envelopes");
+    list.innerHTML = data.envelopes.map(e => `
+      <div class="sigdash-envelope">
+        <h3>${esc(e.name)} — ${esc(e.title)}</h3>
+        <div class="sigdash-meta">
+          Status: <b>${esc(e.status)}</b> |
+          Workflow: <b>${esc(e.workflow_type)}</b> |
+          Certificate: <b>${esc(e.certificate_no || "-")}</b> |
+          Expires: ${esc(e.expires_on || "-")}
+        </div>
+        <div class="sigdash-actions">
+          <button class="sigdash-btn secondary" data-action="details" data-env="${esc(e.name)}">Details</button>
+          <button class="sigdash-btn" data-action="send" data-env="${esc(e.name)}">Send Invites</button>
+          <button class="sigdash-btn secondary" data-action="webhooks" data-env="${esc(e.name)}">Webhook Logs</button>
+          ${e.certificate_no ? `<button class="sigdash-btn warning" data-action="verify" data-cert="${esc(e.certificate_no)}">Verify Certificate</button>` : ""}
+        </div>
+      </div>
+    `).join("");
+
+    document.querySelectorAll("[data-action]").forEach(btn => {
+      btn.addEventListener("click", async function () {
+        const action = this.dataset.action;
+        this.disabled = true;
+
+        try {
+          if (action === "details") {
+            showDetails(await call("surhan_signature.api.signature_dashboard_details", { envelope: this.dataset.env }));
+          }
+          if (action === "send") {
+            showDetails(await call("surhan_signature.api.dashboard_send_invites", { envelope: this.dataset.env }));
+            await load();
+          }
+          if (action === "webhooks") {
+            showDetails(await call("surhan_signature.api.webhook_delivery_summary", { envelope: this.dataset.env, limit: 50 }));
+          }
+          if (action === "verify") {
+            showDetails(await call("surhan_signature.api.dashboard_verify_certificate", { certificate_no: this.dataset.cert }));
+          }
+        } catch (e) {
+          showDetails({ ok: false, error: e.message || String(e) });
+        } finally {
+          this.disabled = false;
+        }
+      });
+    });
+  }
+
+  async function load() {
+    const readiness = await call("surhan_signature.api.production_readiness_report");
+    renderReadiness(readiness);
+
+    const data = await call("surhan_signature.api.signature_dashboard_summary", { limit: 30 });
+    renderSummary(data);
+  }
+
+  async function withButton(btn, fn) {
+    btn.disabled = true;
+    try {
+      const res = await fn();
+      showDetails(res);
+      await load();
+    } catch (e) {
+      showDetails({ ok: false, error: e.message || String(e) });
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById("refresh-dashboard").addEventListener("click", load);
+
+  document.getElementById("btn-readiness").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.production_readiness_report"));
+  });
+
+  document.getElementById("btn-disable-dev").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.disable_developer_outputs"));
+  });
+
+  document.getElementById("btn-enable-dev").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.enable_developer_outputs"));
+  });
+
+  document.getElementById("btn-test-email").addEventListener("click", function () {
+    const email = document.getElementById("test-email").value;
+    if (!email) {
+      showDetails({ ok: false, error: "Enter recipient email first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.send_test_signature_email", { recipient_email: email }));
+  });
+
+  document.getElementById("btn-verify-cert").addEventListener("click", function () {
+    const cert = document.getElementById("verify-cert").value;
+    if (!cert) {
+      showDetails({ ok: false, error: "Enter certificate number first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.verify_certificate", { certificate_no: cert }));
+  });
+
+  document.getElementById("btn-create-webhook").addEventListener("click", function () {
+    const title = document.getElementById("webhook-title").value || "Dashboard Webhook";
+    const target = document.getElementById("webhook-url").value || "https://example.com/surhan-webhook";
+    const events = document.getElementById("webhook-events").value || "test.ping,recipient.signed,envelope.completed";
+    const dryRun = document.getElementById("webhook-dry-run").checked ? 1 : 0;
+
+    withButton(this, () => call("surhan_signature.api.create_webhook_endpoint", {
+      title,
+      target_url: target,
+      events,
+      enabled: 1,
+      dry_run: dryRun
+    }));
+  });
+
+  document.getElementById("btn-list-webhooks").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.list_webhook_endpoints"));
+  });
+
+  document.getElementById("btn-test-webhook").addEventListener("click", function () {
+    const envelope = document.getElementById("webhook-envelope").value || null;
+    withButton(this, () => call("surhan_signature.api.test_webhook_event", { envelope }));
+  });
+
+  document.getElementById("btn-webhook-summary").addEventListener("click", function () {
+    const envelope = document.getElementById("webhook-envelope").value || null;
+    withButton(this, () => call("surhan_signature.api.webhook_delivery_summary", { envelope, limit: 50 }));
+  });
+
+
+  document.getElementById("btn-compliance-report").addEventListener("click", function () {
+    const envelope = document.getElementById("compliance-envelope").value;
+    if (!envelope) {
+      showDetails({ ok: false, error: "Enter envelope name first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.envelope_compliance_report", { envelope }));
+  });
+
+  document.getElementById("btn-export-compliance").addEventListener("click", function () {
+    const envelope = document.getElementById("compliance-envelope").value;
+    if (!envelope) {
+      showDetails({ ok: false, error: "Enter envelope name first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.export_envelope_compliance_json", { envelope }));
+  });
+
+  document.getElementById("btn-system-health").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.signature_system_health"));
+  });
+
+
+  document.getElementById("btn-release-gate").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.production_release_gate", { strict: 1 }));
+  });
+
+  document.getElementById("btn-export-release-gate").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_production_release_gate_json", { strict: 1 }));
+  });
+
+  document.getElementById("btn-set-base-url").addEventListener("click", function () {
+    const base_url = document.getElementById("release-base-url").value;
+    if (!base_url) {
+      showDetails({ ok: false, error: "Enter base URL first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.set_signature_base_url", { base_url }));
+  });
+
+
+  document.getElementById("btn-monitoring-status").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.backup_restore_monitoring_status"));
+  });
+
+  document.getElementById("btn-backup-runbook").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.backup_restore_runbook"));
+  });
+
+  document.getElementById("btn-export-backup-runbook").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_backup_restore_runbook_json"));
+  });
+
+
+  document.getElementById("btn-run-safe-tests").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.run_signature_test_suite", { mode: "safe" }));
+  });
+
+  document.getElementById("btn-run-full-tests").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.run_signature_test_suite", { mode: "full" }));
+  });
+
+  document.getElementById("btn-latest-tests").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.latest_signature_test_runs", { limit: 10 }));
+  });
+
+  document.getElementById("btn-export-test-report").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_signature_test_report_json"));
+  });
+
+
+  document.getElementById("btn-calc-risk").addEventListener("click", function () {
+    const envelope = document.getElementById("risk-envelope").value;
+    if (!envelope) {
+      showDetails({ ok: false, error: "Enter envelope name first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.calculate_envelope_risk", { envelope, save: 1 }));
+  });
+
+  document.getElementById("btn-export-risk").addEventListener("click", function () {
+    const envelope = document.getElementById("risk-envelope").value;
+    if (!envelope) {
+      showDetails({ ok: false, error: "Enter envelope name first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.export_envelope_risk_report_json", { envelope }));
+  });
+
+  document.getElementById("btn-risk-summary").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.risk_dashboard_summary", { limit: 20 }));
+  });
+
+  document.getElementById("btn-assess-all-risks").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.assess_all_envelope_risks", { limit: 100 }));
+  });
+
+
+  document.getElementById("btn-current-risk-snapshot").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.risk_current_snapshot", { limit: 100 }));
+  });
+
+  document.getElementById("btn-risk-release-gate").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.risk_release_gate", { refresh: 1, limit: 100 }));
+  });
+
+  document.getElementById("btn-test-suite-risk").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.run_signature_test_suite_with_risk", { mode: "safe" }));
+  });
+
+
+  document.getElementById("btn-ui-manifest").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.ui_integration_manifest"));
+  });
+
+  document.getElementById("btn-ui-contract").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.ui_frontend_api_contract"));
+  });
+
+  document.getElementById("btn-export-ui-manifest").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_ui_integration_manifest_json"));
+  });
+
+
+  document.getElementById("btn-generate-cert-qr").addEventListener("click", function () {
+    const certificate_no = document.getElementById("qr-certificate-no").value;
+    if (!certificate_no) {
+      showDetails({ ok: false, error: "Enter certificate number first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.generate_certificate_qr_artifacts", { certificate_no, force: 1 }));
+  });
+
+  document.getElementById("btn-verify-cert-qr").addEventListener("click", function () {
+    const certificate_no = document.getElementById("qr-certificate-no").value;
+    if (!certificate_no) {
+      showDetails({ ok: false, error: "Enter certificate number first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.verify_certificate_qr_artifacts", { certificate_no }));
+  });
+
+  document.getElementById("btn-generate-all-cert-qr").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.generate_all_certificate_qr_artifacts", { limit: 100, force: 1 }));
+  });
+
+  document.getElementById("btn-cert-qr-status").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.certificate_qr_status", { limit: 100 }));
+  });
+
+  document.getElementById("btn-export-cert-qr-manifest").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_certificate_qr_manifest_json"));
+  });
+
+
+  document.getElementById("btn-public-verify-bundle").addEventListener("click", function () {
+    const certificate_no = document.getElementById("qr-certificate-no").value;
+    if (!certificate_no) {
+      showDetails({ ok: false, error: "Enter certificate number first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.public_verify_certificate_bundle", { certificate_no }));
+  });
+
+  document.getElementById("btn-admin-verify-bundle").addEventListener("click", function () {
+    const certificate_no = document.getElementById("qr-certificate-no").value;
+    if (!certificate_no) {
+      showDetails({ ok: false, error: "Enter certificate number first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.admin_verify_certificate_bundle", { certificate_no }));
+  });
+
+
+  document.getElementById("btn-final-smoke-check").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.final_smoke_check"));
+  });
+
+  document.getElementById("btn-go-live-checklist").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.production_go_live_checklist"));
+  });
+
+  document.getElementById("btn-final-snapshot").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.production_final_snapshot"));
+  });
+
+  document.getElementById("btn-non-prod-envelopes").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.identify_non_production_envelopes", { limit: 200 }));
+  });
+
+  document.getElementById("btn-export-go-live-manifest").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_production_go_live_manifest_json"));
+  });
+
+
+  document.getElementById("btn-prod-env-matrix").addEventListener("click", function () {
+    const public_base_url = document.getElementById("prod-public-base-url").value;
+    withButton(this, () => call("surhan_signature.api.production_environment_matrix", { public_base_url }));
+  });
+
+  document.getElementById("btn-dry-run-go-live").addEventListener("click", function () {
+    const public_base_url = document.getElementById("prod-public-base-url").value;
+    withButton(this, () => call("surhan_signature.api.dry_run_production_go_live", { public_base_url }));
+  });
+
+  document.getElementById("btn-go-live-commands").addEventListener("click", function () {
+    const public_base_url = document.getElementById("prod-public-base-url").value;
+    if (!public_base_url) {
+      showDetails({ ok: false, error: "Enter public HTTPS base URL first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.production_go_live_commands", { public_base_url }));
+  });
+
+  document.getElementById("btn-export-prod-env-manifest").addEventListener("click", function () {
+    const public_base_url = document.getElementById("prod-public-base-url").value;
+    withButton(this, () => call("surhan_signature.api.export_production_environment_manifest_json", { public_base_url }));
+  });
+
+
+  document.getElementById("btn-set-staging-base-url").addEventListener("click", function () {
+    const base_url = document.getElementById("staging-base-url").value;
+    if (!base_url) {
+      showDetails({ ok: false, error: "Enter LAN base URL first." });
+      return;
+    }
+    withButton(this, () => call("surhan_signature.api.set_staging_lan_base_url", { base_url }));
+  });
+
+  document.getElementById("btn-staging-release-gate").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.staging_release_gate"));
+  });
+
+  document.getElementById("btn-export-staging-manifest").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.export_staging_release_manifest_json"));
+  });
+
+
+  document.getElementById("btn-my-signature-profile").addEventListener("click", function () {
+    window.open("/signature-profile", "_blank");
+  });
+
+  document.getElementById("btn-signature-profile-health").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.phase26a_signature_profile_health"));
+  });
+
+
+  document.getElementById("btn-phase26b-health").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.phase26b_permission_matrix_health"));
+  });
+
+  document.getElementById("btn-my-signature-capabilities").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.get_my_internal_signature_capabilities"));
+  });
+
+  document.getElementById("btn-discover-ac-footer").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.discover_ac_footer_doctypes", { limit: 200 }));
+  });
+
+  document.getElementById("btn-auto-create-ac-footer-policies").addEventListener("click", function () {
+    if (!confirm("Auto-create policies for discovered Ac Footer DocTypes?")) return;
+    withButton(this, () => call("surhan_signature.api.admin_auto_create_policies_for_ac_footer", { limit: 200 }));
+  });
+
+
+  document.getElementById("btn-phase26c-health").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.phase26c_document_signature_request_health"));
+  });
+
+  document.getElementById("btn-my-pending-doc-signatures").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.get_my_pending_document_signature_requests", { limit: 50 }));
+  });
+
+  document.getElementById("btn-create-signature-demo-doc").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.create_internal_signature_demo_document"));
+  });
+
+
+  document.getElementById("btn-phase26d-health").addEventListener("click", function () {
+    withButton(this, () => call("surhan_signature.api.phase26d_action_health"));
+  });
+
+  document.getElementById("btn-open-first-pending-action").addEventListener("click", async function () {
+    const data = await withButton(this, () => call("surhan_signature.api.get_my_pending_document_signature_requests", { limit: 1 }));
+    const msg = data && data.message ? data.message : data;
+    const items = msg.items || [];
+    if (!items.length) {
+      alert("No pending signature requests.");
+      return;
+    }
+    window.open(items[0].action_url, "_blank");
+  });
+
+  load();
+})();
+</script>
+{% endblock %}

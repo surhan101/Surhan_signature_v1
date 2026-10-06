@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signed Document Print | Surhan Signature</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #e5e7eb;
+      color: #111827;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #111827;
+      color: white;
+      padding: 12px 18px;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.20);
+    }
+
+    .toolbar button, .toolbar a {
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.10);
+      color: white;
+      padding: 9px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 750;
+    }
+
+    .page {
+      width: min(980px, calc(100% - 32px));
+      margin: 28px auto;
+      background: white;
+      padding: 38px;
+      min-height: 1240px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      border-radius: 10px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 3px solid #111827;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.03em;
+    }
+
+    .brand p {
+      margin: 6px 0 0;
+      color: #4b5563;
+    }
+
+    .stamp {
+      text-align: right;
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .stamp strong {
+      display: block;
+      color: #111827;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .section {
+      margin: 22px 0;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin: 0 0 12px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      font-size: 13px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 8px;
+      border-bottom: 1px dashed #e5e7eb;
+      padding: 6px 0;
+    }
+
+    .key { color: #6b7280; }
+    .value { color: #111827; word-break: break-word; }
+
+    .direction-card {
+      border: 1px solid #f59e0b;
+      background: #fffbeb;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .direction-card.rejected {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .direction-title {
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #92400e;
+    }
+
+    .direction-card.rejected .direction-title {
+      color: #991b1b;
+    }
+
+    .direction-svg {
+      margin-top: 10px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 90px;
+      overflow: hidden;
+    }
+
+    .content {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 280px;
+      background: #fafafa;
+    }
+
+    .signature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .signature-card {
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 190px;
+      background: #ffffff;
+      page-break-inside: avoid;
+    }
+
+    .signature-card.signed {
+      border-color: #10b981;
+    }
+
+    .signature-card.directed {
+      border-color: #f59e0b;
+    }
+
+    .signature-card.rejected {
+      border-color: #ef4444;
+    }
+
+    .signature-box {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .signature-box img {
+      max-height: 70px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .signature-name {
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .signature-details {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .audit {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      border-radius: 12px;
+      color: #374151;
+      word-break: break-all;
+    }
+
+    .badge {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      margin: 2px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+    }
+
+    .badge.signed { color: #047857; border-color: #10b981; }
+    .badge.pending { color: #b45309; border-color: #f59e0b; }
+    .badge.rejected { color: #b91c1c; border-color: #ef4444; }
+    .badge.directed { color: #92400e; border-color: #f59e0b; }
+
+    .footer {
+      border-top: 2px solid #111827;
+      margin-top: 28px;
+      padding-top: 12px;
+      font-size: 11px;
+      color: #4b5563;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .loading {
+      width: min(980px, calc(100% - 32px));
+      margin: 28px auto;
+      background: white;
+      padding: 32px;
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    @media print {
+      body { background: white; }
+      .toolbar { display: none; }
+      .page {
+        margin: 0;
+        width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 18mm;
+        min-height: auto;
+      }
+      .signature-card, .direction-card { page-break-inside: avoid; }
+    }
+
+    @media (max-width: 760px) {
+      .header, .footer { flex-direction: column; }
+      .stamp { text-align: left; }
+      .meta-grid, .signature-grid { grid-template-columns: 1fr; }
+      .page { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div><strong>Surhan Signature</strong> — Signed Print View</div>
+    <div>
+      <a id="open-doc" href="#">Open Document</a>
+      <button onclick="window.print()">Print</button>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">Loading signed print context...</div>
+  <div id="page" class="page" style="display:none"></div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    const params = new URLSearchParams(window.location.search);
+    const DOCTYPE = params.get("doctype");
+    const NAME = params.get("name");
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function apiCall(method, args = {}) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args)
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function statusClass(status) {
+      const s = String(status || "").toLowerCase();
+      if (s === "signed") return "signed";
+      if (s === "directed") return "directed";
+      if (s === "rejected") return "rejected";
+      if (s === "pending") return "pending";
+      return "";
+    }
+
+    function renderMeta(document) {
+      const fields = document.fields || [];
+      if (!fields.length) return "";
+
+      return `
+        <div class="section">
+          <h2>Document Fields</h2>
+          <div class="meta-grid">
+            ${fields.map(f => `
+              <div class="meta">
+                <div class="key">${esc(f.label)}</div>
+                <div class="value">${esc(f.value)}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDirections(data) {
+      const directions = data.directions || [];
+      if (!directions.length) return "";
+
+      return `
+        <div class="section">
+          <h2>Directions / Routing Notes</h2>
+          ${directions.map(r => `
+            <div class="direction-card ${r.is_rejected ? "rejected" : ""}">
+              <div class="direction-title">
+                ${esc(r.status)} — ${esc(r.full_name || r.requested_user)}
+              </div>
+              ${r.direction_text ? `<div>${esc(r.direction_text)}</div>` : ""}
+              ${r.direction_svg ? `<div class="direction-svg">${r.direction_svg}</div>` : ""}
+              <div class="signature-details" style="margin-top:8px">
+                ${esc(r.designation || "")} ${r.department ? " / " + esc(r.department) : ""}<br>
+                Completed At: ${esc(r.completed_at || "-")}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderSignatures(data) {
+      const signatures = data.signatures || [];
+
+      if (!signatures.length) {
+        return `
+          <div class="section">
+            <h2>Signatures</h2>
+            <p>No completed signatures yet.</p>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="section">
+          <h2>Signatures</h2>
+          <div class="signature-grid">
+            ${signatures.map(r => `
+              <div class="signature-card ${statusClass(r.status)}">
+                <div class="signature-box">
+                  ${r.signature_png ? `<img src="${esc(r.signature_png)}" alt="Signature">` : `<span class="badge ${statusClass(r.status)}">${esc(r.status)}</span>`}
+                </div>
+                <div class="signature-name">${esc(r.full_name || r.requested_user)}</div>
+                <div class="signature-details">
+                  ${esc(r.designation || "")}${r.department ? " / " + esc(r.department) : ""}<br>
+                  Employee: ${esc(r.requested_employee || "-")}<br>
+                  Status: <strong>${esc(r.status)}</strong><br>
+                  Completed: ${esc(r.completed_at || "-")}<br>
+                  Request: ${esc(r.name)}<br>
+                  Signature Hash: ${esc(r.signature_hash || "-")}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAudit(data) {
+      return `
+        <div class="section">
+          <h2>Verification Summary</h2>
+          <div>
+            ${Object.entries(data.status_counts || {}).map(([k, v]) => `
+              <span class="badge ${statusClass(k)}">${esc(k)}: ${esc(v)}</span>
+            `).join("")}
+          </div>
+          <div class="audit" style="margin-top:10px">
+Reference: ${esc(data.reference_doctype)} / ${esc(data.reference_name)}
+Generated At: ${esc(data.generated_at)}
+Complete: ${esc(data.complete)}
+Print Hash: ${esc(data.print_hash)}
+          </div>
+        </div>
+      `;
+    }
+
+    function render(data) {
+      const doc = data.document || {};
+      document.getElementById("open-doc").href = data.document_url || "#";
+
+      const html = `
+        <div class="header">
+          <div class="brand">
+            <h1>Signed Document</h1>
+            <p>Surhan Internal Signature Workflow</p>
+          </div>
+          <div class="stamp">
+            <strong>${esc(data.complete ? "SIGNED / COMPLETED" : "IN PROGRESS")}</strong>
+            ${esc(data.reference_doctype)}<br>
+            ${esc(data.reference_name)}<br>
+            ${esc(data.generated_at)}
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>${esc(doc.title || data.reference_name)}</h2>
+          <div class="meta-grid">
+            <div class="meta"><div class="key">DocType</div><div class="value">${esc(data.reference_doctype)}</div></div>
+            <div class="meta"><div class="key">Document Name</div><div class="value">${esc(data.reference_name)}</div></div>
+            <div class="meta"><div class="key">Status</div><div class="value">${esc(data.complete ? "Completed" : "In Progress")}</div></div>
+            <div class="meta"><div class="key">Requests</div><div class="value">${esc((data.requests || []).length)}</div></div>
+          </div>
+        </div>
+
+        ${renderDirections(data)}
+
+        <div class="section">
+          <h2>Document Content</h2>
+          <div class="content">${doc.content_html || "<p>No rich content found.</p>"}</div>
+        </div>
+
+        ${renderMeta(doc)}
+        ${renderSignatures(data)}
+        ${renderAudit(data)}
+
+        <div class="footer">
+          <div>Generated by Surhan Signature</div>
+          <div>Print Hash: ${esc(data.print_hash)}</div>
+        </div>
+      `;
+
+      document.getElementById("page").innerHTML = html;
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("page").style.display = "block";
+    }
+
+    async function load() {
+      if (!DOCTYPE || !NAME) {
+        document.getElementById("loading").textContent =
+          "Missing query parameters. Example: /signed-print?doctype=DocType&name=DOC-0001";
+        return;
+      }
+
+      try {
+        const data = await apiCall("surhan_signature.api.get_signed_document_print_context", {
+          reference_doctype: DOCTYPE,
+          reference_name: NAME
+        });
+
+        render(data);
+      } catch (e) {
+        document.getElementById("loading").textContent = String(e);
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

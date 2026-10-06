@@ -1,0 +1,231 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:certificate_no",
+ "creation": "2026-06-19 04:04:26.571103",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "envelope",
+  "certificate_no",
+  "completed_at",
+  "original_hash",
+  "final_hash",
+  "audit_root_hash",
+  "signer_summary",
+  "verification_url",
+  "qr_code",
+  "certificate_pdf",
+  "artifact_controls_section",
+  "artifact_version",
+  "artifacts_locked",
+  "certificate_pdf_sha256",
+  "evidence_package",
+  "evidence_package_sha256",
+  "last_file_integrity_status",
+  "last_verified_at",
+  "qr_section",
+  "verification_qr_svg",
+  "verification_qr_pdf",
+  "verification_qr_pdf_sha256",
+  "verification_qr_generated_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "envelope",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Envelope",
+   "options": "E-Sign Envelope",
+   "reqd": 1
+  },
+  {
+   "fieldname": "certificate_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Certificate No",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "completed_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Completed At"
+  },
+  {
+   "fieldname": "original_hash",
+   "fieldtype": "Data",
+   "label": "Original Hash"
+  },
+  {
+   "fieldname": "final_hash",
+   "fieldtype": "Data",
+   "label": "Final Hash"
+  },
+  {
+   "fieldname": "audit_root_hash",
+   "fieldtype": "Data",
+   "label": "Audit Root Hash"
+  },
+  {
+   "fieldname": "signer_summary",
+   "fieldtype": "Code",
+   "label": "Signer Summary",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "verification_url",
+   "fieldtype": "Data",
+   "label": "Verification URL"
+  },
+  {
+   "fieldname": "qr_code",
+   "fieldtype": "Attach",
+   "label": "QR Code"
+  },
+  {
+   "fieldname": "certificate_pdf",
+   "fieldtype": "Attach",
+   "label": "Certificate PDF"
+  },
+  {
+   "fieldname": "artifact_controls_section",
+   "fieldtype": "Section Break",
+   "label": "Artifact Controls"
+  },
+  {
+   "default": "0",
+   "fieldname": "artifact_version",
+   "fieldtype": "Int",
+   "label": "Artifact Version",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "artifacts_locked",
+   "fieldtype": "Check",
+   "label": "Artifacts Locked",
+   "read_only": 1
+  },
+  {
+   "fieldname": "certificate_pdf_sha256",
+   "fieldtype": "Data",
+   "label": "Certificate PDF SHA-256",
+   "read_only": 1
+  },
+  {
+   "fieldname": "evidence_package",
+   "fieldtype": "Attach",
+   "label": "Evidence Package ZIP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "evidence_package_sha256",
+   "fieldtype": "Data",
+   "label": "Evidence Package SHA-256",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_file_integrity_status",
+   "fieldtype": "Data",
+   "label": "Last File Integrity Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_verified_at",
+   "fieldtype": "Datetime",
+   "label": "Last Verified At",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "qr_section",
+   "fieldtype": "Section Break",
+   "label": "QR Verification"
+  },
+  {
+   "fieldname": "verification_qr_svg",
+   "fieldtype": "Code",
+   "label": "Verification QR SVG",
+   "options": "HTML",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_qr_pdf",
+   "fieldtype": "Attach",
+   "label": "Verification QR PDF",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_qr_pdf_sha256",
+   "fieldtype": "Data",
+   "label": "Verification QR PDF SHA256",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_qr_generated_at",
+   "fieldtype": "Datetime",
+   "label": "Verification QR Generated At",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-20 22:37:54.919991",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Certificate",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Administrator",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Manager",
+   "select": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Auditor",
+   "select": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Signature Viewer",
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "certificate_no",
+ "track_changes": 1
+}

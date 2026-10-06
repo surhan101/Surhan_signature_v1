@@ -1,0 +1,680 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Surhan Signature{% endblock %}
+
+{% block page_content %}
+<div class="surhan-sign-page">
+  <div class="surhan-shell">
+    <div class="surhan-header">
+      <div>
+        <div class="surhan-kicker">Surhan Signature</div>
+        <h1>Electronic Signing Portal</h1>
+        <p>Secure document review, identity verification, and electronic signature.</p>
+      </div>
+      <div class="surhan-badge">
+        <span>{{ signing_level or "SES" }}</span>
+      </div>
+    </div>
+
+    {% if portal_error %}
+      <div class="surhan-card surhan-error">
+        <h2>Signing link unavailable</h2>
+        <p>{{ portal_error }}</p>
+      </div>
+    {% else %}
+      <div class="surhan-grid">
+        <aside class="surhan-side">
+          <div class="surhan-card">
+            <h3>Envelope</h3>
+            <div class="surhan-meta">
+              <div><b>Title</b><span>{{ title }}</span></div>
+              <div><b>Status</b><span id="env-status">{{ status }}</span></div>
+              <div><b>Workflow</b><span>{{ workflow_type }}</span></div>
+              <div><b>Signer</b><span>{{ signer_name }} — {{ signer_email_masked }}</span></div>
+              <div><b>Expires</b><span>{{ expires_on }}</span></div>
+            </div>
+          </div>
+
+          <div class="surhan-card">
+            <h3>Integrity</h3>
+            <p class="surhan-small">Canonical SHA-256</p>
+            <code class="surhan-hash">{{ canonical_sha256 }}</code>
+          </div>
+
+          <div class="surhan-card">
+            <h3>Signing Status</h3>
+            <p id="can-sign-message">{{ can_sign_reason }}</p>
+            {% if can_sign %}
+              <div class="surhan-ok">Ready for verification and signature.</div>
+            {% else %}
+              <div class="surhan-warn">This recipient cannot sign yet.</div>
+            {% endif %}
+          </div>
+        </aside>
+
+        <main class="surhan-main">
+          <div class="surhan-card surhan-document">
+            <div class="surhan-doc-toolbar">
+              <h2>Document Preview</h2>
+              <span>Read carefully before signing</span>
+            </div>
+            <div class="surhan-doc-body">
+              {{ document_html }}
+            </div>
+          </div>
+
+          <div class="surhan-card surhan-actions">
+            <h2>Identity Verification</h2>
+            <p>Request and verify your one-time password before signing.</p>
+
+            <input type="hidden" id="sign-token" value="{{ token }}">
+
+            <div class="surhan-row">
+              <button class="surhan-btn" id="request-otp" {% if not can_sign %}disabled{% endif %}>Request OTP</button>
+              <input class="surhan-input" id="otp-input" placeholder="Enter OTP" autocomplete="one-time-code">
+              <button class="surhan-btn secondary" id="verify-otp" {% if not can_sign %}disabled{% endif %}>Verify OTP</button>
+            </div>
+
+            <div id="otp-result" class="surhan-result"></div>
+
+            <hr>
+
+            <h2>Electronic Signature</h2>
+            <label class="surhan-check">
+              <input type="checkbox" id="consent-check">
+              <span>I agree to sign this document electronically and understand that my electronic signature is binding where applicable.</span>
+            </label>
+
+            <div class="surhan-tabs">
+              <button type="button" class="surhan-tab active" data-mode="typed">Typed</button>
+              <button type="button" class="surhan-tab" data-mode="drawn">Drawn</button>
+              <button type="button" class="surhan-tab" data-mode="uploaded">Uploaded</button>
+            </div>
+
+            <div class="surhan-sign-mode active" id="mode-typed">
+              <input class="surhan-signature-input" id="signature-text" placeholder="Type your full name as your signature">
+            </div>
+
+            <div class="surhan-sign-mode" id="mode-drawn">
+              <div class="surhan-canvas-wrap">
+                <canvas id="signature-canvas" width="720" height="220"></canvas>
+              </div>
+              <div class="surhan-row">
+                <button type="button" class="surhan-btn secondary" id="clear-canvas">Clear Drawn Signature</button>
+              </div>
+              <p class="surhan-small">Use mouse or touch to draw your signature.</p>
+            </div>
+
+            <div class="surhan-sign-mode" id="mode-uploaded">
+              <input class="surhan-input-file" id="signature-file" type="file" accept="image/png,image/jpeg">
+              <p class="surhan-small">Upload a PNG/JPG signature image. Maximum 2MB.</p>
+            </div>
+
+            <button class="surhan-btn sign" id="submit-signature" {% if not can_sign %}disabled{% endif %}>Sign Document</button>
+
+            
+            <div class="surhan-decline-box">
+              <button class="surhan-btn danger" id="decline-signature" {% if not can_sign %}disabled{% endif %}>Decline to Sign</button>
+            </div>
+
+            <div id="sign-result" class="surhan-result"></div>
+          </div>
+        </main>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+.surhan-sign-page {
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding: 32px 0;
+}
+.surhan-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+.surhan-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: #fff;
+  padding: 28px;
+  border-radius: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 18px 45px rgba(15,23,42,.18);
+}
+.surhan-header h1 {
+  color: #fff;
+  margin: 4px 0 8px;
+  font-size: 30px;
+}
+.surhan-header p {
+  margin: 0;
+  opacity: .86;
+}
+.surhan-kicker {
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 12px;
+  opacity: .75;
+}
+.surhan-badge {
+  border: 1px solid rgba(255,255,255,.24);
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  font-weight: 700;
+}
+.surhan-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+}
+.surhan-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(15,23,42,.06);
+  margin-bottom: 16px;
+}
+.surhan-card h2, .surhan-card h3 {
+  margin-top: 0;
+}
+.surhan-meta {
+  display: grid;
+  gap: 12px;
+}
+.surhan-meta div {
+  display: grid;
+  gap: 3px;
+}
+.surhan-meta b {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+.surhan-meta span {
+  color: #0f172a;
+  word-break: break-word;
+}
+.surhan-small {
+  color: #64748b;
+  margin-bottom: 8px;
+}
+.surhan-hash {
+  display: block;
+  white-space: normal;
+  word-break: break-all;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.surhan-ok {
+  color: #166534;
+  background: #dcfce7;
+  padding: 10px;
+  border-radius: 12px;
+}
+.surhan-warn {
+  color: #92400e;
+  background: #fef3c7;
+  padding: 10px;
+  border-radius: 12px;
+}
+.surhan-error {
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+.surhan-document {
+  padding: 0;
+  overflow: hidden;
+}
+.surhan-doc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+.surhan-doc-toolbar h2 {
+  margin: 0;
+}
+.surhan-doc-toolbar span {
+  color: #64748b;
+}
+.surhan-doc-body {
+  padding: 28px;
+  min-height: 320px;
+  background: #fff;
+  color: #111827;
+  line-height: 1.7;
+}
+.surhan-actions hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 22px 0;
+}
+.surhan-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.surhan-input, .surhan-signature-input {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-height: 44px;
+}
+.surhan-input {
+  width: 180px;
+}
+.surhan-signature-input {
+  width: 100%;
+  font-size: 18px;
+  margin: 12px 0;
+}
+.surhan-btn {
+  border: 0;
+  background: #111827;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.surhan-btn.secondary {
+  background: #334155;
+}
+
+.surhan-decline-box {
+  margin-top: 12px;
+}
+.surhan-btn.danger {
+  background: #991b1b;
+  width: 100%;
+  padding: 12px 18px;
+}
+
+.surhan-btn.sign {
+  background: #0f766e;
+  width: 100%;
+  padding: 14px 18px;
+}
+.surhan-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+.surhan-check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #334155;
+}
+
+.surhan-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0;
+  flex-wrap: wrap;
+}
+.surhan-tab {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.surhan-tab.active {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+.surhan-sign-mode {
+  display: none;
+}
+.surhan-sign-mode.active {
+  display: block;
+}
+.surhan-canvas-wrap {
+  border: 1px dashed #94a3b8;
+  border-radius: 16px;
+  background: #fff;
+  margin: 12px 0;
+  overflow: hidden;
+}
+#signature-canvas {
+  width: 100%;
+  height: 220px;
+  display: block;
+  touch-action: none;
+}
+.surhan-input-file {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  width: 100%;
+  background: #f8fafc;
+  margin: 12px 0;
+}
+
+.surhan-result {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  display: none;
+}
+.surhan-result.show {
+  display: block;
+}
+.surhan-result.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+.surhan-result.err {
+  background: #fee2e2;
+  color: #991b1b;
+}
+@media (max-width: 900px) {
+  .surhan-grid {
+    grid-template-columns: 1fr;
+  }
+  .surhan-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+</style>
+
+<script>
+(function () {
+  function apiCall(method, data) {
+    const body = new URLSearchParams();
+    Object.keys(data || {}).forEach((key) => body.append(key, data[key]));
+
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "Accept": "application/json"
+    };
+
+    if (window.frappe && frappe.csrf_token) {
+      headers["X-Frappe-CSRF-Token"] = frappe.csrf_token;
+    }
+
+    return fetch("/api/method/" + method, {
+      method: "POST",
+      headers,
+      body
+    }).then(async (response) => {
+      const text = await response.text();
+      let payload = {};
+      try {
+        payload = JSON.parse(text);
+      } catch (e) {
+        throw new Error(text || "Invalid server response");
+      }
+      if (!response.ok || payload.exc || payload._server_messages) {
+        let message = "Request failed";
+        if (payload._server_messages) {
+          try {
+            const parsed = JSON.parse(payload._server_messages);
+            message = parsed.map((m) => JSON.parse(m).message || m).join(" ");
+          } catch (e) {}
+        }
+        if (payload.exception) {
+          message = payload.exception;
+        }
+        throw new Error(message);
+      }
+      return payload.message || payload;
+    });
+  }
+
+  function showResult(id, ok, message) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = "surhan-result show " + (ok ? "ok" : "err");
+    el.textContent = message;
+  }
+
+  const tokenEl = document.getElementById("sign-token");
+  if (!tokenEl) return;
+
+  const token = tokenEl.value;
+
+  const requestBtn = document.getElementById("request-otp");
+  const verifyBtn = document.getElementById("verify-otp");
+  const signBtn = document.getElementById("submit-signature");
+
+  if (requestBtn) {
+    requestBtn.addEventListener("click", function () {
+      requestBtn.disabled = true;
+      apiCall("surhan_signature.api.request_otp", { token })
+        .then((res) => {
+          let msg = "OTP requested.";
+          if (res.delivery && res.delivery.sent) {
+            msg += " The code was sent by email.";
+          }
+          if (res.dev_otp) {
+            msg += " Developer OTP: " + res.dev_otp;
+          }
+          showResult("otp-result", true, msg);
+        })
+        .catch((err) => showResult("otp-result", false, err.message))
+        .finally(() => { requestBtn.disabled = false; });
+    });
+  }
+
+  if (verifyBtn) {
+    verifyBtn.addEventListener("click", function () {
+      const otp = document.getElementById("otp-input").value.trim();
+      if (!otp) {
+        showResult("otp-result", false, "Enter the OTP first.");
+        return;
+      }
+      verifyBtn.disabled = true;
+      apiCall("surhan_signature.api.verify_otp", { token, otp })
+        .then((res) => {
+          if (res.verified) {
+            showResult("otp-result", true, "OTP verified successfully.");
+          } else {
+            showResult("otp-result", false, "OTP verification failed.");
+          }
+        })
+        .catch((err) => showResult("otp-result", false, err.message))
+        .finally(() => { verifyBtn.disabled = false; });
+    });
+  }
+
+
+  let currentMode = "typed";
+
+  document.querySelectorAll(".surhan-tab").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      currentMode = btn.getAttribute("data-mode");
+      document.querySelectorAll(".surhan-tab").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".surhan-sign-mode").forEach((m) => m.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("mode-" + currentMode).classList.add("active");
+    });
+  });
+
+  const canvas = document.getElementById("signature-canvas");
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    let drawing = false;
+    let last = null;
+
+    function pos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      const point = evt.touches ? evt.touches[0] : evt;
+      return {
+        x: (point.clientX - rect.left) * (canvas.width / rect.width),
+        y: (point.clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    function startDraw(evt) {
+      drawing = true;
+      last = pos(evt);
+      evt.preventDefault();
+    }
+
+    function moveDraw(evt) {
+      if (!drawing) return;
+      const p = pos(evt);
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(last.x, last.y);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      last = p;
+      evt.preventDefault();
+    }
+
+    function endDraw(evt) {
+      drawing = false;
+      last = null;
+      evt.preventDefault();
+    }
+
+    canvas.addEventListener("mousedown", startDraw);
+    canvas.addEventListener("mousemove", moveDraw);
+    canvas.addEventListener("mouseup", endDraw);
+    canvas.addEventListener("mouseleave", endDraw);
+    canvas.addEventListener("touchstart", startDraw, { passive: false });
+    canvas.addEventListener("touchmove", moveDraw, { passive: false });
+    canvas.addEventListener("touchend", endDraw, { passive: false });
+
+    const clearBtn = document.getElementById("clear-canvas");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      });
+    }
+  }
+
+
+  if (signBtn) {
+    signBtn.addEventListener("click", function () {
+      const consent = document.getElementById("consent-check").checked ? 1 : 0;
+      if (!consent) {
+        showResult("sign-result", false, "You must accept the consent before signing.");
+        return;
+      }
+
+      const activeTab = document.querySelector(".surhan-tab.active");
+      const mode = activeTab ? activeTab.getAttribute("data-mode") : "typed";
+
+      signBtn.disabled = true;
+
+      let request;
+
+      if (mode === "typed") {
+        const signature = document.getElementById("signature-text").value.trim();
+        if (!signature) {
+          showResult("sign-result", false, "Type your full name as your signature.");
+          signBtn.disabled = false;
+          return;
+        }
+
+        request = apiCall("surhan_signature.api.sign_typed", {
+          token,
+          signature_text: signature,
+          consent_accepted: consent
+        });
+
+      } else if (mode === "drawn") {
+        const canvas = document.getElementById("signature-canvas");
+        const dataUrl = canvas.toDataURL("image/png");
+
+        request = apiCall("surhan_signature.api.sign_drawn", {
+          token,
+          signature_data_url: dataUrl,
+          consent_accepted: consent
+        });
+
+      } else {
+        const input = document.getElementById("signature-file");
+        const file = input.files && input.files[0];
+
+        if (!file) {
+          showResult("sign-result", false, "Choose a signature image first.");
+          signBtn.disabled = false;
+          return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+          showResult("sign-result", false, "Signature image is too large. Maximum 2MB.");
+          signBtn.disabled = false;
+          return;
+        }
+
+        request = new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = function () {
+            const result = String(reader.result || "");
+            const base64 = result.split(",")[1] || "";
+            apiCall("surhan_signature.api.sign_uploaded", {
+              token,
+              file_name: file.name,
+              file_base64: base64,
+              consent_accepted: consent
+            }).then(resolve).catch(reject);
+          };
+          reader.onerror = function () {
+            reject(new Error("Unable to read selected file."));
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      request
+      .then((res) => {
+        let msg = "Document signed successfully using " + res.signature_method + ". Envelope status: " + res.status;
+        if (res.certificate_no) {
+          msg += " Certificate: " + res.certificate_no;
+        }
+        showResult("sign-result", true, msg);
+        document.getElementById("env-status").textContent = res.status;
+      })
+      .catch((err) => showResult("sign-result", false, err.message))
+      .finally(() => { signBtn.disabled = false; });
+    });
+  }
+
+  const declineBtn = document.getElementById("decline-signature");
+  if (declineBtn) {
+    declineBtn.addEventListener("click", function () {
+      const reason = window.prompt("Please enter a reason for declining this document:", "");
+      if (reason === null) return;
+
+      declineBtn.disabled = true;
+
+      apiCall("surhan_signature.api.decline_signing", {
+        token,
+        reason: reason || "No reason provided."
+      })
+      .then((res) => {
+        showResult("sign-result", true, "Document declined. Envelope status: " + res.status);
+        document.getElementById("env-status").textContent = res.status;
+      })
+      .catch((err) => showResult("sign-result", false, err.message))
+      .finally(() => { declineBtn.disabled = false; });
+    });
+  }
+
+
+})();
+</script>
+{% endblock %}

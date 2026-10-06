@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "autoname": "Prompt",
+ "creation": "2026-06-29 02:35:47.295325",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "audit_time",
+  "actor",
+  "category",
+  "action",
+  "severity",
+  "target_section",
+  "target_doctype",
+  "target_name",
+  "reference_doctype",
+  "reference_name",
+  "request_section",
+  "source_route",
+  "ip_address",
+  "user_agent",
+  "request_id",
+  "result_section",
+  "success",
+  "error_message",
+  "payload_json",
+  "before_json",
+  "after_json",
+  "result_json",
+  "hash_section",
+  "previous_hash",
+  "entry_hash",
+  "hash_payload_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "audit_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Audit Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "actor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Actor",
+   "options": "User"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Category"
+  },
+  {
+   "fieldname": "action",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Action",
+   "reqd": 1
+  },
+  {
+   "default": "Info",
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Severity",
+   "options": "Info\nWarning\nError\nCritical"
+  },
+  {
+   "fieldname": "target_section",
+   "fieldtype": "Section Break",
+   "label": "Target"
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target DocType"
+  },
+  {
+   "fieldname": "target_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target Name"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Data",
+   "label": "Reference DocType"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Data",
+   "label": "Reference Name"
+  },
+  {
+   "fieldname": "request_section",
+   "fieldtype": "Section Break",
+   "label": "Request Context"
+  },
+  {
+   "fieldname": "source_route",
+   "fieldtype": "Data",
+   "label": "Source Route"
+  },
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Data",
+   "label": "IP Address"
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent"
+  },
+  {
+   "fieldname": "request_id",
+   "fieldtype": "Data",
+   "label": "Request ID"
+  },
+  {
+   "fieldname": "result_section",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  },
+  {
+   "default": "1",
+   "fieldname": "success",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Success"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message"
+  },
+  {
+   "fieldname": "payload_json",
+   "fieldtype": "Code",
+   "label": "Payload JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "before_json",
+   "fieldtype": "Code",
+   "label": "Before JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "after_json",
+   "fieldtype": "Code",
+   "label": "After JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "result_json",
+   "fieldtype": "Code",
+   "label": "Result JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "hash_section",
+   "fieldtype": "Section Break",
+   "label": "Hash Chain"
+  },
+  {
+   "fieldname": "previous_hash",
+   "fieldtype": "Data",
+   "label": "Previous Hash"
+  },
+  {
+   "fieldname": "entry_hash",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Entry Hash"
+  },
+  {
+   "fieldname": "hash_payload_json",
+   "fieldtype": "Code",
+   "label": "Hash Payload JSON",
+   "options": "JSON"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 02:38:24.220445",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Signature Admin Audit Log",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator"
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager"
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

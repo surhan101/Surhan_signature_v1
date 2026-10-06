@@ -1,0 +1,160 @@
+{
+ "actions": [],
+ "autoname": "Prompt",
+ "creation": "2026-07-01 21:58:31.480502",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "delegator_user",
+  "delegate_user",
+  "date_section",
+  "from_date",
+  "to_date",
+  "scope_section",
+  "applies_to_doctype",
+  "reason",
+  "audit_section",
+  "created_by_user",
+  "last_applied_at",
+  "last_result_json"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "delegator_user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Delegator User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "delegate_user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Delegate User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_section",
+   "fieldtype": "Section Break",
+   "label": "Validity"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "scope_section",
+   "fieldtype": "Section Break",
+   "label": "Scope"
+  },
+  {
+   "description": "Leave blank to apply to all signature-enabled DocTypes.",
+   "fieldname": "applies_to_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Applies To DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason"
+  },
+  {
+   "fieldname": "audit_section",
+   "fieldtype": "Section Break",
+   "label": "Audit"
+  },
+  {
+   "fieldname": "created_by_user",
+   "fieldtype": "Link",
+   "label": "Created By User",
+   "options": "User"
+  },
+  {
+   "fieldname": "last_applied_at",
+   "fieldtype": "Datetime",
+   "label": "Last Applied At"
+  },
+  {
+   "fieldname": "last_result_json",
+   "fieldtype": "Code",
+   "label": "Last Result JSON",
+   "options": "JSON"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-01 21:58:31.480502",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Signature Delegation Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

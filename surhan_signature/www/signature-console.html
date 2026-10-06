@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Surhan Signature Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #07111f;
+      --card: rgba(255,255,255,0.075);
+      --card2: rgba(255,255,255,0.115);
+      --border: rgba(255,255,255,0.16);
+      --text: #eef5ff;
+      --muted: #9fb0c6;
+      --green: #35d399;
+      --red: #ff6b6b;
+      --yellow: #ffd166;
+      --blue: #6ba6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(73, 129, 255, 0.22), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(53, 211, 153, 0.14), transparent 30%),
+        linear-gradient(135deg, #07111f 0%, #111827 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+    }
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 28px; }
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    h1 { margin: 0 0 8px; font-size: 34px; letter-spacing: -0.04em; }
+    p { color: var(--muted); line-height: 1.55; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 13px;
+      margin: 4px 6px 4px 0;
+    }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.24);
+      backdrop-filter: blur(18px);
+    }
+    .card h3 { margin: 0 0 8px; font-size: 15px; color: #dce8ff; }
+    .num { font-size: 32px; font-weight: 800; letter-spacing: -0.04em; }
+    .ok { color: var(--green); }
+    .warn { color: var(--yellow); }
+    .bad { color: var(--red); }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+    button, a.btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 650;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    button:hover, a.btn:hover { background: var(--card2); }
+    button.primary { background: rgba(107,166,255,0.22); border-color: rgba(107,166,255,0.5); }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(0,0,0,0.32);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 16px;
+      max-height: 560px;
+      overflow: auto;
+      color: #d8e7ff;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .section { margin-top: 16px; }
+    .route {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .route:last-child { border-bottom: none; }
+    .route code { color: #cfe0ff; }
+    @media (max-width: 900px) {
+      .grid, .grid2 { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>Surhan Signature Console</h1>
+        <p>Professional operating console for electronic signatures, compliance, risk, release readiness, monitoring, and frontend integration.</p>
+        <span class="badge">Frappe Native UI</span>
+        <span class="badge">React-ready API Layer</span>
+        <span class="badge">Risk Engine Enabled</span>
+        <span class="badge">Audit Hash Chain</span>
+      </div>
+      <div class="btns">
+        <a class="btn" href="/signature-dashboard">Admin Dashboard</a>
+        <a class="btn" href="/app/surhan-signature">Desk Workspace</a>
+        <a class="btn" href="/verify">Verify</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>System Health</h3>
+        <div id="health" class="num">...</div>
+        <p id="health-sub">Loading</p>
+      </div>
+      <div class="card">
+        <h3>Release Gate</h3>
+        <div id="release" class="num">...</div>
+        <p id="release-sub">Loading</p>
+      </div>
+      <div class="card">
+        <h3>Risk Gate</h3>
+        <div id="risk" class="num">...</div>
+        <p id="risk-sub">Loading</p>
+      </div>
+      <div class="card">
+        <h3>Automated Tests</h3>
+        <div id="tests" class="num">...</div>
+        <p id="tests-sub">Loading</p>
+      </div>
+    </div>
+
+    <div class="section card">
+      <h3>Actions</h3>
+      <div class="btns">
+        <button class="primary" onclick="loadSnapshot()">Refresh Snapshot</button>
+        <button onclick="callApi('surhan_signature.api.ui_integration_manifest')">UI Manifest</button>
+        <button onclick="callApi('surhan_signature.api.ui_frontend_api_contract')">API Contract</button>
+        <button onclick="callApi('surhan_signature.api.export_ui_integration_manifest_json')">Export Manifest JSON</button>
+        <button onclick="callApi('surhan_signature.api.run_signature_test_suite_with_risk', {mode: 'safe'})">Test Suite + Risk</button>
+        <button onclick="callApi('surhan_signature.api.production_release_gate', {strict: 1})">Release Gate</button>
+        <button onclick="callApi('surhan_signature.api.risk_release_gate', {refresh: 1, limit: 100})">Risk Gate</button>
+      </div>
+    </div>
+
+    <div class="grid2 section">
+      <div class="card">
+        <h3>Core Routes</h3>
+        <div class="route"><span>Admin Dashboard</span><code>/signature-dashboard</code></div>
+        <div class="route"><span>Professional Console</span><code>/signature-console</code></div>
+        <div class="route"><span>Desk Workspace</span><code>/app/surhan-signature</code></div>
+        <div class="route"><span>External Signing</span><code>/sign?token=...</code></div>
+        <div class="route"><span>Certificate Verification</span><code>/verify?certificate_no=...</code></div>
+      </div>
+
+      <div class="card">
+        <h3>Frontend Integration Rule</h3>
+        <p>
+          React UI must consume Frappe APIs only. The old Express prototype is not used in production.
+          Signing, OTP, audit, risk, and certificate validation remain server-side.
+        </p>
+        <p>
+          This console is the stable API contract layer before any React bundle is mounted.
+        </p>
+      </div>
+    </div>
+
+    <div class="section card">
+      <h3>Output</h3>
+      <pre id="output">Loading snapshot...</pre>
+    </div>
+  </div>
+
+  <script>
+
+    const SURHAN_CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function encodeQuery(args) {
+      const params = new URLSearchParams();
+      Object.entries(args || {}).forEach(([key, value]) => {
+        if (value === undefined || value === null) return;
+        if (typeof value === 'object') {
+          params.append(key, JSON.stringify(value));
+        } else {
+          params.append(key, String(value));
+        }
+      });
+      return params.toString();
+    }
+
+    async function frappeCall(method, args = {}) {
+      const csrf =
+        SURHAN_CSRF_TOKEN ||
+        window.csrf_token ||
+        (window.frappe && window.frappe.csrf_token) ||
+        "";
+
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      if (csrf) {
+        headers["X-Frappe-CSRF-Token"] = csrf;
+      }
+
+      let res = await fetch("/api/method/" + method, {
+        method: "POST",
+        headers,
+        credentials: "same-origin",
+        body: JSON.stringify(args || {})
+      });
+
+      let data = await res.json().catch(() => ({}));
+
+      const serverMessages = String(data._server_messages || "");
+      const exc = String(data.exc || "");
+      const csrfFailed =
+        data.exc_type === "CSRFTokenError" ||
+        exc.includes("CSRFTokenError") ||
+        serverMessages.includes("CSRFTokenError") ||
+        res.status === 403;
+
+      if (csrfFailed) {
+        const query = encodeQuery(args || {});
+        res = await fetch("/api/method/" + method + (query ? "?" + query : ""), {
+          method: "GET",
+          credentials: "same-origin"
+        });
+        data = await res.json().catch(() => ({}));
+      }
+
+      if (data.exc) {
+        throw new Error(data.exc);
+      }
+
+      if (data._server_messages && data.exc_type) {
+        throw new Error(data._server_messages);
+      }
+
+      return data.message || data;
+    }
+
+    function setText(id, value, cls) {
+      const el = document.getElementById(id);
+      el.textContent = value;
+      el.className = 'num ' + (cls || '');
+    }
+
+    function show(data) {
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function callApi(method, args = {}) {
+      show({ loading: method });
+      try {
+        const data = await frappeCall(method, args);
+        show(data);
+      } catch (e) {
+        show({ ok: false, error: String(e) });
+      }
+    }
+
+    async function loadSnapshot() {
+      try {
+        const s = await frappeCall('surhan_signature.api.ui_console_snapshot');
+        show(s);
+
+        const healthOK = s.system_health && s.system_health.health_ok;
+        setText('health', healthOK ? 'OK' : 'FAIL', healthOK ? 'ok' : 'bad');
+        document.getElementById('health-sub').textContent = healthOK ? 'System integrity passed' : 'System health failed';
+
+        const releaseReady = s.release_gate && s.release_gate.release_ready;
+        setText('release', releaseReady ? 'Ready' : 'Blocked', releaseReady ? 'ok' : 'warn');
+        document.getElementById('release-sub').textContent = (s.release_gate && s.release_gate.blockers || []).join(' | ') || 'No blockers';
+
+        const riskReady = s.risk_gate && s.risk_gate.risk_ready;
+        setText('risk', riskReady ? 'Ready' : 'Blocked', riskReady ? 'ok' : 'bad');
+        document.getElementById('risk-sub').textContent = (s.risk_gate && s.risk_gate.warnings || []).join(' | ') || 'No risk warnings';
+
+        const tests = s.latest_tests && s.latest_tests.test_runs && s.latest_tests.test_runs[0];
+        setText('tests', tests ? tests.status : 'N/A', tests && tests.status === 'Passed' ? 'ok' : 'warn');
+        document.getElementById('tests-sub').textContent = tests ? (tests.passed_tests + '/' + tests.total_tests + ' passed') : 'No test runs';
+
+      } catch (e) {
+        show({ ok: false, error: String(e) });
+      }
+    }
+
+    loadSnapshot();
+  </script>
+</body>
+</html>

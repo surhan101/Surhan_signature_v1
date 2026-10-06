@@ -1,0 +1,3 @@
+
+# Required by Surhan Signature QR certificate PDF addendum
+reportlab>=4.2.0

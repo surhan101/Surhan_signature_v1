@@ -180,6 +180,19 @@ app_license = "mit"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "surhan_signature.event.get_events"
 # }
+
+# Security-critical compatibility layer. Public method paths remain unchanged,
+# while requests are routed to the hardened OTP/session implementation.
+override_whitelisted_methods = {
+	"surhan_signature.api.request_otp": "surhan_signature.secure_otp_api.request_otp",
+	"surhan_signature.api.verify_otp": "surhan_signature.secure_otp_api.verify_otp",
+	"surhan_signature.api.sign_typed": "surhan_signature.secure_otp_api.sign_typed",
+	"surhan_signature.api.sign_drawn": "surhan_signature.secure_otp_api.sign_drawn",
+	"surhan_signature.api.sign_uploaded": "surhan_signature.secure_otp_api.sign_uploaded",
+}
+
+# Central API authorization guard (Phase 2).
+before_request = ["surhan_signature.security.request_guard.enforce"]
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -250,3 +263,88 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+# Surhan Signature Phase 11 scheduler.
+try:
+    scheduler_events
+except NameError:
+    scheduler_events = {}
+
+scheduler_events.setdefault("hourly", [])
+if "surhan_signature.api.expire_envelopes" not in scheduler_events["hourly"]:
+    scheduler_events["hourly"].append("surhan_signature.api.expire_envelopes")
+
+# Phase 26C: Ac Footer internal signature watcher.
+doc_events = globals().get("doc_events", {})
+if not isinstance(doc_events, dict):
+    doc_events = {}
+
+doc_events.setdefault("*", {})
+if not isinstance(doc_events["*"], dict):
+    doc_events["*"] = {}
+
+doc_events["*"]["after_insert"] = "surhan_signature.api.phase26c_on_document_update"
+doc_events["*"]["on_update"] = "surhan_signature.api.phase26c_on_document_update"
+
+# Phase 26E: Desk form buttons for internal document signatures.
+_app_include_js = "/assets/surhan_signature/js/internal_document_signature.js"
+
+try:
+    app_include_js
+except NameError:
+    app_include_js = []
+
+if isinstance(app_include_js, str):
+    app_include_js = [app_include_js]
+
+if _app_include_js not in app_include_js:
+    app_include_js.append(_app_include_js)
+
+
+
+# Phase 27H: automatic signature ToDo notifications.
+try:
+    doc_events
+except NameError:
+    doc_events = {}
+
+doc_events.setdefault("Document Signature Request", {})
+doc_events["Document Signature Request"].setdefault("after_insert", [])
+doc_events["Document Signature Request"].setdefault("on_update", [])
+
+if "surhan_signature.api.phase27h_on_signature_request_update" not in doc_events["Document Signature Request"]["after_insert"]:
+    doc_events["Document Signature Request"]["after_insert"].append("surhan_signature.api.phase27h_on_signature_request_update")
+
+if "surhan_signature.api.phase27h_on_signature_request_update" not in doc_events["Document Signature Request"]["on_update"]:
+    doc_events["Document Signature Request"]["on_update"].append("surhan_signature.api.phase27h_on_signature_request_update")
+
+
+try:
+    scheduler_events
+except NameError:
+    scheduler_events = {}
+
+scheduler_events.setdefault("hourly", [])
+
+if "surhan_signature.api.phase27h_scheduled_signature_notifications" not in scheduler_events["hourly"]:
+    scheduler_events["hourly"].append("surhan_signature.api.phase27h_scheduled_signature_notifications")
+
+
+# Phase 27I: automatic signature delegation scheduler.
+try:
+    scheduler_events
+except NameError:
+    scheduler_events = {}
+
+scheduler_events.setdefault("hourly", [])
+
+if "surhan_signature.api.phase27i_scheduled_apply_delegations" not in scheduler_events["hourly"]:
+    scheduler_events["hourly"].append("surhan_signature.api.phase27i_scheduled_apply_delegations")
+
+web_include_js = [
+    "/assets/surhan_signature/frontend/signature-center/assets/index-D42meroR.js"
+]
+
+web_include_css = [
+    "/assets/surhan_signature/frontend/signature-center/assets/index-CsUDhMuy.css"
+]

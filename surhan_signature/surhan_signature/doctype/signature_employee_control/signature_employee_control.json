@@ -1,0 +1,261 @@
+{
+ "actions": [],
+ "autoname": "field:employee_user",
+ "creation": "2026-06-29 01:54:04.876762",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "employee_user",
+  "employee",
+  "full_name",
+  "designation",
+  "department",
+  "is_active",
+  "signature_section",
+  "signature_profile",
+  "signature_status",
+  "signature_hash_prefix",
+  "admin_only_signature_registration",
+  "permissions_section",
+  "can_receive_requests",
+  "can_use_saved_signature",
+  "can_draw_direction",
+  "can_write_direction_text",
+  "can_reject",
+  "can_override_sequence",
+  "can_manage_external_requests",
+  "can_view_signature_audit",
+  "max_sequence_level",
+  "audit_section",
+  "last_applied_at",
+  "last_applied_by",
+  "admin_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Identity"
+  },
+  {
+   "fieldname": "employee_user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Designation"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Department"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "signature_section",
+   "fieldtype": "Section Break",
+   "label": "Signature Profile"
+  },
+  {
+   "fieldname": "signature_profile",
+   "fieldtype": "Link",
+   "label": "Signature Profile",
+   "options": "Employee Signature Profile",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_status",
+   "fieldtype": "Data",
+   "label": "Signature Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_hash_prefix",
+   "fieldtype": "Data",
+   "label": "Signature Hash Prefix",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_only_signature_registration",
+   "fieldtype": "Check",
+   "label": "Admin Only Signature Registration"
+  },
+  {
+   "fieldname": "permissions_section",
+   "fieldtype": "Section Break",
+   "label": "Permissions"
+  },
+  {
+   "default": "1",
+   "fieldname": "can_receive_requests",
+   "fieldtype": "Check",
+   "label": "Can Receive Requests"
+  },
+  {
+   "default": "1",
+   "fieldname": "can_use_saved_signature",
+   "fieldtype": "Check",
+   "label": "Can Use Saved Signature"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_draw_direction",
+   "fieldtype": "Check",
+   "label": "Can Draw Direction"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_write_direction_text",
+   "fieldtype": "Check",
+   "label": "Can Write Direction Text"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_reject",
+   "fieldtype": "Check",
+   "label": "Can Reject / Return"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_override_sequence",
+   "fieldtype": "Check",
+   "label": "Can Override Sequence"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_manage_external_requests",
+   "fieldtype": "Check",
+   "label": "Can Manage External Requests"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_view_signature_audit",
+   "fieldtype": "Check",
+   "label": "Can View Signature Audit"
+  },
+  {
+   "default": "1",
+   "fieldname": "max_sequence_level",
+   "fieldtype": "Int",
+   "label": "Max Sequence Level"
+  },
+  {
+   "fieldname": "audit_section",
+   "fieldtype": "Section Break",
+   "label": "Apply State"
+  },
+  {
+   "fieldname": "last_applied_at",
+   "fieldtype": "Datetime",
+   "label": "Last Applied At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_applied_by",
+   "fieldtype": "Data",
+   "label": "Last Applied By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "admin_notes",
+   "fieldtype": "Small Text",
+   "label": "Admin Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-20 22:05:02.216535",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Signature Employee Control",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name",
+ "track_changes": 1
+}

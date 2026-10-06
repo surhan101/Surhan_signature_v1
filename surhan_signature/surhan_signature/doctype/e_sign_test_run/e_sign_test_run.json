@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-20 22:00:03.121708",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "suite",
+  "mode",
+  "status",
+  "started_at",
+  "finished_at",
+  "total_tests",
+  "passed_tests",
+  "failed_tests",
+  "warning_tests",
+  "release_ready",
+  "production_ready",
+  "result_sha256",
+  "result_json"
+ ],
+ "fields": [
+  {
+   "default": "signature_system",
+   "fieldname": "suite",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Suite"
+  },
+  {
+   "default": "safe",
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Mode",
+   "options": "safe\nfull"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Passed\nFailed\nWarning"
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "label": "Started At"
+  },
+  {
+   "fieldname": "finished_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Finished At"
+  },
+  {
+   "fieldname": "total_tests",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total Tests"
+  },
+  {
+   "fieldname": "passed_tests",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Passed Tests"
+  },
+  {
+   "fieldname": "failed_tests",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Failed Tests"
+  },
+  {
+   "fieldname": "warning_tests",
+   "fieldtype": "Int",
+   "label": "Warning Tests"
+  },
+  {
+   "default": "0",
+   "fieldname": "release_ready",
+   "fieldtype": "Check",
+   "label": "Release Ready"
+  },
+  {
+   "default": "0",
+   "fieldname": "production_ready",
+   "fieldtype": "Check",
+   "label": "Production Ready"
+  },
+  {
+   "fieldname": "result_sha256",
+   "fieldtype": "Data",
+   "label": "Result SHA256",
+   "read_only": 1
+  },
+  {
+   "fieldname": "result_json",
+   "fieldtype": "Code",
+   "label": "Result JSON",
+   "options": "JSON"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-20 22:00:03.121708",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Test Run",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Administrator",
+   "select": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Manager",
+   "select": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Signature Auditor",
+   "select": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Signature Viewer",
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

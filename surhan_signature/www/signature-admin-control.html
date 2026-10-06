@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature Admin Control Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 28%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1380px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button, a.btn, select, input {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: #edf5ff;
+      padding: 10px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    button { cursor: pointer; }
+    button:hover, a.btn:hover { background: rgba(255,255,255,0.16); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .card, .panel {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      min-width: 0;
+    }
+
+    .panel { margin: 16px 0; overflow:auto; }
+
+    .card h3 { margin: 0 0 8px; color: #dce8ff; font-size: 14px; }
+    .num { font-size: 28px; font-weight: 900; letter-spacing: -0.04em; }
+    .muted { color: #9fb0c6; font-size: 13px; }
+
+    .tabs {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:20px 0 8px;
+    }
+
+    .tab {
+      border:1px solid rgba(255,255,255,0.16);
+      border-radius:999px;
+      padding:9px 13px;
+      cursor:pointer;
+      background:rgba(255,255,255,0.08);
+      font-weight:900;
+    }
+
+    .tab.active {
+      background:#edf5ff;
+      color:#111827;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:1200px;
+    }
+
+    th, td {
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      vertical-align:top;
+      font-size:12px;
+      text-align:left;
+    }
+
+    th { color:#9fb0c6; font-weight:900; }
+    td { color:#edf5ff; }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:11px;
+      font-weight:900;
+      margin:2px;
+      white-space:nowrap;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .warn { color:#ffd166; border-color:rgba(255,209,102,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .switch {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      margin:2px 5px 2px 0;
+      white-space:nowrap;
+    }
+
+    .switch input { width:auto; padding:0; }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:460px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+    }
+
+    .hidden { display:none; }
+
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 650px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature Admin Control Center</h1>
+    <p>One place to configure signature settings, enabled DocTypes, employee signing authority, certificates, gateway, and system readiness. <b>DocType Control Enforcement Active</b>.</p>
+
+    <div class="toolbar">
+      <button onclick="loadData()">Refresh</button>
+      <button onclick="refreshCenter()">Refresh + Rebuild Controls</button>
+      <button onclick="applyAll()">Apply All DocType Controls</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/app/workspace/surhan-signature" target="_blank">Workspace</a>
+      <a class="btn" href="/signature-setup-wizard" target="_blank">Setup Wizard</a>
+      <a class="btn" href="/signature-operations-center" target="_blank">Operations Center</a>
+      <a class="btn" href="/signature-inbox" target="_blank">Signature Inbox</a>
+      <a class="btn" href="/signature-notifications-center" target="_blank">Notifications Center</a>
+      <a class="btn" href="/signature-delegation-center" target="_blank">Delegation Center</a>
+      <a class="btn" href="/signature-access-matrix" target="_blank">Access Matrix</a>
+      <a class="btn" href="/signature-api-security-matrix" target="_blank">API Security Matrix</a>
+      <a class="btn" href="/signature-system-integrity-center" target="_blank">System Integrity</a>
+      <a class="btn" href="/signature-admin-audit" target="_blank">Admin Audit</a>
+      <a class="btn" href="/app/signature-system-settings/Signature%20System%20Settings" target="_blank">System Settings</a>
+      <a class="btn" href="/signature-production-readiness" target="_blank">Readiness</a>
+      <a class="btn" href="/signature-admin-employee-signatures" target="_blank">Admin Employee Signatures</a>
+      <a class="btn" href="/signature-dashboard" target="_blank">Old Dashboard</a>
+    </div>
+
+    <div id="cards" class="grid"></div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('setup')">Setup Steps</div>
+      <div class="tab" onclick="showTab('doctypes')">DocType Controls</div>
+      <div class="tab" onclick="showTab('employees')">Employee Controls</div>
+      <div class="tab" onclick="showTab('links')">System Links</div>
+      <div class="tab" onclick="showTab('output')">Output</div>
+    </div>
+
+    <div id="tab-setup" class="panel"></div>
+    <div id="tab-doctypes" class="panel hidden"></div>
+    <div id="tab-employees" class="panel hidden"></div>
+    <div id="tab-links" class="panel hidden"></div>
+    <div id="tab-output" class="panel hidden"><div id="output" class="raw">Ready.</div></div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+    let STATE = null;
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    function showTab(name) {
+      for (const el of document.querySelectorAll(".tab")) el.classList.remove("active");
+      event.target.classList.add("active");
+
+      for (const id of ["setup", "doctypes", "employees", "links", "output"]) {
+        document.getElementById("tab-" + id).classList.add("hidden");
+      }
+
+      document.getElementById("tab-" + name).classList.remove("hidden");
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function renderCards(data) {
+      const c = data.counts || {};
+      const cards = [
+        ["Enabled DocTypes", c.enabled_doctypes || 0],
+        ["DocType Controls", c.doctype_controls || 0],
+        ["Employees", c.employee_controls || 0],
+        ["Registered Signatures", c.registered_signatures || 0],
+        ["Requests", c.signature_requests || 0],
+        ["Certificates", c.certificates || 0],
+      ];
+
+      document.getElementById("cards").innerHTML = cards.map(x => `
+        <div class="card">
+          <h3>${esc(x[0])}</h3>
+          <div class="num">${esc(x[1])}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderSetup(data) {
+      const steps = data.setup_steps || [];
+
+      document.getElementById("tab-setup").innerHTML = `
+        <h3>System Setup Steps</h3>
+        <p class="muted">This is the recommended administrative sequence for operating the signature system.</p>
+        <table style="min-width:700px">
+          <thead>
+            <tr>
+              <th>Step</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${steps.map(s => `
+              <tr>
+                <td>${esc(s.step)}</td>
+                <td><span class="badge ${s.ready ? "ok" : "warn"}">${s.ready ? "Ready" : "Needs Setup"}</span></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderDoctypes(data) {
+      const rows = data.doctype_controls || [];
+
+      document.getElementById("tab-doctypes").innerHTML = `
+        <h3>DocType Signature Controls</h3>
+        <p class="muted">Choose where the Signature button appears and how signing works for each DocType.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>DocType</th>
+              <th>Enabled</th>
+              <th>Button</th>
+              <th>Workflow</th>
+              <th>Allowed Actions</th>
+              <th>Certificate</th>
+              <th>Apply</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr data-dt="${esc(r.reference_doctype)}">
+                <td>
+                  <strong>${esc(r.reference_doctype)}</strong><br>
+                  <span class="muted">${esc(r.applied_status || "")}</span>
+                </td>
+                <td><label class="switch"><input type="checkbox" data-field="enabled" ${r.enabled ? "checked" : ""}> Enabled</label></td>
+                <td><label class="switch"><input type="checkbox" data-field="show_signature_button" ${r.show_signature_button ? "checked" : ""}> Signature Button</label></td>
+                <td>
+                  <select data-field="workflow_mode">
+                    <option value="Sequential" ${r.workflow_mode === "Sequential" ? "selected" : ""}>Sequential</option>
+                    <option value="Parallel" ${r.workflow_mode === "Parallel" ? "selected" : ""}>Parallel</option>
+                  </select>
+                </td>
+                <td>
+                  <label class="switch"><input type="checkbox" data-field="allow_saved_signature" ${r.allow_saved_signature ? "checked" : ""}> Saved</label>
+                  <label class="switch"><input type="checkbox" data-field="allow_direction_text" ${r.allow_direction_text ? "checked" : ""}> Text</label>
+                  <label class="switch"><input type="checkbox" data-field="allow_direction_drawing" ${r.allow_direction_drawing ? "checked" : ""}> Draw</label>
+                  <label class="switch"><input type="checkbox" data-field="allow_reject" ${r.allow_reject ? "checked" : ""}> Reject</label>
+                  <label class="switch"><input type="checkbox" data-field="allow_external_requests" ${r.allow_external_requests ? "checked" : ""}> External</label>
+                </td>
+                <td>
+                  <label class="switch"><input type="checkbox" data-field="auto_generate_certificate" ${r.auto_generate_certificate ? "checked" : ""}> Cert</label>
+                  <label class="switch"><input type="checkbox" data-field="auto_generate_signed_pdf" ${r.auto_generate_signed_pdf ? "checked" : ""}> PDF</label>
+                </td>
+                <td>
+                  <button onclick="saveAndApplyDocType('${esc(r.reference_doctype)}')">Save + Apply</button>
+                  <a class="btn" href="/app/${esc(r.reference_doctype.toLowerCase().replaceAll(' ', '-'))}" target="_blank">Open</a>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderEmployees(data) {
+      const rows = data.employee_controls || [];
+
+      document.getElementById("tab-employees").innerHTML = `
+        <h3>Employee Signature Controls</h3>
+        <p class="muted">This is the admin view of employee signature authority. Use Admin Employee Signatures to register or replace employee signatures and apply permissions.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Employee</th>
+              <th>Name</th>
+              <th>Signature</th>
+              <th>Permissions</th>
+              <th>Open</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${esc(r.employee_user)}</td>
+                <td>${esc(r.employee || "")}</td>
+                <td>
+                  <strong>${esc(r.full_name || "")}</strong><br>
+                  <span class="muted">${esc(r.designation || "")} ${r.department ? " / " + esc(r.department) : ""}</span>
+                </td>
+                <td>
+                  <span class="badge ${r.signature_status === "Registered" ? "ok" : "warn"}">${esc(r.signature_status || "")}</span><br>
+                  <span class="muted">${esc(r.signature_hash_prefix || "")}</span>
+                </td>
+                <td>
+                  <span class="badge ${r.can_receive_requests ? "ok" : "bad"}">Receive</span>
+                  <span class="badge ${r.can_use_saved_signature ? "ok" : "warn"}">Saved</span>
+                  <span class="badge ${r.can_draw_direction ? "ok" : "warn"}">Draw</span>
+                  <span class="badge ${r.can_write_direction_text ? "ok" : "warn"}">Text</span>
+                  <span class="badge ${r.can_reject ? "ok" : "warn"}">Reject</span>
+                  <span class="badge ${r.can_override_sequence ? "ok" : "warn"}">Override</span>
+                </td>
+                <td>
+                  <a class="btn" href="/app/signature-employee-control/${encodeURIComponent(r.name)}" target="_blank">Control</a>
+                  <a class="btn" href="/app/employee-signature-profile/${encodeURIComponent(r.employee_user)}" target="_blank">Profile</a>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderLinks(data) {
+      const r = data.routes || {};
+
+      document.getElementById("tab-links").innerHTML = `
+        <h3>Unified System Links</h3>
+        <div class="toolbar">
+          ${Object.keys(r).map(k => `<a class="btn" href="${esc(r[k])}" target="_blank">${esc(k)}</a>`).join("")}
+        </div>
+        <p class="muted">Use this page as the main control center. The older pages remain available, but this becomes the admin entry point.</p>
+      `;
+    }
+
+    function collectRowValues(dt) {
+      const row = document.querySelector('tr[data-dt="' + CSS.escape(dt) + '"]');
+      const values = {};
+
+      for (const el of row.querySelectorAll("[data-field]")) {
+        const field = el.getAttribute("data-field");
+
+        if (el.type === "checkbox") values[field] = el.checked ? 1 : 0;
+        else values[field] = el.value;
+      }
+
+      return values;
+    }
+
+    async function saveAndApplyDocType(dt) {
+      try {
+        const values = collectRowValues(dt);
+
+        const updated = await api("surhan_signature.api.phase27a_update_doctype_control", {
+          reference_doctype: dt,
+          values: values
+        });
+
+        const applied = await api("surhan_signature.api.phase27a_apply_doctype_control", {
+          reference_doctype: dt
+        });
+
+        log({ updated, applied });
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function applyAll() {
+      if (!confirm("Apply all DocType signature controls?")) return;
+
+      try {
+        const data = await api("surhan_signature.api.phase27a_apply_all_doctype_controls");
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function refreshCenter() {
+      try {
+        const data = await api("surhan_signature.api.phase27a_refresh_control_center");
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27a_export_admin_control_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function loadData() {
+      try {
+        const data = await api("surhan_signature.api.phase27a_admin_control_data");
+        STATE = data;
+        renderCards(data);
+        renderSetup(data);
+        renderDoctypes(data);
+        renderEmployees(data);
+        renderLinks(data);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

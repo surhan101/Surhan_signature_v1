@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature System Integrity Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1450px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      color: #9fb0c6;
+      line-height: 1.65;
+    }
+
+    .toolbar {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:18px 0;
+    }
+
+    button, a.btn {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.10);
+      color:#edf5ff;
+      padding:10px 13px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    button:hover, a.btn:hover {
+      background:rgba(255,255,255,0.16);
+    }
+
+    .cards {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      margin:18px 0;
+    }
+
+    .card, .panel {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter:blur(18px);
+      overflow:auto;
+      margin-top:16px;
+    }
+
+    .num {
+      font-size:32px;
+      font-weight:900;
+      letter-spacing:-0.04em;
+    }
+
+    .muted {
+      color:#9fb0c6;
+      font-size:13px;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:980px;
+    }
+
+    th, td {
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      vertical-align:top;
+      font-size:12px;
+      text-align:left;
+    }
+
+    th {
+      color:#9fb0c6;
+      font-weight:900;
+    }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:11px;
+      font-weight:900;
+      margin:2px;
+      white-space:nowrap;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .warn { color:#ffd166; border-color:rgba(255,209,102,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:360px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+      margin-top:12px;
+    }
+
+    @media (max-width: 900px) {
+      .cards { grid-template-columns:1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .cards { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature System Integrity Center</h1>
+    <p>Final consolidated integrity dashboard for Surhan Signature system readiness, security hardening, audit trail, notifications, delegation, and production readiness.</p>
+
+    <div class="toolbar">
+      <button onclick="loadData()">Refresh</button>
+      <button onclick="exportSnapshot()">Export Final Snapshot</button>
+      <a class="btn" href="/signature-setup-wizard" target="_blank">Setup Wizard</a>
+      <a class="btn" href="/signature-operations-center" target="_blank">Operations Center</a>
+      <a class="btn" href="/signature-admin-audit" target="_blank">Admin Audit</a>
+      <a class="btn" href="/signature-notifications-center" target="_blank">Notifications</a>
+      <a class="btn" href="/signature-delegation-center" target="_blank">Delegation</a>
+      <a class="btn" href="/signature-api-security-matrix" target="_blank">API Security</a>
+      <a class="btn" href="/signature-inbox" target="_blank">Signature Inbox</a>
+    </div>
+
+    <div id="cards" class="cards"></div>
+
+    <div class="panel">
+      <h3>Integrity Checks</h3>
+      <div id="checks">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Status Counts</h3>
+      <div id="counts">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Warnings</h3>
+      <div id="warnings">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output" class="raw">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function badge(text, cls) {
+      return `<span class="badge ${cls || ''}">${esc(text)}</span>`;
+    }
+
+    function renderCards(data) {
+      const ev = data.evaluation || {};
+      const db = data.db_counts || {};
+      const req = ev.request_status_counts || {};
+      const cert = ev.certificate_status_counts || {};
+
+      document.getElementById("cards").innerHTML = `
+        <div class="card"><div class="muted">Overall</div><div class="num ${ev.overall_ready ? 'ok' : 'bad'}">${ev.overall_ready ? 'READY' : 'CHECK'}</div></div>
+        <div class="card"><div class="muted">Checks</div><div class="num">${esc(ev.ready_count || 0)}/${esc(ev.total_count || 0)}</div></div>
+        <div class="card"><div class="muted">Requests</div><div class="num">${esc((db.document_signature_request || {}).count || 0)}</div></div>
+        <div class="card"><div class="muted">Certificates</div><div class="num ok">${esc((db.internal_signature_certificate || {}).count || 0)}</div></div>
+      `;
+    }
+
+    function renderChecks(checks) {
+      if (!checks || !checks.length) {
+        document.getElementById("checks").innerHTML = "<p>No checks.</p>";
+        return;
+      }
+
+      document.getElementById("checks").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Check</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${checks.map(c => `
+              <tr>
+                <td><strong>${esc(c.title)}</strong><br><span class="muted">${esc(c.key)}</span></td>
+                <td>${c.ready ? badge('Ready', 'ok') : badge('Needs Attention', 'bad')}</td>
+                <td><pre class="raw" style="max-height:120px;margin:0">${esc(JSON.stringify(c.details || {}, null, 2))}</pre></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderCounts(ev) {
+      const req = ev.request_status_counts || {};
+      const cert = ev.certificate_status_counts || {};
+
+      document.getElementById("counts").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Counts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Signature Requests</td>
+              <td>${Object.keys(req).map(k => badge(k + ': ' + req[k], k === 'Pending' ? 'warn' : 'ok')).join('')}</td>
+            </tr>
+            <tr>
+              <td>Certificates</td>
+              <td>${Object.keys(cert).map(k => badge(k + ': ' + cert[k], k === 'Valid' ? 'ok' : 'warn')).join('')}</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderWarnings(warnings) {
+      if (!warnings || !warnings.length) {
+        document.getElementById("warnings").innerHTML = '<p>' + badge('No warnings', 'ok') + '</p>';
+        return;
+      }
+
+      document.getElementById("warnings").innerHTML = `
+        <ul>
+          ${warnings.map(w => `<li>${badge('Warning', 'warn')} ${esc(w)}</li>`).join("")}
+        </ul>
+      `;
+    }
+
+    async function loadData() {
+      try {
+        const data = await api("surhan_signature.api.phase27l_system_integrity_data");
+        renderCards(data);
+        renderChecks((data.evaluation || {}).checks || []);
+        renderCounts(data.evaluation || {});
+        renderWarnings((data.evaluation || {}).warnings || []);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27l_export_system_integrity_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

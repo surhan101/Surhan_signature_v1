@@ -1,0 +1,190 @@
+{
+ "app": "surhan_signature",
+ "charts": [],
+ "content": "[{\"id\":\"surhan-signature-header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Surhan Signature Control Center</span>\",\"col\":12}},{\"id\":\"surhan-signature-note\",\"type\":\"paragraph\",\"data\":{\"text\":\"<a href=\\\"/signature-admin-center\\\" class=\\\"btn btn-primary btn-sm\\\" style=\\\"margin-top:10px; display:inline-block; font-weight:bold;\\\">👑 فتح لوحة التحكم الإدارية الموحدة (System Manager Only)</a>\",\"col\":12}}]",
+ "creation": "2026-06-20 20:46:00.347008",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "signature",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "Surhan Signature",
+ "link_type": "DocType",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "System Settings",
+   "link_count": 0,
+   "link_to": "Signature System Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DocType Controls",
+   "link_count": 0,
+   "link_to": "Signature DocType Control",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Controls",
+   "link_count": 0,
+   "link_to": "Signature Employee Control",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Signature Profiles",
+   "link_count": 0,
+   "link_to": "Employee Signature Profile",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Signature Policies",
+   "link_count": 0,
+   "link_to": "Internal Signature Policy",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Signature Permissions",
+   "link_count": 0,
+   "link_to": "Internal Signature Permission",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Signature Requests",
+   "link_count": 0,
+   "link_to": "Document Signature Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Certificates",
+   "link_count": 0,
+   "link_to": "Internal Signature Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "External Systems",
+   "link_count": 0,
+   "link_to": "Internal Signature External System",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "External Requests",
+   "link_count": 0,
+   "link_to": "Internal Signature External Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "E-Sign Settings",
+   "link_count": 0,
+   "link_to": "E-Sign Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "E-Sign Envelopes",
+   "link_count": 0,
+   "link_to": "E-Sign Envelope",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "E-Sign Certificates",
+   "link_count": 0,
+   "link_to": "E-Sign Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Risk Assessment",
+   "link_count": 0,
+   "link_to": "E-Sign Risk Assessment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-20 22:39:55.924988",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Surhan Signature",
+ "number_cards": [],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Signature Administrator"
+  },
+  {
+   "role": "Signature Manager"
+  },
+  {
+   "role": "Signature Sender"
+  },
+  {
+   "role": "Signature Auditor"
+  },
+  {
+   "role": "Signature Viewer"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 10.0,
+ "shortcuts": [],
+ "title": "Surhan Signature",
+ "type": "Workspace"
+}

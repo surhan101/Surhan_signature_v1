@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature Setup Wizard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1250px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button, a.btn {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: #edf5ff;
+      padding: 10px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      cursor:pointer;
+    }
+
+    button:hover, a.btn:hover { background: rgba(255,255,255,0.16); }
+
+    .summary {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      margin:18px 0;
+    }
+
+    .card, .step, .panel {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+    }
+
+    .num {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .muted { color:#9fb0c6; font-size:13px; }
+
+    .steps {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .step-head {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:5px 9px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:12px;
+      font-weight:900;
+      margin:2px;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .warn { color:#ffd166; border-color:rgba(255,209,102,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:360px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+      margin-top:12px;
+    }
+
+    @media (max-width: 800px) {
+      .summary { grid-template-columns:1fr 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .summary { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature Setup Wizard</h1>
+    <p>Guided setup and diagnostics for the Surhan Signature system. Run each step individually or run the full wizard.</p>
+
+    <div class="toolbar">
+      <button onclick="loadWizard()">Refresh</button>
+      <button onclick="runFullWizard()">Run Full Wizard</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/signature-admin-control" target="_blank">Admin Control</a>
+      <a class="btn" href="/signature-operations-center" target="_blank">Operations Center</a>
+      <a class="btn" href="/signature-inbox" target="_blank">Signature Inbox</a>
+      <a class="btn" href="/signature-notifications-center" target="_blank">Notifications Center</a>
+      <a class="btn" href="/signature-delegation-center" target="_blank">Delegation Center</a>
+      <a class="btn" href="/signature-access-matrix" target="_blank">Access Matrix</a>
+      <a class="btn" href="/signature-api-security-matrix" target="_blank">API Security Matrix</a>
+      <a class="btn" href="/signature-system-integrity-center" target="_blank">System Integrity</a>
+      <a class="btn" href="/signature-admin-audit" target="_blank">Admin Audit</a>
+      <a class="btn" href="/signature-admin-employee-signatures" target="_blank">Employee Signatures</a>
+      <a class="btn" href="/app/workspace/surhan-signature" target="_blank">Workspace</a>
+    </div>
+
+    <div id="summary" class="summary"></div>
+    <div id="steps" class="steps"></div>
+
+    <div class="panel" style="margin-top:18px">
+      <h3>Output</h3>
+      <div id="output" class="raw">Loading...</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function badgeClass(status) {
+      if (status === "Ready") return "ok";
+      if (status === "Optional") return "warn";
+      return "bad";
+    }
+
+    function render(data) {
+      document.getElementById("summary").innerHTML = `
+        <div class="card"><div class="muted">Overall</div><div class="num ${data.overall_ready ? "ok" : "warn"}">${data.overall_ready ? "READY" : "CHECK"}</div></div>
+        <div class="card"><div class="muted">Ready Steps</div><div class="num ok">${esc(data.ready_count || 0)}</div></div>
+        <div class="card"><div class="muted">Needs Attention</div><div class="num ${data.attention_count ? "bad" : "ok"}">${esc(data.attention_count || 0)}</div></div>
+        <div class="card"><div class="muted">Total Steps</div><div class="num">${esc(data.total_steps || 0)}</div></div>
+      `;
+
+      const steps = data.steps || [];
+
+      document.getElementById("steps").innerHTML = steps.map(s => `
+        <div class="step">
+          <div class="step-head">
+            <div>
+              <h3 style="margin:0">${esc(s.title)}</h3>
+              <p style="margin:6px 0 0">${esc(s.description)}</p>
+            </div>
+            <div>
+              <span class="badge ${badgeClass(s.status)}">${esc(s.status)}</span>
+              ${s.route ? `<a class="btn" href="${esc(s.route)}" target="_blank">Open</a>` : ""}
+              <button onclick="runStep('${esc(s.key)}')">Run Step</button>
+            </div>
+          </div>
+          <div class="raw">${esc(JSON.stringify(s.summary || {}, null, 2))}</div>
+        </div>
+      `).join("");
+
+      log(data);
+    }
+
+    async function loadWizard() {
+      try {
+        const data = await api("surhan_signature.api.phase27d_setup_wizard_data");
+        render(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function runStep(key) {
+      try {
+        const data = await api("surhan_signature.api.phase27d_run_setup_step", { step_key: key });
+        log(data);
+        await loadWizard();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function runFullWizard() {
+      if (!confirm("Run full setup wizard checks and safe repairs?")) return;
+
+      try {
+        const data = await api("surhan_signature.api.phase27d_run_full_setup_wizard");
+        log(data);
+        await loadWizard();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27d_export_setup_wizard_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadWizard();
+  </script>
+</body>
+</html>

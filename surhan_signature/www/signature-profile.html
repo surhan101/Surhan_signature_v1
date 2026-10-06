@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>My Signature Profile | Surhan Signature</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #07111f;
+      --card: rgba(255,255,255,0.078);
+      --card2: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.16);
+      --text: #edf5ff;
+      --muted: #9fb0c6;
+      --green: #35d399;
+      --red: #ff6b6b;
+      --yellow: #ffd166;
+      --blue: #6ba6ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(107,166,255,0.23), transparent 34%),
+        radial-gradient(circle at 88% 18%, rgba(53,211,153,0.16), transparent 30%),
+        linear-gradient(135deg, #07111f 0%, #111827 100%);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 13px;
+      margin: 4px 6px 4px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(310px, 0.75fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      min-width: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.30);
+      backdrop-filter: blur(18px);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #dce8ff;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    button, a.btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 11px 13px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 750;
+    }
+
+    button:hover, a.btn:hover { background: var(--card2); }
+    button.primary { background: rgba(53,211,153,0.17); border-color: rgba(53,211,153,0.38); }
+    button.danger { background: rgba(255,107,107,0.16); border-color: rgba(255,107,107,0.34); }
+    button:disabled { opacity: 0.52; cursor: not-allowed; }
+
+    .canvas-shell {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.20);
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0,0,0,0.04) 1px, transparent 1px),
+        #ffffff;
+      background-size: 22px 22px;
+      min-height: 300px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 300px;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .baseline {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 78px;
+      border-bottom: 1px dashed rgba(0,0,0,0.20);
+      pointer-events: none;
+    }
+
+    .hint {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      color: rgba(0,0,0,0.42);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    input[type="range"] {
+      width: 150px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 145px 1fr;
+      gap: 8px 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+    }
+
+    .meta:last-child { border-bottom: none; }
+
+    .key { color: var(--muted); }
+    .value {
+      color: #eaf2ff;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .preview {
+      min-height: 210px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.95);
+      border-radius: 18px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .preview svg {
+      max-width: 100%;
+      max-height: 180px;
+    }
+
+    .status {
+      margin-top: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #d8e7ff;
+      background: rgba(0,0,0,0.28);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 12px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .ok { color: var(--green); }
+    .bad { color: var(--red); }
+    .warn { color: var(--yellow); }
+
+    @media (max-width: 900px) {
+      .hero, .grid { grid-template-columns: 1fr; display: grid; }
+      canvas { height: 260px; }
+      .canvas-shell { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>My Signature Profile</h1>
+        <p>Draw and save your employee signature securely. This signature will later be used for internal document approvals and Ac Footer workflows.</p>
+        <span class="badge">Encrypted SVG</span>
+        <span class="badge">Private PNG</span>
+        <span class="badge">Vector Audit</span>
+        <span class="badge">Versioned Signature</span>
+      </div>
+      <div class="toolbar">
+        <a class="btn" href="/signature-dashboard">Dashboard</a>
+        <a class="btn" href="/app">Desk</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Professional Drawing Studio</h3>
+
+        <div class="toolbar">
+          <button onclick="undoStroke()">Undo</button>
+          <button onclick="redoStroke()">Redo</button>
+          <button class="danger" onclick="clearCanvas()">Clear</button>
+          <label style="color:var(--muted);font-size:13px">Pen</label>
+          <input id="pen-size" type="range" min="1" max="8" value="3">
+          <button onclick="previewSignature()">Preview</button>
+          <button class="primary" id="save-btn" onclick="saveSignature()">Save Signature</button>
+        </div>
+
+        <div class="canvas-shell">
+          <canvas id="signature-canvas"></canvas>
+          <div class="baseline"></div>
+          <div class="hint">Draw your signature here. Use a mouse, touch, or stylus.</div>
+        </div>
+
+        <div id="status" class="status">Ready.</div>
+      </div>
+
+      <div class="card">
+        <h3>Current Signature</h3>
+        <div id="preview" class="preview">
+          <p style="color:#344054">No preview yet.</p>
+        </div>
+
+        <div id="profile-meta" style="margin-top:14px">
+          <div class="meta"><div class="key">Status</div><div class="value">Loading...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    const canvas = document.getElementById("signature-canvas");
+    const ctx = canvas.getContext("2d");
+    const penSize = document.getElementById("pen-size");
+
+    let strokes = [];
+    let redoStack = [];
+    let currentStroke = null;
+    let drawing = false;
+
+    function logStatus(obj) {
+      document.getElementById("status").textContent =
+        typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+    }
+
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      redraw();
+    }
+
+    function pointFromEvent(e) {
+      const rect = canvas.getBoundingClientRect();
+      const pressure = e.pressure && e.pressure > 0 ? e.pressure : 0.55;
+      return {
+        x: +(e.clientX - rect.left).toFixed(2),
+        y: +(e.clientY - rect.top).toFixed(2),
+        p: +pressure.toFixed(3),
+        t: Date.now()
+      };
+    }
+
+    function beginStroke(e) {
+      e.preventDefault();
+      drawing = true;
+      currentStroke = [pointFromEvent(e)];
+      redoStack = [];
+    }
+
+    function moveStroke(e) {
+      if (!drawing || !currentStroke) return;
+      e.preventDefault();
+
+      const pt = pointFromEvent(e);
+      const last = currentStroke[currentStroke.length - 1];
+
+      const dx = pt.x - last.x;
+      const dy = pt.y - last.y;
+
+      if (Math.sqrt(dx * dx + dy * dy) < 1.6) return;
+
+      currentStroke.push(pt);
+      redraw();
+      drawStroke(currentStroke);
+    }
+
+    function endStroke(e) {
+      if (!drawing || !currentStroke) return;
+      e.preventDefault();
+      drawing = false;
+
+      if (currentStroke.length > 1) {
+        strokes.push(currentStroke);
+      }
+
+      currentStroke = null;
+      redraw();
+    }
+
+    function drawStroke(stroke) {
+      if (!stroke || stroke.length < 2) return;
+
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "#111827";
+
+      const base = Number(penSize.value || 3);
+
+      ctx.beginPath();
+      ctx.moveTo(stroke[0].x, stroke[0].y);
+
+      for (let i = 1; i < stroke.length - 1; i++) {
+        const p0 = stroke[i];
+        const p1 = stroke[i + 1];
+        const mx = (p0.x + p1.x) / 2;
+        const my = (p0.y + p1.y) / 2;
+        ctx.lineWidth = Math.max(1, base * (0.72 + (p0.p || 0.55)));
+        ctx.quadraticCurveTo(p0.x, p0.y, mx, my);
+      }
+
+      const last = stroke[stroke.length - 1];
+      ctx.lineTo(last.x, last.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function redraw() {
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      for (const s of strokes) drawStroke(s);
+      if (currentStroke) drawStroke(currentStroke);
+    }
+
+    function clearCanvas() {
+      if (!confirm("Clear the current signature drawing?")) return;
+      strokes = [];
+      redoStack = [];
+      currentStroke = null;
+      redraw();
+      logStatus("Canvas cleared.");
+    }
+
+    function undoStroke() {
+      if (!strokes.length) return;
+      redoStack.push(strokes.pop());
+      redraw();
+    }
+
+    function redoStroke() {
+      if (!redoStack.length) return;
+      strokes.push(redoStack.pop());
+      redraw();
+    }
+
+    function svgPathForStroke(stroke) {
+      if (!stroke || stroke.length < 2) return "";
+      let d = `M ${stroke[0].x} ${stroke[0].y}`;
+      for (let i = 1; i < stroke.length - 1; i++) {
+        const p0 = stroke[i];
+        const p1 = stroke[i + 1];
+        const mx = ((p0.x + p1.x) / 2).toFixed(2);
+        const my = ((p0.y + p1.y) / 2).toFixed(2);
+        d += ` Q ${p0.x} ${p0.y} ${mx} ${my}`;
+      }
+      const last = stroke[stroke.length - 1];
+      d += ` L ${last.x} ${last.y}`;
+      return d;
+    }
+
+    function exportSVG() {
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      const base = Number(penSize.value || 3);
+
+      const paths = strokes.map((stroke) => {
+        const d = svgPathForStroke(stroke);
+        return `<path d="${d}" fill="none" stroke="#111827" stroke-width="${base}" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }).join("\n");
+
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="100%" height="100%" fill="none"/>
+  <g>${paths}</g>
+</svg>`;
+    }
+
+    function exportPNGDataURL() {
+      return canvas.toDataURL("image/png");
+    }
+
+    function vectorJSON() {
+      return {
+        engine: "Surhan Signature Drawing Studio",
+        version: "26A",
+        width: Math.round(canvas.getBoundingClientRect().width),
+        height: Math.round(canvas.getBoundingClientRect().height),
+        pen_size: Number(penSize.value || 3),
+        strokes: strokes
+      };
+    }
+
+    function totalPoints() {
+      return strokes.reduce((sum, s) => sum + s.length, 0);
+    }
+
+    function previewSignature() {
+      if (totalPoints() < 3) {
+        logStatus("Draw a signature before preview.");
+        return;
+      }
+
+      const svg = exportSVG();
+      document.getElementById("preview").innerHTML = svg;
+      logStatus({
+        ok: true,
+        preview: true,
+        strokes: strokes.length,
+        points: totalPoints()
+      });
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      });
+
+      const data = await res.json();
+      const msg = data.message || data;
+
+      if (msg && msg.csrf_token) {
+        CSRF_TOKEN = msg.csrf_token;
+      }
+
+      return CSRF_TOKEN;
+    }
+
+    async function apiCall(method, args = {}, retry = true) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args)
+      });
+
+      const data = await res.json();
+
+      const raw = JSON.stringify(data || {});
+      const isCSRF = raw.includes("CSRFTokenError") || raw.includes("Invalid Request");
+
+      if (isCSRF && retry) {
+        CSRF_TOKEN = "";
+        await ensureCSRF();
+        return apiCall(method, args, false);
+      }
+
+      if (data.exc) {
+        throw new Error(data.exc);
+      }
+
+      if (data._server_messages) {
+        try {
+          const msgs = JSON.parse(data._server_messages);
+          throw new Error(msgs.join("\n"));
+        } catch (e) {
+          throw new Error(data._server_messages);
+        }
+      }
+
+      return data.message || data;
+    }
+
+    async function loadProfile() {
+      try {
+        const data = await apiCall("surhan_signature.api.get_my_signature_profile", {
+          include_svg: 1,
+          include_vector: 0
+        });
+
+        renderProfile(data);
+
+        if (data.exists && data.signature_svg) {
+          document.getElementById("preview").innerHTML = data.signature_svg;
+        }
+      } catch (e) {
+        logStatus(String(e));
+      }
+    }
+
+    function renderProfile(data) {
+      const meta = document.getElementById("profile-meta");
+
+      if (!data.exists) {
+        meta.innerHTML = `
+          <div class="meta"><div class="key">Status</div><div class="value">No signature saved</div></div>
+          <div class="meta"><div class="key">User</div><div class="value">${data.user || ""}</div></div>
+          <div class="meta"><div class="key">Full Name</div><div class="value">${data.full_name || ""}</div></div>
+        `;
+        return;
+      }
+
+      meta.innerHTML = `
+        <div class="meta"><div class="key">Status</div><div class="value">${data.is_active ? "Active" : "Inactive"}</div></div>
+        <div class="meta"><div class="key">Profile</div><div class="value">${data.profile || ""}</div></div>
+        <div class="meta"><div class="key">Full Name</div><div class="value">${data.full_name || ""}</div></div>
+        <div class="meta"><div class="key">Employee</div><div class="value">${data.employee || ""}</div></div>
+        <div class="meta"><div class="key">Version</div><div class="value">${data.active_version || ""}</div></div>
+        <div class="meta"><div class="key">Hash</div><div class="value">${data.signature_hash || ""}</div></div>
+        <div class="meta"><div class="key">Public ID</div><div class="value">${data.signature_public_id || ""}</div></div>
+        <div class="meta"><div class="key">Saved Signature</div><div class="value">${data.allow_stored_signature_apply ? "Allowed" : "Not Allowed"}</div></div>
+        <div class="meta"><div class="key">Direction Drawing</div><div class="value">${data.allow_direction_drawing ? "Allowed" : "Not Allowed"}</div></div>
+      `;
+    }
+
+    async function saveSignature() {
+      if (totalPoints() < 3) {
+        logStatus("Signature is empty. Draw your signature first.");
+        return;
+      }
+
+      const btn = document.getElementById("save-btn");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      try {
+        const svg = exportSVG();
+        const png = exportPNGDataURL();
+        const vector = vectorJSON();
+
+        const data = await apiCall("surhan_signature.api.save_my_signature_profile", {
+          signature_svg: svg,
+          signature_png_data_url: png,
+          vector_json: vector
+        });
+
+        logStatus(data);
+        await loadProfile();
+      } catch (e) {
+        logStatus(String(e));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save Signature";
+      }
+    }
+
+    canvas.addEventListener("pointerdown", beginStroke);
+    canvas.addEventListener("pointermove", moveStroke);
+    canvas.addEventListener("pointerup", endStroke);
+    canvas.addEventListener("pointercancel", endStroke);
+    canvas.addEventListener("pointerleave", (e) => {
+      if (drawing) endStroke(e);
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    setTimeout(() => {
+      resizeCanvas();
+      loadProfile();
+    }, 100);
+  </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-19 04:04:25.425379",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "field_key",
+  "recipient_email",
+  "field_type",
+  "required",
+  "page_no",
+  "x",
+  "y",
+  "width",
+  "height",
+  "value"
+ ],
+ "fields": [
+  {
+   "fieldname": "field_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Field Key",
+   "reqd": 1
+  },
+  {
+   "fieldname": "recipient_email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Recipient Email"
+  },
+  {
+   "default": "Signature",
+   "fieldname": "field_type",
+   "fieldtype": "Select",
+   "label": "Field Type",
+   "options": "Signature\nInitial\nDate\nText\nCheckbox\nRadio\nStamp\nAttachment\nCompany Seal",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "required",
+   "fieldtype": "Check",
+   "label": "Required"
+  },
+  {
+   "default": "1",
+   "fieldname": "page_no",
+   "fieldtype": "Int",
+   "label": "Page No"
+  },
+  {
+   "fieldname": "x",
+   "fieldtype": "Float",
+   "label": "X"
+  },
+  {
+   "fieldname": "y",
+   "fieldtype": "Float",
+   "label": "Y"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "fieldname": "value",
+   "fieldtype": "Small Text",
+   "label": "Value"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-19 04:04:25.425379",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Signature Field",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

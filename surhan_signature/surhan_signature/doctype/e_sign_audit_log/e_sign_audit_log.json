@@ -1,0 +1,206 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:ESIGN-AUD-.YYYY.-.#####",
+ "creation": "2026-06-19 04:04:26.259775",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "envelope",
+  "event_type",
+  "actor_type",
+  "actor_user",
+  "actor_email",
+  "timestamp_utc",
+  "ip_address",
+  "user_agent",
+  "request_id",
+  "details_json",
+  "previous_hash",
+  "current_hash"
+ ],
+ "fields": [
+  {
+   "fieldname": "envelope",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Envelope",
+   "options": "E-Sign Envelope",
+   "reqd": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "reqd": 1
+  },
+  {
+   "default": "System",
+   "fieldname": "actor_type",
+   "fieldtype": "Select",
+   "label": "Actor Type",
+   "options": "System\nUser\nExternal Signer\nIntegration\nAdministrator"
+  },
+  {
+   "fieldname": "actor_user",
+   "fieldtype": "Link",
+   "label": "Actor User",
+   "options": "User"
+  },
+  {
+   "fieldname": "actor_email",
+   "fieldtype": "Data",
+   "label": "Actor Email"
+  },
+  {
+   "fieldname": "timestamp_utc",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Timestamp UTC",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Data",
+   "label": "IP Address"
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent"
+  },
+  {
+   "fieldname": "request_id",
+   "fieldtype": "Data",
+   "label": "Request ID"
+  },
+  {
+   "fieldname": "details_json",
+   "fieldtype": "Code",
+   "label": "Details JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "previous_hash",
+   "fieldtype": "Data",
+   "label": "Previous Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_hash",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Current Hash",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-19 04:04:26.259775",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Audit Log",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1,
+   "if_owner": 0,
+   "select": 1
+  },
+  {
+   "role": "Signature Administrator",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1,
+   "if_owner": 0,
+   "select": 1
+  },
+  {
+   "role": "Signature Manager",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1,
+   "if_owner": 0,
+   "select": 1
+  },
+  {
+   "role": "Signature Auditor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 0,
+   "if_owner": 0,
+   "select": 1
+  },
+  {
+   "role": "Signature Viewer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 0,
+   "if_owner": 0,
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "event_type",
+ "track_changes": 1
+}

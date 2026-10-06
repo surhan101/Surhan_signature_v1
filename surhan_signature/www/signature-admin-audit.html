@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature Admin Audit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1450px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:18px 0;
+    }
+
+    button, a.btn, input, select {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.10);
+      color:#edf5ff;
+      padding:10px 13px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    button { cursor:pointer; }
+    button:hover, a.btn:hover { background:rgba(255,255,255,0.16); }
+
+    .panel {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter:blur(18px);
+      overflow:auto;
+      margin-top:16px;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:980px;
+    }
+
+    th, td {
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      vertical-align:top;
+      font-size:12px;
+      text-align:left;
+    }
+
+    th { color:#9fb0c6; font-weight:900; }
+    td { color:#edf5ff; }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:11px;
+      font-weight:900;
+      margin:2px;
+      white-space:nowrap;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .warn { color:#ffd166; border-color:rgba(255,209,102,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:300px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+      margin-top:12px;
+    }
+
+    .hash {
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      color:#9fb0c6;
+      font-size:11px;
+      word-break:break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature Admin Audit</h1>
+    <p>Immutable administrative audit log for Surhan Signature configuration, employee signature management, setup actions, operations, and external maintenance.</p>
+
+    <div class="toolbar">
+      <button onclick="loadLogs()">Refresh</button>
+      <button onclick="verifyChain()">Verify Hash Chain</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <input id="action" placeholder="Filter action..." oninput="loadLogsDebounced()">
+      <select id="success" onchange="loadLogs()">
+        <option value="">All</option>
+        <option value="1">Success</option>
+        <option value="0">Failed</option>
+      </select>
+      <a class="btn" href="/signature-operations-center" target="_blank">Operations Center</a>
+      <a class="btn" href="/signature-inbox" target="_blank">Signature Inbox</a>
+      <a class="btn" href="/signature-notifications-center" target="_blank">Notifications Center</a>
+      <a class="btn" href="/signature-delegation-center" target="_blank">Delegation Center</a>
+      <a class="btn" href="/signature-access-matrix" target="_blank">Access Matrix</a>
+      <a class="btn" href="/signature-api-security-matrix" target="_blank">API Security Matrix</a>
+      <a class="btn" href="/signature-system-integrity-center" target="_blank">System Integrity</a>
+      <a class="btn" href="/signature-admin-control" target="_blank">Admin Control</a>
+      <a class="btn" href="/app/signature-admin-audit-log" target="_blank">Audit List</a>
+    </div>
+
+    <div class="panel">
+      <h3>Audit Logs</h3>
+      <div id="logs">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output" class="raw">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+    let timer = null;
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function badgeSuccess(value) {
+      return value ? '<span class="badge ok">Success</span>' : '<span class="badge bad">Failed</span>';
+    }
+
+    function badgeSeverity(value) {
+      const v = String(value || "Info");
+      const cls = v === "Error" || v === "Critical" ? "bad" : v === "Warning" ? "warn" : "ok";
+      return `<span class="badge ${cls}">${esc(v)}</span>`;
+    }
+
+    function renderLogs(rows) {
+      if (!rows || !rows.length) {
+        document.getElementById("logs").innerHTML = "<p>No audit logs.</p>";
+        return;
+      }
+
+      document.getElementById("logs").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Actor</th>
+              <th>Action</th>
+              <th>Target</th>
+              <th>Result</th>
+              <th>Hash</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${esc(r.audit_time || r.creation || "")}</td>
+                <td>${esc(r.actor || "")}<br><span class="badge">${esc(r.category || "")}</span></td>
+                <td><strong>${esc(r.action || "")}</strong><br>${badgeSeverity(r.severity)}</td>
+                <td>${esc(r.target_doctype || "")}<br><span class="muted">${esc(r.target_name || "")}</span></td>
+                <td>${badgeSuccess(r.success)}<br><span style="color:#ffb4b4">${esc(r.error_message || "")}</span></td>
+                <td>
+                  <div class="hash">prev: ${esc(r.previous_hash || "")}</div>
+                  <div class="hash">hash: ${esc(r.entry_hash || "")}</div>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function loadLogsDebounced() {
+      clearTimeout(timer);
+      timer = setTimeout(loadLogs, 400);
+    }
+
+    async function loadLogs() {
+      try {
+        const data = await api("surhan_signature.api.phase27f_admin_audit_logs", {
+          limit: 150,
+          action: document.getElementById("action").value || "",
+          success: document.getElementById("success").value
+        });
+        renderLogs(data.items || []);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function verifyChain() {
+      try {
+        const data = await api("surhan_signature.api.phase27f_verify_admin_audit_hash_chain", { limit: 1000 });
+        log(data);
+        alert(data.valid ? "Hash chain is valid." : "Hash chain has issues.");
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27f_export_admin_audit_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadLogs();
+  </script>
+</body>
+</html>

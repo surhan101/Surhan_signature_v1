@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Document Signature Action | Surhan Signature</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #07111f;
+      --card: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.16);
+      --text: #edf5ff;
+      --muted: #9fb0c6;
+      --green: #35d399;
+      --red: #ff6b6b;
+      --yellow: #ffd166;
+      --blue: #6ba6ff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { max-width: 100%; overflow-x: hidden; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 8% 10%, rgba(107,166,255,0.22), transparent 32%),
+        radial-gradient(circle at 90% 20%, rgba(53,211,153,0.16), transparent 34%),
+        linear-gradient(135deg, #07111f 0%, #111827 100%);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: var(--muted); line-height: 1.6; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      min-width: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.30);
+      backdrop-filter: blur(18px);
+      margin-bottom: 16px;
+    }
+
+    .card h3 { margin: 0 0 12px; font-size: 16px; color: #dce8ff; }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 8px 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+    }
+
+    .meta:last-child { border-bottom: none; }
+    .key { color: var(--muted); }
+    .value { color: #eaf2ff; word-break: break-word; overflow-wrap: anywhere; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button, a.btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 11px 13px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 780;
+    }
+
+    button:hover, a.btn:hover { background: rgba(255,255,255,0.14); }
+    button.primary { background: rgba(53,211,153,0.18); border-color: rgba(53,211,153,0.42); }
+    button.warning { background: rgba(255,209,102,0.16); border-color: rgba(255,209,102,0.38); }
+    button.danger { background: rgba(255,107,107,0.16); border-color: rgba(255,107,107,0.38); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.24);
+      color: var(--text);
+      padding: 12px;
+      outline: none;
+      font: inherit;
+    }
+
+    .canvas-shell {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.18);
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0,0,0,0.04) 1px, transparent 1px),
+        #ffffff;
+      background-size: 22px 22px;
+      min-height: 260px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 260px;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .hint {
+      position: absolute;
+      left: 20px;
+      bottom: 18px;
+      color: rgba(0,0,0,0.42);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .status {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #d8e7ff;
+      background: rgba(0,0,0,0.28);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 12px;
+      max-height: 320px;
+      overflow: auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin: 4px 6px 4px 0;
+      font-size: 13px;
+    }
+
+    .badge.ok { color: var(--green); border-color: rgba(53,211,153,0.32); }
+    .badge.bad { color: var(--red); border-color: rgba(255,107,107,0.32); }
+    .badge.warn { color: var(--yellow); border-color: rgba(255,209,102,0.32); }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      canvas { height: 230px; }
+      .canvas-shell { min-height: 230px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Document Signature Action</h1>
+    <p>Approve using your saved signature, write/draw a direction, or reject/return the request according to your permissions.</p>
+
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h3>Request</h3>
+          <div id="request-meta">Loading...</div>
+          <div class="toolbar">
+            <a class="btn" href="/signature-dashboard">Dashboard</a>
+            <a class="btn" href="/app">Desk</a>
+            <a class="btn" id="document-link" href="#">Open Document</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Allowed Actions</h3>
+          <div id="allowed-actions">Loading...</div>
+          <div class="toolbar">
+            <button class="primary" id="btn-saved" onclick="applySavedSignature()">اعتماد بالتوقيع المحفوظ</button>
+            <button class="warning" id="btn-direction" onclick="applyDirection()">توجيه وحفظ</button>
+            <button class="danger" id="btn-reject" onclick="rejectRequest()">رفض / إرجاع</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Output</h3>
+          <div id="status" class="status">Ready.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>Direction Text</h3>
+          <textarea id="direction-text" placeholder="Write routing/directive text here..."></textarea>
+        </div>
+
+        <div class="card">
+          <h3>Direction Drawing</h3>
+          <div class="toolbar" style="margin-top:0;margin-bottom:12px">
+            <button onclick="undoStroke()">Undo</button>
+            <button onclick="redoStroke()">Redo</button>
+            <button class="danger" onclick="clearCanvas()">Clear</button>
+            <label style="color:var(--muted);font-size:13px">Pen</label>
+            <input id="pen-size" type="range" min="1" max="8" value="3">
+          </div>
+
+          <div class="canvas-shell">
+            <canvas id="direction-canvas"></canvas>
+            <div class="hint">Draw routing note or direct signature here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+    const params = new URLSearchParams(window.location.search);
+    const REQUEST_NAME = params.get("request");
+
+    const canvas = document.getElementById("direction-canvas");
+    const ctx = canvas.getContext("2d");
+    const penSize = document.getElementById("pen-size");
+
+    let strokes = [];
+    let redoStack = [];
+    let currentStroke = null;
+    let drawing = false;
+    let currentContext = null;
+
+    function logStatus(obj) {
+      document.getElementById("status").textContent =
+        typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+
+        const data = await res.json();
+        const msg = data.message || data;
+
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function apiCall(method, args = {}, retry = true) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args)
+      });
+
+      const data = await res.json();
+      const raw = JSON.stringify(data || {});
+      const isCSRF = raw.includes("CSRFTokenError") || raw.includes("Invalid Request");
+
+      if (isCSRF && retry) {
+        CSRF_TOKEN = "";
+        await ensureCSRF();
+        return apiCall(method, args, false);
+      }
+
+      if (data.exc) throw new Error(data.exc);
+
+      return data.message || data;
+    }
+
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      redraw();
+    }
+
+    function pointFromEvent(e) {
+      const rect = canvas.getBoundingClientRect();
+      const pressure = e.pressure && e.pressure > 0 ? e.pressure : 0.55;
+      return {
+        x: +(e.clientX - rect.left).toFixed(2),
+        y: +(e.clientY - rect.top).toFixed(2),
+        p: +pressure.toFixed(3),
+        t: Date.now()
+      };
+    }
+
+    function beginStroke(e) {
+      e.preventDefault();
+      drawing = true;
+      currentStroke = [pointFromEvent(e)];
+      redoStack = [];
+    }
+
+    function moveStroke(e) {
+      if (!drawing || !currentStroke) return;
+      e.preventDefault();
+      const pt = pointFromEvent(e);
+      const last = currentStroke[currentStroke.length - 1];
+      const dx = pt.x - last.x;
+      const dy = pt.y - last.y;
+      if (Math.sqrt(dx * dx + dy * dy) < 1.6) return;
+      currentStroke.push(pt);
+      redraw();
+      drawStroke(currentStroke);
+    }
+
+    function endStroke(e) {
+      if (!drawing || !currentStroke) return;
+      e.preventDefault();
+      drawing = false;
+      if (currentStroke.length > 1) strokes.push(currentStroke);
+      currentStroke = null;
+      redraw();
+    }
+
+    function drawStroke(stroke) {
+      if (!stroke || stroke.length < 2) return;
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "#111827";
+
+      const base = Number(penSize.value || 3);
+
+      ctx.beginPath();
+      ctx.moveTo(stroke[0].x, stroke[0].y);
+
+      for (let i = 1; i < stroke.length - 1; i++) {
+        const p0 = stroke[i];
+        const p1 = stroke[i + 1];
+        const mx = (p0.x + p1.x) / 2;
+        const my = (p0.y + p1.y) / 2;
+        ctx.lineWidth = Math.max(1, base * (0.72 + (p0.p || 0.55)));
+        ctx.quadraticCurveTo(p0.x, p0.y, mx, my);
+      }
+
+      const last = stroke[stroke.length - 1];
+      ctx.lineTo(last.x, last.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function redraw() {
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      for (const s of strokes) drawStroke(s);
+      if (currentStroke) drawStroke(currentStroke);
+    }
+
+    function clearCanvas() {
+      strokes = [];
+      redoStack = [];
+      currentStroke = null;
+      redraw();
+    }
+
+    function undoStroke() {
+      if (!strokes.length) return;
+      redoStack.push(strokes.pop());
+      redraw();
+    }
+
+    function redoStroke() {
+      if (!redoStack.length) return;
+      strokes.push(redoStack.pop());
+      redraw();
+    }
+
+    function svgPathForStroke(stroke) {
+      if (!stroke || stroke.length < 2) return "";
+      let d = `M ${stroke[0].x} ${stroke[0].y}`;
+      for (let i = 1; i < stroke.length - 1; i++) {
+        const p0 = stroke[i];
+        const p1 = stroke[i + 1];
+        const mx = ((p0.x + p1.x) / 2).toFixed(2);
+        const my = ((p0.y + p1.y) / 2).toFixed(2);
+        d += ` Q ${p0.x} ${p0.y} ${mx} ${my}`;
+      }
+      const last = stroke[stroke.length - 1];
+      d += ` L ${last.x} ${last.y}`;
+      return d;
+    }
+
+    function exportSVG() {
+      if (!strokes.length) return "";
+
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      const base = Number(penSize.value || 3);
+
+      const paths = strokes.map((stroke) => {
+        const d = svgPathForStroke(stroke);
+        return `<path d="${d}" fill="none" stroke="#111827" stroke-width="${base}" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }).join("\\n");
+
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="100%" height="100%" fill="none"/>
+  <g>${paths}</g>
+</svg>`;
+    }
+
+    function renderContext(data) {
+      currentContext = data;
+
+      const r = data.request || {};
+      const a = data.allowed_actions || {};
+
+      document.getElementById("request-meta").innerHTML = `
+        <div class="meta"><div class="key">Request</div><div class="value">${r.name || ""}</div></div>
+        <div class="meta"><div class="key">Document</div><div class="value">${r.reference_doctype || ""} / ${r.reference_name || ""}</div></div>
+        <div class="meta"><div class="key">Signer</div><div class="value">${r.full_name || ""}</div></div>
+        <div class="meta"><div class="key">Status</div><div class="value">${r.status || ""}</div></div>
+        <div class="meta"><div class="key">Action Required</div><div class="value">${r.action_required || ""}</div></div>
+        <div class="meta"><div class="key">Sequence</div><div class="value">${r.sequence_order || ""}</div></div>
+      `;
+
+      document.getElementById("allowed-actions").innerHTML = `
+        <span class="badge ${a.saved_signature ? "ok" : "bad"}">Saved Signature: ${a.saved_signature ? "Allowed" : "Blocked"}</span>
+        <span class="badge ${a.direction ? "ok" : "bad"}">Direction: ${a.direction ? "Allowed" : "Blocked"}</span>
+        <span class="badge ${a.reject ? "ok" : "bad"}">Reject: ${a.reject ? "Allowed" : "Blocked"}</span>
+      `;
+
+      document.getElementById("btn-saved").disabled = !a.saved_signature;
+      document.getElementById("btn-direction").disabled = !a.direction;
+      document.getElementById("btn-reject").disabled = !a.reject;
+
+      const link = document.getElementById("document-link");
+      link.href = data.document_url || "#";
+
+      logStatus(data);
+    }
+
+    async function loadContext() {
+      if (!REQUEST_NAME) {
+        logStatus("Missing request query parameter. Example: /document-sign-action?request=DSR-2026-00001");
+        return;
+      }
+
+      try {
+        const data = await apiCall("surhan_signature.api.get_document_signature_request_action_context", {
+          request_name: REQUEST_NAME
+        });
+
+        renderContext(data);
+      } catch (e) {
+        logStatus(String(e));
+      }
+    }
+
+    async function applySavedSignature() {
+      if (!confirm("Apply your saved signature to this document?")) return;
+
+      try {
+        const data = await apiCall("surhan_signature.api.apply_saved_signature_request", {
+          request_name: REQUEST_NAME
+        });
+
+        logStatus(data);
+        await loadContext();
+      } catch (e) {
+        logStatus(String(e));
+      }
+    }
+
+    async function applyDirection() {
+      const text = document.getElementById("direction-text").value || "";
+      const svg = exportSVG();
+
+      if (!text.trim() && !svg) {
+        alert("Write direction text or draw a direction first.");
+        return;
+      }
+
+      if (!confirm("Save this direction and complete the request?")) return;
+
+      try {
+        const data = await apiCall("surhan_signature.api.apply_direction_signature_request", {
+          request_name: REQUEST_NAME,
+          direction_text: text,
+          direction_svg: svg
+        });
+
+        logStatus(data);
+        await loadContext();
+      } catch (e) {
+        logStatus(String(e));
+      }
+    }
+
+    async function rejectRequest() {
+      const reason = prompt("Reason for rejection / return:");
+      if (!reason) return;
+
+      try {
+        const data = await apiCall("surhan_signature.api.reject_document_signature_request", {
+          request_name: REQUEST_NAME,
+          reason: reason
+        });
+
+        logStatus(data);
+        await loadContext();
+      } catch (e) {
+        logStatus(String(e));
+      }
+    }
+
+    canvas.addEventListener("pointerdown", beginStroke);
+    canvas.addEventListener("pointermove", moveStroke);
+    canvas.addEventListener("pointerup", endStroke);
+    canvas.addEventListener("pointercancel", endStroke);
+    canvas.addEventListener("pointerleave", (e) => {
+      if (drawing) endStroke(e);
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    setTimeout(() => {
+      resizeCanvas();
+      loadContext();
+    }, 100);
+  </script>
+</body>
+</html>

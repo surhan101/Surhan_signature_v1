@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signature Access Matrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.15), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1350px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 52px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p { color: #9fb0c6; line-height: 1.65; }
+
+    .toolbar {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:18px 0;
+    }
+
+    button, a.btn {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.10);
+      color:#edf5ff;
+      padding:10px 13px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    button:hover, a.btn:hover { background:rgba(255,255,255,0.16); }
+
+    .panel {
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter:blur(18px);
+      overflow:auto;
+      margin-top:16px;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+
+    th, td {
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      vertical-align:top;
+      font-size:12px;
+      text-align:left;
+    }
+
+    th { color:#9fb0c6; font-weight:900; }
+
+    .badge {
+      display:inline-flex;
+      border-radius:999px;
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,0.20);
+      font-size:11px;
+      font-weight:900;
+      margin:2px;
+      white-space:nowrap;
+    }
+
+    .ok { color:#35d399; border-color:rgba(53,211,153,0.45); }
+    .bad { color:#ff6b6b; border-color:rgba(255,107,107,0.45); }
+
+    .raw {
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      max-height:320px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px;
+      padding:14px;
+      font-family:ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:#d8e7ff;
+      margin-top:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signature Access Matrix</h1>
+    <p>Page-level access hardening status for Surhan Signature administration screens.</p>
+
+    <div class="toolbar">
+      <button onclick="loadData()">Refresh</button>
+      <button onclick="applyHardening()">Apply Hardening</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/signature-admin-control" target="_blank">Admin Control</a>
+      <a class="btn" href="/signature-api-security-matrix" target="_blank">API Security Matrix</a>
+      <a class="btn" href="/signature-system-integrity-center" target="_blank">System Integrity</a>
+      <a class="btn" href="/signature-delegation-center" target="_blank">Delegation Center</a>
+      <a class="btn" href="/signature-admin-audit" target="_blank">Admin Audit</a>
+      <a class="btn" href="/signature-inbox" target="_blank">Signature Inbox</a>
+    </div>
+
+    <div class="panel">
+      <h3>Access Matrix</h3>
+      <div id="matrix">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output" class="raw">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args || {})
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function renderMatrix(rows) {
+      if (!rows || !rows.length) {
+        document.getElementById("matrix").innerHTML = "<p>No matrix data.</p>";
+        return;
+      }
+
+      document.getElementById("matrix").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Route</th>
+              <th>Title</th>
+              <th>Mode</th>
+              <th>Allowed Roles</th>
+              <th>Files</th>
+              <th>Hardened</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td><a href="${esc(r.route)}" target="_blank">${esc(r.route)}</a></td>
+                <td>${esc(r.title)}</td>
+                <td><span class="badge">${esc(r.mode)}</span></td>
+                <td>${(r.allowed_roles || []).map(x => `<span class="badge">${esc(x)}</span>`).join("")}</td>
+                <td>PY: ${r.py_exists ? "Yes" : "No"}<br>HTML: ${r.html_exists ? "Yes" : "No"}</td>
+                <td>${r.hardened ? '<span class="badge ok">Hardened</span>' : '<span class="badge bad">Needs Fix</span>'}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function loadData() {
+      try {
+        const data = await api("surhan_signature.api.phase27j_access_matrix_data");
+        renderMatrix(data.matrix || []);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function applyHardening() {
+      try {
+        const data = await api("surhan_signature.api.phase27j_apply_page_access_hardening");
+        log(data);
+        await loadData();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase27j_export_access_matrix_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

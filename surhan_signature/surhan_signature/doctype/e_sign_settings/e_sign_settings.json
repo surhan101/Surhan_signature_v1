@@ -1,0 +1,203 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-19 04:04:26.883266",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "general_section",
+  "default_expiry_days",
+  "default_signing_level",
+  "certificate_prefix",
+  "security_section",
+  "otp_expiry_minutes",
+  "max_otp_attempts",
+  "allowed_file_types",
+  "max_file_size_mb",
+  "integrations_section",
+  "enable_email",
+  "enable_sms",
+  "enable_whatsapp",
+  "enable_ai_review",
+  "webhook_secret"
+ ],
+ "fields": [
+  {
+   "fieldname": "general_section",
+   "fieldtype": "Section Break",
+   "label": "General"
+  },
+  {
+   "default": "7",
+   "fieldname": "default_expiry_days",
+   "fieldtype": "Int",
+   "label": "Default Expiry Days"
+  },
+  {
+   "default": "SES",
+   "fieldname": "default_signing_level",
+   "fieldtype": "Select",
+   "label": "Default Signing Level",
+   "options": "SES\nAES\nQES Provider Ready"
+  },
+  {
+   "default": "ESIGN-CERT",
+   "fieldname": "certificate_prefix",
+   "fieldtype": "Data",
+   "label": "Certificate Prefix"
+  },
+  {
+   "fieldname": "security_section",
+   "fieldtype": "Section Break",
+   "label": "Security"
+  },
+  {
+   "default": "5",
+   "fieldname": "otp_expiry_minutes",
+   "fieldtype": "Int",
+   "label": "OTP Expiry Minutes"
+  },
+  {
+   "default": "5",
+   "fieldname": "max_otp_attempts",
+   "fieldtype": "Int",
+   "label": "Max OTP Attempts"
+  },
+  {
+   "default": "pdf,docx,png,jpg,jpeg",
+   "fieldname": "allowed_file_types",
+   "fieldtype": "Small Text",
+   "label": "Allowed File Types"
+  },
+  {
+   "default": "25",
+   "fieldname": "max_file_size_mb",
+   "fieldtype": "Int",
+   "label": "Max File Size MB"
+  },
+  {
+   "fieldname": "integrations_section",
+   "fieldtype": "Section Break",
+   "label": "Integrations"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_email",
+   "fieldtype": "Check",
+   "label": "Enable Email"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_sms",
+   "fieldtype": "Check",
+   "label": "Enable SMS"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_whatsapp",
+   "fieldtype": "Check",
+   "label": "Enable WhatsApp"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_ai_review",
+   "fieldtype": "Check",
+   "label": "Enable AI Review"
+  },
+  {
+   "fieldname": "webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret"
+  },
+  {
+   "fieldname": "production_email_section",
+   "label": "Production Email & Developer Output",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "signing_base_url",
+   "label": "Signing Base URL",
+   "fieldtype": "Data",
+   "description": "Optional public base URL used in signing links, e.g. https://sign.example.com"
+  },
+  {
+   "fieldname": "expose_dev_signing_links",
+   "label": "Expose Dev Signing Links",
+   "fieldtype": "Check",
+   "default": 1,
+   "description": "Show signing URLs in API output during development. Disable before production."
+  },
+  {
+   "fieldname": "expose_dev_otp",
+   "label": "Expose Dev OTP",
+   "fieldtype": "Check",
+   "default": 1,
+   "description": "Show OTP in API output during development. Disable before production."
+  },
+  {
+   "fieldname": "invite_email_subject",
+   "label": "Invite Email Subject",
+   "fieldtype": "Data",
+   "default": "Signature request: {title}"
+  },
+  {
+   "fieldname": "otp_email_subject",
+   "label": "OTP Email Subject",
+   "fieldtype": "Data",
+   "default": "Your signing verification code"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-19 04:04:26.883266",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "E-Sign Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 0,
+   "if_owner": 0,
+   "select": 1
+  },
+  {
+   "role": "Signature Administrator",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 0,
+   "if_owner": 0,
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

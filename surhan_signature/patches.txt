@@ -4,3 +4,5 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+surhan_signature.patches.v0_0_2.invalidate_legacy_otp_sessions
+surhan_signature.patches.v0_0_2.clear_terminal_recipient_tokens

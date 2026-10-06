@@ -1,0 +1,224 @@
+{
+ "actions": [],
+ "autoname": "field:reference_doctype",
+ "creation": "2026-06-29 01:54:04.450280",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "main_section",
+  "reference_doctype",
+  "enabled",
+  "show_signature_button",
+  "allow_external_requests",
+  "policy_section",
+  "workflow_mode",
+  "allow_saved_signature",
+  "allow_direction_text",
+  "allow_direction_drawing",
+  "allow_reject",
+  "require_signature_profile",
+  "certificate_section",
+  "auto_generate_certificate",
+  "auto_generate_signed_pdf",
+  "advanced_section",
+  "allowed_signer_mode",
+  "admin_notes",
+  "audit_section",
+  "last_applied_at",
+  "last_applied_by",
+  "applied_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "main_section",
+   "fieldtype": "Section Break",
+   "label": "DocType"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_signature_button",
+   "fieldtype": "Check",
+   "label": "Show Signature Button"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_external_requests",
+   "fieldtype": "Check",
+   "label": "Allow External Requests"
+  },
+  {
+   "fieldname": "policy_section",
+   "fieldtype": "Section Break",
+   "label": "Signature Method"
+  },
+  {
+   "default": "Sequential",
+   "fieldname": "workflow_mode",
+   "fieldtype": "Select",
+   "label": "Workflow Mode",
+   "options": "Sequential\nParallel"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_saved_signature",
+   "fieldtype": "Check",
+   "label": "Allow Saved Signature"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_direction_text",
+   "fieldtype": "Check",
+   "label": "Allow Direction Text"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_direction_drawing",
+   "fieldtype": "Check",
+   "label": "Allow Direction Drawing"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_reject",
+   "fieldtype": "Check",
+   "label": "Allow Reject / Return"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_signature_profile",
+   "fieldtype": "Check",
+   "label": "Require Signature Profile"
+  },
+  {
+   "fieldname": "certificate_section",
+   "fieldtype": "Section Break",
+   "label": "Certificate"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_generate_certificate",
+   "fieldtype": "Check",
+   "label": "Auto Generate Certificate"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_generate_signed_pdf",
+   "fieldtype": "Check",
+   "label": "Auto Generate Signed PDF"
+  },
+  {
+   "fieldname": "advanced_section",
+   "fieldtype": "Section Break",
+   "label": "Advanced"
+  },
+  {
+   "default": "Ac Footer",
+   "fieldname": "allowed_signer_mode",
+   "fieldtype": "Select",
+   "label": "Allowed Signer Mode",
+   "options": "Ac Footer\nAdmin Fixed List\nBoth"
+  },
+  {
+   "fieldname": "admin_notes",
+   "fieldtype": "Small Text",
+   "label": "Admin Notes"
+  },
+  {
+   "fieldname": "audit_section",
+   "fieldtype": "Section Break",
+   "label": "Apply State"
+  },
+  {
+   "fieldname": "last_applied_at",
+   "fieldtype": "Datetime",
+   "label": "Last Applied At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_applied_by",
+   "fieldtype": "Data",
+   "label": "Last Applied By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "applied_status",
+   "fieldtype": "Small Text",
+   "label": "Applied Status",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 02:22:26.866330",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Signature DocType Control",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "reference_doctype",
+ "track_changes": 1
+}

@@ -1,0 +1,218 @@
+{
+ "actions": [],
+ "creation": "2026-06-29 01:54:02.719818",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "system_section",
+  "system_enabled",
+  "admin_only_employee_signatures",
+  "show_classic_signature_button",
+  "lock_signed_documents",
+  "defaults_section",
+  "default_workflow_mode",
+  "default_allow_saved_signature",
+  "default_allow_direction_text",
+  "default_allow_direction_drawing",
+  "default_allow_reject",
+  "require_signature_profile",
+  "certificate_section",
+  "auto_generate_certificate",
+  "auto_generate_signed_pdf",
+  "public_verification_enabled",
+  "external_section",
+  "external_gateway_enabled",
+  "require_hmac_for_external_gateway",
+  "audit_section",
+  "last_applied_at",
+  "last_applied_by",
+  "admin_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "system_section",
+   "fieldtype": "Section Break",
+   "label": "System"
+  },
+  {
+   "default": "1",
+   "fieldname": "system_enabled",
+   "fieldtype": "Check",
+   "label": "System Enabled"
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_only_employee_signatures",
+   "fieldtype": "Check",
+   "label": "Only Admin Can Register Employee Signatures"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_classic_signature_button",
+   "fieldtype": "Check",
+   "label": "Show Classic Signature Button"
+  },
+  {
+   "default": "0",
+   "fieldname": "lock_signed_documents",
+   "fieldtype": "Check",
+   "label": "Lock Signed Documents"
+  },
+  {
+   "fieldname": "defaults_section",
+   "fieldtype": "Section Break",
+   "label": "Default Signature Policy"
+  },
+  {
+   "default": "Sequential",
+   "fieldname": "default_workflow_mode",
+   "fieldtype": "Select",
+   "label": "Default Workflow Mode",
+   "options": "Sequential\nParallel"
+  },
+  {
+   "default": "1",
+   "fieldname": "default_allow_saved_signature",
+   "fieldtype": "Check",
+   "label": "Allow Saved Signature"
+  },
+  {
+   "default": "1",
+   "fieldname": "default_allow_direction_text",
+   "fieldtype": "Check",
+   "label": "Allow Direction Text"
+  },
+  {
+   "default": "1",
+   "fieldname": "default_allow_direction_drawing",
+   "fieldtype": "Check",
+   "label": "Allow Direction Drawing"
+  },
+  {
+   "default": "1",
+   "fieldname": "default_allow_reject",
+   "fieldtype": "Check",
+   "label": "Allow Reject / Return"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_signature_profile",
+   "fieldtype": "Check",
+   "label": "Require Employee Signature Profile"
+  },
+  {
+   "fieldname": "certificate_section",
+   "fieldtype": "Section Break",
+   "label": "Certificate and Verification"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_generate_certificate",
+   "fieldtype": "Check",
+   "label": "Auto Generate Certificate After Completion"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_generate_signed_pdf",
+   "fieldtype": "Check",
+   "label": "Auto Generate Signed PDF"
+  },
+  {
+   "default": "1",
+   "fieldname": "public_verification_enabled",
+   "fieldtype": "Check",
+   "label": "Public Verification Enabled"
+  },
+  {
+   "fieldname": "external_section",
+   "fieldtype": "Section Break",
+   "label": "External Gateway"
+  },
+  {
+   "default": "1",
+   "fieldname": "external_gateway_enabled",
+   "fieldtype": "Check",
+   "label": "External Gateway Enabled"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_hmac_for_external_gateway",
+   "fieldtype": "Check",
+   "label": "Require HMAC for External Gateway"
+  },
+  {
+   "fieldname": "audit_section",
+   "fieldtype": "Section Break",
+   "label": "Audit"
+  },
+  {
+   "fieldname": "last_applied_at",
+   "fieldtype": "Datetime",
+   "label": "Last Applied At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_applied_by",
+   "fieldtype": "Data",
+   "label": "Last Applied By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "admin_notes",
+   "fieldtype": "Small Text",
+   "label": "Admin Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-29 02:22:26.465378",
+ "modified_by": "Administrator",
+ "module": "Surhan Signature",
+ "name": "Signature System Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Internal Signature Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Internal Signature Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Internal Signature Auditor"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

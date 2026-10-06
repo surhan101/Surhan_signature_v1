@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Internal Signature Rollout | Surhan Signature</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #edf5ff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.20), transparent 30%),
+        radial-gradient(circle at top right, rgba(16,185,129,0.16), transparent 30%),
+        linear-gradient(135deg, #07111f, #111827);
+    }
+
+    .wrap {
+      width: min(1250px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      color: #9fb0c6;
+      line-height: 1.65;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button, a.btn {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: #edf5ff;
+      padding: 10px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover, a.btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .panel {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      margin: 16px 0;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1050px;
+    }
+
+    th, td {
+      padding: 10px 9px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      color: #9fb0c6;
+      font-weight: 800;
+    }
+
+    .badge {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 9px;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 12px;
+      font-weight: 850;
+      margin: 2px;
+      white-space: nowrap;
+    }
+
+    .ok {
+      color: #35d399;
+      border-color: rgba(53,211,153,0.45);
+    }
+
+    .warn {
+      color: #ffd166;
+      border-color: rgba(255,209,102,0.45);
+    }
+
+    .bad {
+      color: #ff6b6b;
+      border-color: rgba(255,107,107,0.45);
+    }
+
+    .raw {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow: auto;
+      max-height: 380px;
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #d8e7ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Internal Signature Rollout</h1>
+    <p>Enable Ac Footer, policies, Desk buttons, signed print, and certificate generation on real ERPNext/HRMS DocTypes.</p>
+
+    <div class="toolbar">
+      <button onclick="loadCandidates()">Refresh Candidates</button>
+      <button onclick="enableCommon()">Enable Common DocTypes</button>
+      <button onclick="exportSnapshot()">Export Snapshot</button>
+      <a class="btn" href="/signature-dashboard" target="_blank">Signature Dashboard</a>
+      <a class="btn" href="/external-signature-console" target="_blank">External Console</a>
+    </div>
+
+    <div class="panel">
+      <h3>Candidate DocTypes</h3>
+      <div id="candidates">Loading...</div>
+    </div>
+
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output" class="raw">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    let CSRF_TOKEN = "{{ csrf_token or '' }}";
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function log(value) {
+      document.getElementById("output").textContent =
+        typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
+
+    async function ensureCSRF() {
+      if (CSRF_TOKEN && CSRF_TOKEN.length > 10) return CSRF_TOKEN;
+
+      try {
+        const res = await fetch("/api/method/surhan_signature.api.phase26a_get_csrf_token", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+          }
+        });
+        const data = await res.json();
+        const msg = data.message || data;
+        if (msg && msg.csrf_token) CSRF_TOKEN = msg.csrf_token;
+      } catch (e) {}
+
+      return CSRF_TOKEN;
+    }
+
+    async function api(method, args = {}) {
+      await ensureCSRF();
+
+      const res = await fetch("/api/method/" + method, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Frappe-CSRF-Token": CSRF_TOKEN || ""
+        },
+        body: JSON.stringify(args)
+      });
+
+      const data = await res.json();
+      if (data.exc) throw new Error(data.exc);
+      return data.message || data;
+    }
+
+    function renderCandidates(data) {
+      const rows = data.items || [];
+
+      if (!rows.length) {
+        document.getElementById("candidates").innerHTML = "<p>No common ERPNext/HRMS DocTypes found.</p>";
+        return;
+      }
+
+      document.getElementById("candidates").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>DocType</th>
+              <th>Module</th>
+              <th>Fields</th>
+              <th>Policy</th>
+              <th>Buttons</th>
+              <th>Enabled</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td><strong>${esc(r.doctype)}</strong></td>
+                <td>${esc(r.module || "")}</td>
+                <td>
+                  <span class="badge ${r.has_ac_footer ? "ok" : "warn"}">Ac Footer</span>
+                  <span class="badge ${r.has_internal_signature_status ? "ok" : "warn"}">Status</span>
+                </td>
+                <td><span class="badge ${r.policy_exists ? "ok" : "warn"}">${r.policy_exists ? "Policy" : "No Policy"}</span></td>
+                <td>
+                  <span class="badge ${r.desk_buttons_installed ? "ok" : "warn"}">Desk</span>
+                  <span class="badge ${r.signed_print_installed ? "ok" : "warn"}">Print</span>
+                  <span class="badge ${r.certificate_buttons_installed ? "ok" : "warn"}">Cert</span>
+                </td>
+                <td><span class="badge ${r.enabled ? "ok" : "bad"}">${r.enabled ? "Enabled" : "Not Ready"}</span></td>
+                <td><button onclick="enableDocType('${esc(r.doctype)}')">Enable</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function loadCandidates() {
+      try {
+        const data = await api("surhan_signature.api.phase26k_candidate_doctypes");
+        renderCandidates(data);
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function enableDocType(dt) {
+      if (!confirm("Enable Internal Signature on " + dt + "?")) return;
+
+      try {
+        const data = await api("surhan_signature.api.phase26k_enable_doctype", {
+          reference_doctype: dt,
+          workflow_mode: "Sequential",
+          allow_external_requests: 1,
+          add_to_external_systems: 0
+        });
+        log(data);
+        await loadCandidates();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function enableCommon() {
+      if (!confirm("Enable Internal Signature on all detected common ERPNext/HRMS DocTypes?")) return;
+
+      try {
+        const data = await api("surhan_signature.api.phase26k_enable_common_doctypes", {
+          workflow_mode: "Sequential",
+          allow_external_requests: 1
+        });
+        log(data);
+        await loadCandidates();
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    async function exportSnapshot() {
+      try {
+        const data = await api("surhan_signature.api.phase26k_export_rollout_snapshot_json");
+        log(data);
+      } catch (e) {
+        log(String(e));
+      }
+    }
+
+    loadCandidates();
+  </script>
+</body>
+</html>
